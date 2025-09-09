@@ -1,0 +1,13 @@
+nipApi: https://wl-api.mf.gov.pl
+
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/invoices
+    username: postgres
+    password: pass
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+

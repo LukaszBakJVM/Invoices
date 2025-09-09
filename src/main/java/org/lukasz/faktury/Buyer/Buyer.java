@@ -10,4 +10,12 @@ public class Buyer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String name;
+    private String nip;
+    private String regon;
+    private String city;
+    private String zipCode;
+    private String street;
+    private String houseNumber;
 }
