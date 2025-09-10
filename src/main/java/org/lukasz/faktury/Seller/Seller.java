@@ -2,7 +2,7 @@ package org.lukasz.faktury.Seller;
 
 import jakarta.persistence.*;
 import org.lukasz.faktury.Buyer.Buyer;
-import org.lukasz.faktury.user.Users;
+import org.lukasz.faktury.user.Registration;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class Seller {
     @OneToMany(mappedBy = "seller")
     private List<Buyer>buyers;
     @OneToOne(mappedBy = "seller")
-    private Users users;
+    private Registration registration;
 
     public Long getId() {
         return id;
