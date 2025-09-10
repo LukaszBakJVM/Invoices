@@ -16,7 +16,7 @@ public class InvoicesServiceImpl {
         this.restClient = restClient;
     }
 
-   NipApiResponse result(String nip) {
+  private NipApiResponse result(String nip) {
         return restClient.get().uri(searchByNip(nip)).retrieve().body(NipApiResponse.class);
     }
 
