@@ -19,7 +19,7 @@ public class Buyer {
 
     public Buyer() {
     }
-    @ManyToOne
+    @ManyToOne()
     private Seller seller;
 
     public Long getId() {
@@ -84,5 +84,13 @@ public class Buyer {
 
     public void setHouseNumber(String houseNumber) {
         this.houseNumber = houseNumber;
+    }
+
+    public Seller getSeller() {
+        return seller;
+    }
+
+    public void setSeller(Seller seller) {
+        this.seller = seller;
     }
 }
