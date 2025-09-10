@@ -1,9 +1,9 @@
 package org.lukasz.faktury.Seller;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import org.lukasz.faktury.Buyer.Buyer;
+
+import java.util.List;
 
 @Entity
 public class Seller {
@@ -18,6 +18,11 @@ public class Seller {
     private String zipCode;
     private String street;
     private String houseNumber;
+
+    public Seller() {
+    }
+    @OneToMany(mappedBy = "seller")
+    private List<Buyer>buyers;
 
     public Long getId() {
         return id;
@@ -81,5 +86,13 @@ public class Seller {
 
     public void setHouseNumber(String houseNumber) {
         this.houseNumber = houseNumber;
+    }
+
+    public List<Buyer> getBuyers() {
+        return buyers;
+    }
+
+    public void setBuyers(List<Buyer> buyers) {
+        this.buyers = buyers;
     }
 }

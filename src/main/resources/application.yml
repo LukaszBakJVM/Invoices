@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/invoices
     username: postgres
-    password: pass
+    password: demon
   jpa:
     hibernate:
       ddl-auto: update

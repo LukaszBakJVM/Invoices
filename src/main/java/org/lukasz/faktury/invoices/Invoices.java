@@ -20,7 +20,10 @@ public class Invoices {
      private long postponement;
      private LocalDate paymentDate;
 
-     @OneToMany
+    public Invoices() {
+    }
+
+    @OneToMany
     List<InvoiceItems> items;
 
      @OneToOne
