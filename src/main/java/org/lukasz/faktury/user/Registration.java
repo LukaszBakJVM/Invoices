@@ -12,6 +12,7 @@ public class Registration {
     private String username;
     private String password;
     private String email;
+    private  String nip;
     private boolean  active;
     @OneToOne
     private Seller seller;
@@ -65,5 +66,13 @@ public class Registration {
 
     public void setSeller(Seller seller) {
         this.seller = seller;
+    }
+
+    public String getNip() {
+        return nip;
+    }
+
+    public void setNip(String nip) {
+        this.nip = nip;
     }
 }
