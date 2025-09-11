@@ -9,6 +9,8 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import org.lukasz.faktury.exceptions.CustomValidationException;
+import org.lukasz.faktury.exceptions.NipAlreadyRegistered;
+import org.lukasz.faktury.exceptions.NipNotFoundException;
 import org.lukasz.faktury.user.UserServiceImpl;
 import org.lukasz.faktury.user.dto.UserRequest;
 import org.lukasz.faktury.user.dto.UserResponse;
@@ -17,10 +19,10 @@ import org.lukasz.faktury.user.dto.UserResponse;
 public class RegisterView extends VerticalLayout {
     private final UserServiceImpl service;
 
-    private TextField username;
-    private PasswordField password;
-    private EmailField email;
-    private TextField nip;
+    private final TextField username;
+    private final PasswordField password;
+    private final EmailField email;
+    private final TextField nip;
 
     public RegisterView(UserServiceImpl service) {
         this.service = service;
@@ -64,7 +66,7 @@ public class RegisterView extends VerticalLayout {
             UserResponse response = service.register(request);
             Notification.show("Potwierdz email w ciagu 24h", 5000, Notification.Position.MIDDLE);
             Notification.show("Zarejestrowano użytkownika: " + response.username() + " | " + response.email(), 3000, Notification.Position.BOTTOM_CENTER);
-        } catch (CustomValidationException ex) {
+        } catch (CustomValidationException | NipNotFoundException | NipAlreadyRegistered ex) {
 
             Notification.show(ex.getMessage(), 5000, Notification.Position.MIDDLE);
         }

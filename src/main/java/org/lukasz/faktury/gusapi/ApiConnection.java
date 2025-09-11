@@ -1,5 +1,6 @@
 package org.lukasz.faktury.gusapi;
 
+import org.lukasz.faktury.exceptions.NipNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -16,7 +17,11 @@ public class ApiConnection {
     }
 
     public NipApiResponse result(String nip) {
-        return restClient.get().uri(searchByNip(nip)).retrieve().body(NipApiResponse.class);
+        NipApiResponse response = restClient.get().uri(searchByNip(nip)).retrieve().body(NipApiResponse.class);
+        if (response.result().subject()==null){
+            throw new NipNotFoundException("Nie znaleziono Nipu");
+        }
+        return response;
     }
 
     private String searchByNip(final String nip) {
