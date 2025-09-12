@@ -2,7 +2,7 @@ package org.lukasz.faktury.invoices;
 
 import jakarta.persistence.*;
 import org.lukasz.faktury.Buyer.Buyer;
-import org.lukasz.faktury.Seller.Seller;
+import org.lukasz.faktury.seller.Seller;
 import org.lukasz.faktury.items.InvoiceItems;
 
 import java.time.LocalDate;

@@ -1,4 +1,4 @@
-package org.lukasz.faktury.Seller;
+package org.lukasz.faktury.seller;
 
 import jakarta.transaction.Transactional;
 import org.lukasz.faktury.exceptions.NipAlreadyRegistered;
@@ -16,12 +16,12 @@ public class SellerServiceImp implements SellerService {
 
     @Override
     @Transactional
-    public void save(SellerDto dto) {
+    public Seller save(SellerDto dto) {
         repository.findByNip(dto.nip()).ifPresent(nip -> {
             throw new NipAlreadyRegistered(String.format("NIP %s już jest zapisany, można mieć tylko jedno konto", dto.nip()));
         });
         Seller entity = mapper.toEntity(dto);
-        repository.save(entity);
+      return   repository.save(entity);
 
 
     }

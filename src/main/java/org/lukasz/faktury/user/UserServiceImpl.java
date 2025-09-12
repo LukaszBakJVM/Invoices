@@ -1,8 +1,8 @@
 package org.lukasz.faktury.user;
 
-import jakarta.transaction.Transactional;
-import org.lukasz.faktury.Seller.SellerDto;
-import org.lukasz.faktury.Seller.SellerService;
+import org.lukasz.faktury.seller.Seller;
+import org.lukasz.faktury.seller.SellerDto;
+import org.lukasz.faktury.seller.SellerService;
 import org.lukasz.faktury.gusapi.ApiConnection;
 import org.lukasz.faktury.gusapi.Subject;
 import org.lukasz.faktury.user.dto.UserRequest;
@@ -31,32 +31,32 @@ public class UserServiceImpl {
 
     }
 
-    @Transactional
+
     public UserResponse register(UserRequest request) {
         validation.validation(request);
         SellerDto dataByNip = findDataByNip(request.nip());
-        sellerService.save(dataByNip);
+        Seller seller = sellerService.save(dataByNip);
 
 
-        //TODO zapisz dane firmy do bazy
         Registration entity = mapper.toEntity(request);
 
         entity.setActive(false);
         entity.setNip(request.nip());
+        entity.setSeller(seller);
         Registration save = repository.save(entity);
         return mapper.toResponse(save);
     }
 
     private SellerDto findDataByNip(String nip) {
         Subject subject = connection.result(nip).result().subject();
+        Address address;
         if (subject.workingAddress() != null) {
-            Address address = address(subject.workingAddress());
-            return new SellerDto(subject.name(), subject.nip(), subject.regon(), address.city(), address.zipcode(), address.street(), address.houseNumber());
+            address = address(subject.workingAddress());
         } else {
-            Address address = address(subject.residenceAddress());
-            return new SellerDto(subject.name(), subject.nip(), subject.regon(), address.city(), address.zipcode(), address.street(), address.houseNumber());
+            address = address(subject.residenceAddress());
 
         }
+        return new SellerDto(subject.name(), subject.nip(), subject.regon(), address.city(), address.zipcode(), address.street(), address.houseNumber());
     }
 
     Address address(String workingAddress) {

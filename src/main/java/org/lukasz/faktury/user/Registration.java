@@ -1,7 +1,7 @@
 package org.lukasz.faktury.user;
 
 import jakarta.persistence.*;
-import org.lukasz.faktury.Seller.Seller;
+import org.lukasz.faktury.seller.Seller;
 
 @Entity
 @Table(name = "users")

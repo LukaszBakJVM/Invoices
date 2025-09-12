@@ -1,7 +1,7 @@
 package org.lukasz.faktury.Buyer;
 
 import jakarta.persistence.*;
-import org.lukasz.faktury.Seller.Seller;
+import org.lukasz.faktury.seller.Seller;
 
 @Entity
 public class Buyer {

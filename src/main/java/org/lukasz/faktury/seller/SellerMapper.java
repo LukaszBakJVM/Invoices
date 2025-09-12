@@ -1,4 +1,4 @@
-package org.lukasz.faktury.Seller;
+package org.lukasz.faktury.seller;
 
 import org.springframework.stereotype.Component;
 
