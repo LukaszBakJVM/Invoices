@@ -11,30 +11,29 @@ import com.vaadin.flow.router.Route;
 import org.lukasz.faktury.exceptions.CustomValidationException;
 import org.lukasz.faktury.exceptions.NipAlreadyRegistered;
 import org.lukasz.faktury.exceptions.NipNotFoundException;
-import org.lukasz.faktury.user.UserServiceImpl;
+import org.lukasz.faktury.user.UserService;
 import org.lukasz.faktury.user.dto.UserRequest;
 import org.lukasz.faktury.user.dto.UserResponse;
 
 @Route("register")
 public class RegisterView extends VerticalLayout {
-    private final UserServiceImpl service;
 
-    private final TextField username;
+    private final UserService userService;
+
+
     private final PasswordField password;
     private final EmailField email;
     private final TextField nip;
 
-    public RegisterView(UserServiceImpl service) {
-        this.service = service;
+    public RegisterView(UserService userService) {
+        this.userService = userService;
+
         setSizeFull();
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
         H1 header = new H1("📝 Rejestracja użytkownika");
 
-        username = new TextField("Nazwa użytkownika");
-        username.setRequired(true);
-        username.setClearButtonVisible(true);
 
         email = new EmailField("Email");
         email.setRequired(true);
@@ -49,30 +48,26 @@ public class RegisterView extends VerticalLayout {
 
         Button registerButton = new Button("Zarejestruj się", event -> register());
 
-        add(header, username, email, password, nip, registerButton);
+        add(header, email, password, nip, registerButton);
     }
 
     private void register() {
-        UserRequest request = new UserRequest(username.getValue(), password.getValue(), email.getValue(), nip.getValue());
+        UserRequest request = new UserRequest(password.getValue(), email.getValue(), nip.getValue());
 
 
-        // if (user.isEmpty() || mail.isEmpty() || pass.isEmpty()||Nip.isEmpty()) {
-        //   Notification.show("Wszystkie pola są wymagane!", 3000, Notification.Position.MIDDLE);
-
-        //  }
         try {
 
 
-            UserResponse response = service.register(request);
+            UserResponse response = userService.register(request);
             Notification.show("Potwierdz email w ciagu 24h", 5000, Notification.Position.MIDDLE);
-            Notification.show("Zarejestrowano użytkownika: " + response.username() + " | " + response.email(), 3000, Notification.Position.BOTTOM_CENTER);
+            Notification.show("Zarejestrowano użytkownika: " + response.email(), 3000, Notification.Position.BOTTOM_CENTER);
         } catch (CustomValidationException | NipNotFoundException | NipAlreadyRegistered ex) {
 
             Notification.show(ex.getMessage(), 5000, Notification.Position.MIDDLE);
         }
 
 
-        // np. po rejestracji przekierowanie do logowania
+        //  po rejestracji przekierowanie do logowania
         //  getUI().ifPresent(ui -> ui.navigate("login"));
     }
 

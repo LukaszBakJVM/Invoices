@@ -8,16 +8,16 @@ import org.springframework.stereotype.Component;
 public class UserMapper {
 
 
-    Registration toEntity(UserRequest request) {
-        Registration registration = new Registration();
-        registration.setUsername(request.username());
-        registration.setPassword(request.password());
-        registration.setEmail(request.email());
-        return registration;
+    User toEntity(UserRequest request) {
+        User user = new User();
+
+        user.setPassword(request.password());
+        user.setEmail(request.email());
+        return user;
     }
 
-    UserResponse toResponse(Registration response) {
-        return new UserResponse(response.getUsername(), response.getEmail());
+    UserResponse toResponse(User response) {
+        return new UserResponse(response.getEmail());
     }
 }
 

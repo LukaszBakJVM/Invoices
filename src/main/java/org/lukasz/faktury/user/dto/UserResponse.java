@@ -1,4 +1,4 @@
 package org.lukasz.faktury.user.dto;
 
-public record UserResponse(String username, String email) {
+public record UserResponse( String email) {
 }

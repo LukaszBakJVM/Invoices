@@ -2,22 +2,27 @@ package org.lukasz.faktury.user;
 
 import jakarta.persistence.*;
 import org.lukasz.faktury.seller.Seller;
+import org.lukasz.faktury.user.confirmationtoken.ConfirmationToken;
+
+import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class Registration {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String username;
     private String password;
     private String email;
     private  String nip;
     private boolean  active;
     @OneToOne
     private Seller seller;
+    @OneToMany(mappedBy = "user")
+    private List<ConfirmationToken>confirmationTokens ;
 
-    public Registration() {
+
+    public User() {
     }
 
     public Long getId() {
@@ -28,13 +33,8 @@ public class Registration {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
-    }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+
 
     public String getPassword() {
         return password;
@@ -74,5 +74,13 @@ public class Registration {
 
     public void setNip(String nip) {
         this.nip = nip;
+    }
+
+    public List<ConfirmationToken> getConfirmationTokens() {
+        return confirmationTokens;
+    }
+
+    public void setConfirmationTokens(List<ConfirmationToken> confirmationTokens) {
+        this.confirmationTokens = confirmationTokens;
     }
 }
