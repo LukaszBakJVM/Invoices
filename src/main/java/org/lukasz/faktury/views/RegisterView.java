@@ -67,8 +67,12 @@ public class RegisterView extends VerticalLayout {
         }
 
 
-        //  po rejestracji przekierowanie do logowania
+        //   przekierowanie do logowania
         //  getUI().ifPresent(ui -> ui.navigate("login"));
+        getUI().ifPresent(ui -> ui.getPage().executeJs(
+                "setTimeout(function() { window.location.href = $0; }, 5000);","login"
+
+        ));
     }
 
 
