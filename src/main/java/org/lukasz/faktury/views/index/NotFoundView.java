@@ -1,4 +1,4 @@
-package org.lukasz.faktury.views;
+package org.lukasz.faktury.views.index;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;

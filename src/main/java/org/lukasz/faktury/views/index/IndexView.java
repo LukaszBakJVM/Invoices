@@ -1,13 +1,18 @@
-package org.lukasz.faktury.views;
+package org.lukasz.faktury.views.index;
 
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import org.lukasz.faktury.views.user.LoginView;
+import org.lukasz.faktury.views.user.RegisterView;
 
 @Route("")
+@PageTitle("index")
+
 
 public class IndexView extends VerticalLayout {
 

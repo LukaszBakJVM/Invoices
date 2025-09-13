@@ -1,6 +1,5 @@
-package org.lukasz.faktury.views;
+package org.lukasz.faktury.views.user;
 
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 

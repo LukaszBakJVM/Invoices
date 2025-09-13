@@ -1,4 +1,4 @@
-package org.lukasz.faktury.views;
+package org.lukasz.faktury.views.user;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.router.Route;
