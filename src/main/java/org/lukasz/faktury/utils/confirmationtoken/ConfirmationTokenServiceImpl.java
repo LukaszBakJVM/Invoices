@@ -32,6 +32,8 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
         ConfirmationToken generatedToken = tokenRepository.save(token);
         String link = link(generatedToken.getToken());
         emailSenderService.sendEmail(user.getEmail(),link);
+        //TODO
+        System.out.println(link);
 
 
     }

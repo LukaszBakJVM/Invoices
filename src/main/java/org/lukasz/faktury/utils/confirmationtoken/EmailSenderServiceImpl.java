@@ -18,7 +18,7 @@ public class EmailSenderServiceImpl implements EmailSenderService{
 
     @Override
    public void sendEmail(String email,String link){
-        logger.info("Sending email to {} ",email);
+        logger.info("Sending email to {} ", email);
         SimpleMailMessage send = new SimpleMailMessage();
         String message = String.format("Link aktywacyjny: %s", link);
 
@@ -26,12 +26,12 @@ public class EmailSenderServiceImpl implements EmailSenderService{
         send.setTo(email);
         send.setSubject(subject);
         send.setText(message);
-        logger.info("Sending message {} ",message);
+        logger.info("Sending message {} ", message);
 
         //TODO
 
 
-       // mailSender.send(send);
+        // mailSender.send(send);
 
 
 

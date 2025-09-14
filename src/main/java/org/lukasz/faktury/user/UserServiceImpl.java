@@ -1,14 +1,15 @@
 package org.lukasz.faktury.user;
 
-import org.lukasz.faktury.exceptions.UserExistException;
+import org.lukasz.faktury.exceptions.UserException;
 import org.lukasz.faktury.gusapi.ApiConnection;
 import org.lukasz.faktury.gusapi.Subject;
 import org.lukasz.faktury.seller.Seller;
 import org.lukasz.faktury.seller.SellerDto;
 import org.lukasz.faktury.seller.SellerService;
-import org.lukasz.faktury.utils.confirmationtoken.ConfirmationTokenService;
+import org.lukasz.faktury.user.dto.Login;
 import org.lukasz.faktury.user.dto.UserRequest;
 import org.lukasz.faktury.user.dto.UserResponse;
+import org.lukasz.faktury.utils.confirmationtoken.ConfirmationTokenService;
 import org.lukasz.faktury.utils.validation.Validation;
 import org.springframework.stereotype.Service;
 
@@ -51,9 +52,21 @@ public class UserServiceImpl implements UserService {
         confirmationTokenService.createToken(save);
         return mapper.toResponse(save);
     }
+
+    @Override
+    public Login login(String email) {
+        User niepoprawnyEmail = repository.findByEmail(email).orElseThrow(() -> new UserException("Niepoprawny email"));
+        if (!niepoprawnyEmail.isActive()) {
+            throw new UserException("Konto nie aktywowane");
+        }
+        return new Login(niepoprawnyEmail.getEmail(), niepoprawnyEmail.getPassword());
+
+
+    }
+
     private void findUserByEmail(String email) {
         repository.findByEmail(email).ifPresent(present -> {
-            throw new UserExistException("Użytkownik już posiada konto");
+            throw new UserException("Użytkownik już posiada konto");
         });
 
 
