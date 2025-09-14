@@ -28,7 +28,7 @@ public class ConfirmView extends VerticalLayout implements BeforeEnterObserver {
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
 
-        Optional<String> token = event.getLocation().getQueryParameters().getParameters().getOrDefault("token", List.of()).stream().findFirst();//.orElseThrow(()->new TokenException("Token nie istnieje"));
+        Optional<String> token = event.getLocation().getQueryParameters().getParameters().getOrDefault("token", List.of()).stream().findFirst();
 
         try {
             if (token.isEmpty()) {
