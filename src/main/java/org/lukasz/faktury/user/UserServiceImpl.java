@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
     public Login login(String email) {
         User niepoprawnyEmail = repository.findByEmail(email).orElseThrow(() -> new UserException("Niepoprawny email"));
         if (!niepoprawnyEmail.isActive()) {
-            throw new UserException("Konto nie aktywowane");
+            throw new UserException("Aktywuj konto");
         }
         return new Login(niepoprawnyEmail.getEmail(), niepoprawnyEmail.getPassword());
 

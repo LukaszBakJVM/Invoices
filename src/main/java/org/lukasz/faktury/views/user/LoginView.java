@@ -16,12 +16,13 @@ import org.lukasz.faktury.views.index.IndexView;
 
 @Route("login")
 
-@PageTitle("Logowanie | FakturyApp")
+@PageTitle("Logowanie")
 @AnonymousAllowed
 
 public class LoginView extends VerticalLayout {
 
     private final CustomUserDetailsService service;
+
     private final PasswordField password;
     private final EmailField email;
 
@@ -53,6 +54,7 @@ public class LoginView extends VerticalLayout {
 
     private void login() {
         try {
+
 
             service.loadUserByUsername(email.getValue());
 
