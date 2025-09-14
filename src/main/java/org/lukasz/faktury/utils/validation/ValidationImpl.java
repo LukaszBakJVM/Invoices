@@ -1,4 +1,4 @@
-package org.lukasz.faktury.utils;
+package org.lukasz.faktury.utils.validation;
 
 import jakarta.validation.ConstraintViolation;
 import org.lukasz.faktury.exceptions.CustomValidationException;

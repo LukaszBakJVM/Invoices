@@ -1,13 +1,37 @@
 nipApi: https://wl-api.mf.gov.pl
+tokenUrl: localhost:8080
 
 
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/invoices
     username: postgres
-    password: xxx
+    password: pass
   jpa:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: email@gmail.com
+    password: pass
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+
+
+
+
+
+
+
+
+
+
+
 

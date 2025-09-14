@@ -7,7 +7,7 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import org.lukasz.faktury.exceptions.TokenException;
-import org.lukasz.faktury.user.confirmationtoken.ConfirmationTokenService;
+import org.lukasz.faktury.utils.confirmationtoken.ConfirmationTokenService;
 
 import java.util.List;
 import java.util.Optional;

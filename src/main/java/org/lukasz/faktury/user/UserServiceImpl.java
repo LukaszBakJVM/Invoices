@@ -6,10 +6,10 @@ import org.lukasz.faktury.gusapi.Subject;
 import org.lukasz.faktury.seller.Seller;
 import org.lukasz.faktury.seller.SellerDto;
 import org.lukasz.faktury.seller.SellerService;
-import org.lukasz.faktury.user.confirmationtoken.ConfirmationTokenService;
+import org.lukasz.faktury.utils.confirmationtoken.ConfirmationTokenService;
 import org.lukasz.faktury.user.dto.UserRequest;
 import org.lukasz.faktury.user.dto.UserResponse;
-import org.lukasz.faktury.utils.Validation;
+import org.lukasz.faktury.utils.validation.Validation;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;

@@ -1,4 +1,4 @@
-package org.lukasz.faktury.user.confirmationtoken;
+package org.lukasz.faktury.utils.confirmationtoken;
 
 import org.springframework.data.repository.CrudRepository;
 

@@ -1,4 +1,4 @@
-package org.lukasz.faktury.user.confirmationtoken;
+package org.lukasz.faktury.utils.confirmationtoken;
 
 import jakarta.transaction.Transactional;
 import org.lukasz.faktury.exceptions.TokenException;
@@ -13,13 +13,14 @@ import java.util.UUID;
 @Service
 public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
     private final ConfirmationTokenRepo tokenRepository;
-    private final EmailSender emailSender;
+    private final EmailSenderService emailSenderService;
     @Value("${tokenUrl}")
     private String tokenUrl;
 
-    public ConfirmationTokenServiceImpl(ConfirmationTokenRepo repo, EmailSender emailSender) {
+    public ConfirmationTokenServiceImpl(ConfirmationTokenRepo repo, EmailSenderService emailSenderService) {
         this.tokenRepository = repo;
-        this.emailSender = emailSender;
+
+        this.emailSenderService = emailSenderService;
     }
 
     @Override
@@ -30,7 +31,7 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
         token.setUser(user);
         ConfirmationToken generatedToken = tokenRepository.save(token);
         String link = link(generatedToken.getToken());
-        emailSender.sendEmail(link);
+        emailSenderService.sendEmail(user.getEmail(),link);
 
 
     }

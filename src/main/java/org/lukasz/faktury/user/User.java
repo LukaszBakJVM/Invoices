@@ -2,7 +2,7 @@ package org.lukasz.faktury.user;
 
 import jakarta.persistence.*;
 import org.lukasz.faktury.seller.Seller;
-import org.lukasz.faktury.user.confirmationtoken.ConfirmationToken;
+import org.lukasz.faktury.utils.confirmationtoken.ConfirmationToken;
 
 import java.util.List;
 
