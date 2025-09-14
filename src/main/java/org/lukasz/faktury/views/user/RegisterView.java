@@ -11,6 +11,7 @@ import com.vaadin.flow.router.Route;
 import org.lukasz.faktury.exceptions.CustomValidationException;
 import org.lukasz.faktury.exceptions.NipAlreadyRegistered;
 import org.lukasz.faktury.exceptions.NipNotFoundException;
+import org.lukasz.faktury.exceptions.UserExistException;
 import org.lukasz.faktury.user.UserService;
 import org.lukasz.faktury.user.dto.UserRequest;
 import org.lukasz.faktury.user.dto.UserResponse;
@@ -52,7 +53,7 @@ public class RegisterView extends VerticalLayout {
     }
 
     private void register() {
-        UserRequest request = new UserRequest(password.getValue(), email.getValue(), nip.getValue());
+        UserRequest request = new UserRequest(email.getValue(), password.getValue(), nip.getValue());
 
 
         try {
@@ -61,18 +62,15 @@ public class RegisterView extends VerticalLayout {
             UserResponse response = userService.register(request);
             Notification.show("Potwierdz email w ciagu 24h", 5000, Notification.Position.MIDDLE);
             Notification.show("Zarejestrowano użytkownika: " + response.email(), 3000, Notification.Position.BOTTOM_CENTER);
-        } catch (CustomValidationException | NipNotFoundException | NipAlreadyRegistered ex) {
+            getUI().ifPresent(ui -> ui.getPage().executeJs("setTimeout(function() { window.location.href = $0; }, 5000);", "login"
+
+            ));
+        } catch (CustomValidationException | NipNotFoundException | NipAlreadyRegistered | UserExistException ex) {
 
             Notification.show(ex.getMessage(), 5000, Notification.Position.MIDDLE);
         }
 
 
-        //   przekierowanie do logowania
-        //  getUI().ifPresent(ui -> ui.navigate("login"));
-        getUI().ifPresent(ui -> ui.getPage().executeJs(
-                "setTimeout(function() { window.location.href = $0; }, 5000);","login"
-
-        ));
     }
 
 

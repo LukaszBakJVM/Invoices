@@ -1,5 +1,6 @@
 package org.lukasz.faktury.user;
 
+import org.lukasz.faktury.exceptions.UserExistException;
 import org.lukasz.faktury.gusapi.ApiConnection;
 import org.lukasz.faktury.gusapi.Subject;
 import org.lukasz.faktury.seller.Seller;
@@ -36,6 +37,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse register(UserRequest request) {
         validation.validation(request);
+        findUserByEmail(request.email());
         SellerDto dataByNip = findDataByNip(request.nip());
         Seller seller = sellerService.save(dataByNip);
 
@@ -48,6 +50,14 @@ public class UserServiceImpl implements UserService {
         User save = repository.save(entity);
         confirmationTokenService.createToken(save);
         return mapper.toResponse(save);
+    }
+    private void findUserByEmail(String email) {
+        repository.findByEmail(email).ifPresent(present -> {
+            throw new UserExistException("Użytkownik już posiada konto");
+        });
+
+
+
     }
 
     private SellerDto findDataByNip(String nip) {

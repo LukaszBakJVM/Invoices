@@ -28,18 +28,16 @@ public class ConfirmView extends VerticalLayout implements BeforeEnterObserver {
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
 
-        Optional<String> token = event.getLocation()
-                .getQueryParameters()
-                .getParameters()
-                .getOrDefault("token", List.of())
-                .stream()
-                .findFirst();
+        Optional<String> token = event.getLocation().getQueryParameters().getParameters().getOrDefault("token", List.of()).stream().findFirst();//.orElseThrow(()->new TokenException("Token nie istnieje"));
 
         try {
+            if (token.isEmpty()) {
+                throw new TokenException("Token nie istnieje");
+            }
             confirmationTokenService.findToken(token.get());
             add(new H3("✅ Potwierdzono poprawnie!"));
-            //TODO
-            // add(new RouterLink("Przejdź do logowania", LoginView.class));
+
+
             getUI().ifPresent(ui -> ui.navigate("login"));
 
         } catch (TokenException ex) {
