@@ -8,6 +8,8 @@ import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.lukasz.faktury.exceptions.CustomValidationException;
 import org.lukasz.faktury.exceptions.NipAlreadyRegistered;
 import org.lukasz.faktury.exceptions.NipNotFoundException;
@@ -15,8 +17,10 @@ import org.lukasz.faktury.exceptions.UserException;
 import org.lukasz.faktury.user.UserService;
 import org.lukasz.faktury.user.dto.UserRequest;
 import org.lukasz.faktury.user.dto.UserResponse;
+import org.lukasz.faktury.views.index.IndexView;
 
 @Route("register")
+@AnonymousAllowed
 public class RegisterView extends VerticalLayout {
 
     private final UserService userService;
@@ -48,8 +52,9 @@ public class RegisterView extends VerticalLayout {
         nip.setClearButtonVisible(true);
 
         Button registerButton = new Button("Zarejestruj się", event -> register());
+        RouterLink index = new RouterLink("Powrót do strony głównej", IndexView.class);
 
-        add(header, email, password, nip, registerButton);
+        add(header, email, password, nip, registerButton,index);
     }
 
     private void register() {

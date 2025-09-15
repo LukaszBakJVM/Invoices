@@ -5,10 +5,13 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import jakarta.annotation.security.PermitAll;
 import org.lukasz.faktury.views.invoice.NewInvoiceView;
 import org.lukasz.faktury.views.reports.ReportsView;
 
 @Route("dashbord")
+@PermitAll
+
 public class DashboardView extends VerticalLayout {
     public DashboardView() {
         setSizeFull();
