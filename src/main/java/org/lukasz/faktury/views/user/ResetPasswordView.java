@@ -23,14 +23,7 @@ public class ResetPasswordView extends VerticalLayout {
         TextField email = new TextField("Podaj swój email");
         Button resetBtn = new Button("Resetuj hasło");
 
-        resetBtn.addClickListener(e -> {
-            boolean result = resetPassword(email.getValue());
-            if (result) {
-                Notification.show("Link do resetowania hasła został wysłany na Twój email");
-            } else {
-                Notification.show("Nie znaleziono użytkownika o takim emailu");
-            }
-        });
+        resetBtn.addClickListener(e -> resetPassword(email.getValue()));
 
         H1 resetPassword = new H1("Resetowanie hasła");
 
@@ -41,16 +34,16 @@ public class ResetPasswordView extends VerticalLayout {
     }
 
     //todo
-    private boolean resetPassword(String email) {
+    private void resetPassword(String email) {
         try {
             resetPasswordService.createToken(email);
+            Notification.show("Link do resetowania hasła został wysłany na Twój email",1000, Notification.Position.MIDDLE);
 
         } catch (UserException ex) {
-            Notification.show(ex.getMessage(), 500, Notification.Position.MIDDLE);
+            Notification.show(ex.getMessage(), 1000, Notification.Position.MIDDLE);
         }
 
 
-        return true;
     }
 
 }
