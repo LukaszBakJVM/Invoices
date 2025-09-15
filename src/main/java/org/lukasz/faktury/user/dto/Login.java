@@ -1,4 +1,4 @@
 package org.lukasz.faktury.user.dto;
 
-public record Login(String email,String password) {
+public record Login(String username,String password) {
 }

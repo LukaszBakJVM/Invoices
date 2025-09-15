@@ -1,8 +1,10 @@
 package org.lukasz.faktury.views.user;
 
-import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 
 @Route("invoicelist")
-public class InvoiceListView extends Component {
+public class InvoiceListView extends VerticalLayout {
+    public InvoiceListView() {
+    }
 }

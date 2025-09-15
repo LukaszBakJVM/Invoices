@@ -1,77 +1,46 @@
 package org.lukasz.faktury.views.user;
 
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.EmailField;
-import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-import org.lukasz.faktury.views.index.IndexView;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 @Route("login")
 
 @PageTitle("Logowanie")
 @AnonymousAllowed
 
-public class LoginView extends VerticalLayout {
+public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
-    private final AuthenticationManager authenticationManager;
+    private final LoginForm login = new LoginForm();
 
-    private final PasswordField password;
-    private final EmailField email;
-
-    public LoginView(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-
-
-        setSizeFull();
-        setAlignItems(Alignment.CENTER);
-        setJustifyContentMode(JustifyContentMode.CENTER);
-
+    public LoginView() {
         H1 header = new H1("📝 Strona  Logowania");
 
 
-        email = new EmailField("Email");
-        email.setRequired(true);
-        email.setClearButtonVisible(true);
+        addClassName("login-view");
+        setSizeFull();
 
-        password = new PasswordField("Hasło");
-        password.setRequired(true);
-        Button loginButton = new Button("Zaloguj się", event -> login());
+        setJustifyContentMode(JustifyContentMode.CENTER);
+        setAlignItems(Alignment.CENTER);
 
-        RouterLink index = new RouterLink("Strona  Główna", IndexView.class);
+        login.setAction("login");
 
-        add(header, email, password, loginButton, index);
 
+        add(header, login);
 
     }
 
-    private void login() {
-        try {
-            UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(email.getValue(), password.getValue());
-
-            Authentication authentication = authenticationManager.authenticate(authRequest);
-
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            Notification.show("Zalogowano!", 3000, Notification.Position.MIDDLE);
+    @Override
+    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
+        if (beforeEnterEvent.getLocation().getQueryParameters().getParameters().containsKey("error")) {
+            login.setError(true);
 
 
-            UI.getCurrent().navigate("dashbord");
-
-        } catch (AuthenticationException ex) {
-            Notification.show("Niepoprawny login lub hasło", 5000, Notification.Position.MIDDLE);
         }
     }
 }
