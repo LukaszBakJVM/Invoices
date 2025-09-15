@@ -9,7 +9,7 @@ import org.lukasz.faktury.seller.SellerService;
 import org.lukasz.faktury.user.dto.Login;
 import org.lukasz.faktury.user.dto.UserRequest;
 import org.lukasz.faktury.user.dto.UserResponse;
-import org.lukasz.faktury.utils.confirmationtoken.ConfirmationTokenService;
+import org.lukasz.faktury.utils.confirmationtoken.activationtoken.ActivationTokenService;
 import org.lukasz.faktury.utils.validation.Validation;
 import org.springframework.stereotype.Service;
 
@@ -23,16 +23,16 @@ public class UserServiceImpl implements UserService {
     private final Validation validation;
     private final ApiConnection connection;
     private final SellerService sellerService;
-    private final ConfirmationTokenService confirmationTokenService;
+    private final ActivationTokenService activationTokenService;
 
 
-    public UserServiceImpl(UserRepository repository, UserMapper mapper, Validation validation, ApiConnection connection, SellerService sellerService, ConfirmationTokenService confirmationTokenService) {
+    public UserServiceImpl(UserRepository repository, UserMapper mapper, Validation validation, ApiConnection connection, SellerService sellerService, ActivationTokenService activationTokenService) {
         this.repository = repository;
         this.mapper = mapper;
         this.validation = validation;
         this.connection = connection;
         this.sellerService = sellerService;
-        this.confirmationTokenService = confirmationTokenService;
+        this.activationTokenService = activationTokenService;
     }
 
     @Override
@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
         entity.setNip(request.nip());
         entity.setSeller(seller);
         User save = repository.save(entity);
-        confirmationTokenService.createToken(save);
+        activationTokenService.createToken(save);
         return mapper.toResponse(save);
     }
 
@@ -63,6 +63,7 @@ public class UserServiceImpl implements UserService {
 
 
     }
+
 
     private void findUserByEmail(String email) {
         repository.findByEmail(email).ifPresent(present -> {

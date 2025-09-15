@@ -2,7 +2,8 @@ package org.lukasz.faktury.user;
 
 import jakarta.persistence.*;
 import org.lukasz.faktury.seller.Seller;
-import org.lukasz.faktury.utils.confirmationtoken.ConfirmationToken;
+import org.lukasz.faktury.utils.confirmationtoken.resetpasswordtoken.ChangePassword;
+import org.lukasz.faktury.utils.confirmationtoken.activationtoken.ActivationToken;
 
 import java.util.List;
 
@@ -20,7 +21,9 @@ public class User {
     @OneToOne
     private Seller seller;
     @OneToMany(mappedBy = "user")
-    private List<ConfirmationToken>confirmationTokens ;
+    private List<ActivationToken> activationTokens;
+    @OneToOne
+    private ChangePassword changePassword;
 
 
     public User() {
@@ -77,11 +80,19 @@ public class User {
         this.nip = nip;
     }
 
-    public List<ConfirmationToken> getConfirmationTokens() {
-        return confirmationTokens;
+    public List<ActivationToken> getConfirmationTokens() {
+        return activationTokens;
     }
 
-    public void setConfirmationTokens(List<ConfirmationToken> confirmationTokens) {
-        this.confirmationTokens = confirmationTokens;
+    public void setConfirmationTokens(List<ActivationToken> activationTokens) {
+        this.activationTokens = activationTokens;
+    }
+
+    public ChangePassword getChangePassword() {
+        return changePassword;
+    }
+
+    public void setChangePassword(ChangePassword changePassword) {
+        this.changePassword = changePassword;
     }
 }

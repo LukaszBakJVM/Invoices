@@ -1,18 +1,21 @@
-package org.lukasz.faktury.utils.confirmationtoken;
+package org.lukasz.faktury.utils.confirmationtoken.activationtoken;
 
+import org.lukasz.faktury.utils.confirmationtoken.EmailSenderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EmailSenderServiceImpl implements EmailSenderService{
+@Qualifier("accountActivation")
+public class ActivationEmailSenderServiceImpl implements EmailSenderService {
     private final JavaMailSender mailSender;
 
-    Logger logger = LoggerFactory.getLogger(EmailSenderServiceImpl.class);
+    Logger logger = LoggerFactory.getLogger(ActivationEmailSenderServiceImpl.class);
 
-    public EmailSenderServiceImpl(JavaMailSender mailSender) {
+    public ActivationEmailSenderServiceImpl(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 
@@ -29,8 +32,6 @@ public class EmailSenderServiceImpl implements EmailSenderService{
         logger.info("Sending message {} ", message);
 
         //TODO
-
-
         // mailSender.send(send);
 
 

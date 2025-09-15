@@ -1,4 +1,4 @@
-package org.lukasz.faktury.utils.confirmationtoken;
+package org.lukasz.faktury.utils.confirmationtoken.activationtoken;
 
 import jakarta.persistence.*;
 import org.lukasz.faktury.user.User;
@@ -6,7 +6,7 @@ import org.lukasz.faktury.user.User;
 import java.time.LocalDateTime;
 
 @Entity
-public class ConfirmationToken {
+public class ActivationToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
@@ -20,7 +20,7 @@ public class ConfirmationToken {
     private User user;
 
 
-    public ConfirmationToken() {
+    public ActivationToken() {
     }
 
     public Long getId() {

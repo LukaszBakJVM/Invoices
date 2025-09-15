@@ -8,7 +8,7 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.lukasz.faktury.exceptions.TokenException;
-import org.lukasz.faktury.utils.confirmationtoken.ConfirmationTokenService;
+import org.lukasz.faktury.utils.confirmationtoken.activationtoken.ActivationTokenService;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,10 +16,10 @@ import java.util.Optional;
 @Route("confirm")
 @AnonymousAllowed
 public class ConfirmView extends VerticalLayout implements BeforeEnterObserver {
-    private final ConfirmationTokenService confirmationTokenService;
+    private final ActivationTokenService activationTokenService;
 
-    public ConfirmView(ConfirmationTokenService confirmationTokenService) {
-        this.confirmationTokenService = confirmationTokenService;
+    public ConfirmView(ActivationTokenService activationTokenService) {
+        this.activationTokenService = activationTokenService;
 
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
@@ -36,7 +36,7 @@ public class ConfirmView extends VerticalLayout implements BeforeEnterObserver {
             if (token.isEmpty()) {
                 throw new TokenException("Token nie istnieje");
             }
-            confirmationTokenService.findToken(token.get());
+            activationTokenService.findToken(token.get());
             add(new H3("✅ Potwierdzono poprawnie!"));
 
 
