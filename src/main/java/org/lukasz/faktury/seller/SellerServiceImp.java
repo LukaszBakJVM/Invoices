@@ -2,6 +2,7 @@ package org.lukasz.faktury.seller;
 
 import jakarta.transaction.Transactional;
 import org.lukasz.faktury.exceptions.NipAlreadyRegistered;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,6 +24,13 @@ public class SellerServiceImp implements SellerService {
         Seller entity = mapper.toEntity(dto);
       return   repository.save(entity);
 
+    }
+
+    @Override
+    public SellerDto findByUserEmail() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Seller seller = repository.findByUserEmail(email).orElseThrow();
+        return mapper.entityToDto(seller);
 
     }
 

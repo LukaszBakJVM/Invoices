@@ -16,4 +16,7 @@ public class SellerMapper {
         return seller;
 
     }
+    SellerDto entityToDto(Seller seller){
+        return new SellerDto(seller.getName(), seller.getNip(), seller.getRegon(), seller.getCity(), seller.getZipCode(),seller.getStreet(), seller.getHouseNumber());
+    }
 }

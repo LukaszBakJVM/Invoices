@@ -1,11 +1,14 @@
 package org.lukasz.faktury.views.user;
 
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import jakarta.annotation.security.PermitAll;
+import org.lukasz.faktury.seller.SellerDto;
+import org.lukasz.faktury.seller.SellerService;
 import org.lukasz.faktury.views.invoice.NewInvoiceView;
 import org.lukasz.faktury.views.reports.ReportsView;
 
@@ -13,14 +16,19 @@ import org.lukasz.faktury.views.reports.ReportsView;
 @PermitAll
 
 public class DashboardView extends VerticalLayout {
-    public DashboardView() {
+
+    public DashboardView(SellerService sellerService) {
         setSizeFull();
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         setPadding(true);
         setSpacing(true);
 
         H1 header = new H1("📑 System Faktur");
-        Paragraph intro = new Paragraph("Witaj w systemie do zarządzania fakturami. Wybierz jedną z opcji:");
+
+        SellerDto byUserEmail = sellerService.findByUserEmail();
+
+        Div sellerInfo = new Div();
+        sellerInfo.add(new Paragraph("NIP: " + byUserEmail.nip()), new Paragraph("REGON: " + byUserEmail.regon()), new Paragraph("Adres: " + byUserEmail.street() + " " + byUserEmail.houseNumber() + ", " + byUserEmail.zipCode() + " " + byUserEmail.city()));
 
 
         RouterLink newInvoice = new RouterLink("➕ Wystaw fakturę", NewInvoiceView.class);
@@ -28,7 +36,7 @@ public class DashboardView extends VerticalLayout {
         RouterLink clients = new RouterLink("👥 Klienci", ClientsView.class);
         RouterLink reports = new RouterLink("📊 Raporty", ReportsView.class);
 
-        add(header, intro, newInvoice, invoicesList, clients, reports);
+        add(header, sellerInfo, newInvoice, invoicesList, clients, reports);
     }
 }
 
