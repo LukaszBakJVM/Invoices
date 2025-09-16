@@ -33,7 +33,7 @@ public class ResetPasswordView extends VerticalLayout {
         setSizeFull();
     }
 
-    //todo
+
     private void resetPassword(String email) {
         try {
             resetPasswordService.createToken(email);

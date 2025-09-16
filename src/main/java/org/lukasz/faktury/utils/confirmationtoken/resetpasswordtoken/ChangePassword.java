@@ -12,6 +12,7 @@ public class ChangePassword {
     private Long id;
     private String token;
     private LocalDateTime duration;
+    private boolean used;
     @OneToOne
    private User user;
 
@@ -48,5 +49,13 @@ public class ChangePassword {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public boolean isUsed() {
+        return used;
+    }
+
+    public void setUsed(boolean used) {
+        this.used = used;
     }
 }

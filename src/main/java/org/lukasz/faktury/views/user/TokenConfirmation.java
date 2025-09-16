@@ -8,24 +8,19 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.lukasz.faktury.exceptions.TokenException;
-import org.lukasz.faktury.utils.confirmationtoken.activationtoken.ActivationTokenService;
+import org.lukasz.faktury.utils.confirmationtoken.resetpasswordtoken.ResetPasswordService;
 
 import java.util.List;
 import java.util.Optional;
 
-@Route("confirm")
+@Route("resetToken")
 @AnonymousAllowed
-public class ConfirmView extends VerticalLayout implements BeforeEnterObserver {
-    private final ActivationTokenService activationTokenService;
+public class TokenConfirmation extends VerticalLayout implements BeforeEnterObserver {
+    private final ResetPasswordService resetPasswordService;
 
-    public ConfirmView(ActivationTokenService activationTokenService) {
-        this.activationTokenService = activationTokenService;
-
-        setAlignItems(Alignment.CENTER);
-        setJustifyContentMode(JustifyContentMode.CENTER);
-        setSizeFull();
+    public TokenConfirmation(ResetPasswordService resetPasswordService) {
+        this.resetPasswordService = resetPasswordService;
     }
-
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
@@ -33,14 +28,12 @@ public class ConfirmView extends VerticalLayout implements BeforeEnterObserver {
         Optional<String> token = event.getLocation().getQueryParameters().getParameters().getOrDefault("token", List.of()).stream().findFirst();
 
         try {
-            if (token.isEmpty()) {
-                throw new TokenException("Token nie istnieje");
-            }
-            activationTokenService.findToken(token.get());
+
+
+            resetPasswordService.findToken(token.get());
             add(new H3("✅ Potwierdzono poprawnie!"));
+            event.forwardTo(ChangePasswordView.class);
 
-
-            event.forwardTo(LoginView.class);
 
         } catch (TokenException ex) {
             Notification.show(ex.getMessage(), 5000, Notification.Position.MIDDLE);
@@ -49,3 +42,4 @@ public class ConfirmView extends VerticalLayout implements BeforeEnterObserver {
 
     }
 }
+
