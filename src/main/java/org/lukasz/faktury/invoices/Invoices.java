@@ -15,10 +15,15 @@ public class Invoices {
     private Long id;
     private String number;
     private LocalDate dateOfIssue;
-     private  String place;
-     private  LocalDate dateOfSale;
-     private long postponement;
-     private LocalDate paymentDate;
+    private String place;
+    private LocalDate dateOfSale;
+    private long postponement;
+    private LocalDate paymentDate;
+    @ManyToMany
+    private List<Seller> sellers;
+    @ManyToMany
+    private List<Buyer> buyers;
+
 
     public Invoices() {
     }
@@ -26,10 +31,7 @@ public class Invoices {
     @OneToMany
     List<InvoiceItems> items;
 
-     @OneToOne
-    private Seller seller;
-     @OneToOne
-    private Buyer buyer;
+
 
 
     public Long getId() {
@@ -96,19 +98,19 @@ public class Invoices {
         this.items = items;
     }
 
-    public Seller getSeller() {
-        return seller;
+    public List<Seller> getSellers() {
+        return sellers;
     }
 
-    public void setSeller(Seller seller) {
-        this.seller = seller;
+    public void setSellers(List<Seller> sellers) {
+        this.sellers = sellers;
     }
 
-    public Buyer getBuyer() {
-        return buyer;
+    public List<Buyer> getBuyers() {
+        return buyers;
     }
 
-    public void setBuyer(Buyer buyer) {
-        this.buyer = buyer;
+    public void setBuyers(List<Buyer> buyers) {
+        this.buyers = buyers;
     }
 }

@@ -72,7 +72,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
 
 
     }
-//todo
+
     @Override
     public void findToken(String token) {
         changePasswordRepo.findByToken(token).orElseThrow(() -> new TokenException("Token nie istnieje"));

@@ -37,7 +37,7 @@ public class ChangePasswordView extends VerticalLayout implements BeforeEnterObs
         add(reset, newPassword, confirmPassword, changeBtn);
 
         changeBtn.addClickListener(e -> changePassword());
-        //  getUI().ifPresent(ui -> ui.navigate("login"));
+
     }
 
 
