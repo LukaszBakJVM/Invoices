@@ -19,6 +19,7 @@ public class Invoices {
     private LocalDate dateOfSale;
     private long postponement;
     private LocalDate paymentDate;
+    private String TypOfPayment;
     @ManyToMany
     private List<Seller> sellers;
     @ManyToMany
@@ -112,5 +113,13 @@ public class Invoices {
 
     public void setBuyers(List<Buyer> buyers) {
         this.buyers = buyers;
+    }
+
+    public String getTypOfPayment() {
+        return TypOfPayment;
+    }
+
+    public void setTypOfPayment(String typOfPayment) {
+        TypOfPayment = typOfPayment;
     }
 }

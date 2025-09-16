@@ -1,11 +1,15 @@
 package org.lukasz.faktury.views.invoice;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
@@ -13,6 +17,7 @@ import org.lukasz.faktury.Buyer.BuyerService;
 import org.lukasz.faktury.Buyer.dto.BuyerDto;
 import org.lukasz.faktury.exceptions.CustomValidationException;
 import org.lukasz.faktury.exceptions.NipNotFoundException;
+import org.lukasz.faktury.invoices.InvoicesService;
 import org.lukasz.faktury.seller.SellerDto;
 import org.lukasz.faktury.seller.SellerService;
 import org.springframework.web.client.RestClientResponseException;
@@ -27,7 +32,7 @@ public class NewInvoiceView extends VerticalLayout {
 
     private final VerticalLayout buyerDataLayout;
 
-    public NewInvoiceView(BuyerService buyerService, SellerService sellerService) {
+    public NewInvoiceView(BuyerService buyerService, SellerService sellerService, InvoicesService invoicesService) {
         this.buyerService = buyerService;
 
         setSizeFull();
@@ -42,6 +47,34 @@ public class NewInvoiceView extends VerticalLayout {
         HorizontalLayout centerLayout = new HorizontalLayout();
         centerLayout.setWidthFull();
         centerLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
+
+        FormLayout invoiceHeaderLayout = new FormLayout();
+        invoiceHeaderLayout.setWidth("650px");
+        invoiceHeaderLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 7));
+        invoiceHeaderLayout.setWidthFull();
+
+        TextField numberField = new TextField("Numer faktury");
+        //todo
+        numberField.setValue(invoicesService.invoicesNumber());
+
+        DatePicker dateOfIssueField = new DatePicker("Data wystawienia");
+
+        TextField placeField = new TextField("Miejsce wystawienia");
+
+        DatePicker dateOfSaleField = new DatePicker("Data sprzedaży");
+
+        NumberField postponementField = new NumberField("Odroczenie (dni)");
+
+        DatePicker paymentDateField = new DatePicker("Termin płatności");
+
+        //  płatności pobierany z serwisu
+        ComboBox<String> paymentTypeField = new ComboBox<>("Forma płatności");
+        paymentTypeField.setItems(invoicesService.paymentsMethod());
+
+        invoiceHeaderLayout.add(numberField, dateOfIssueField, placeField, dateOfSaleField, postponementField, paymentDateField, paymentTypeField);
+
+        add(invoiceHeaderLayout);
 
 
         VerticalLayout leftLayout = new VerticalLayout();
