@@ -46,7 +46,6 @@ public class InvoicesServiceImpl implements InvoicesService{
         return Arrays.stream(Payment.values()).map(Payment::getPAYMENT_TYPE).toList();
     }
     @Override
-    //todo wczytuje sie zel vaadin po wcisniecoiu podwujnie
    public String invoicesNumber(){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         List<Invoices> listNumberList = repo.findAllBySellers_User_EmailAndNumberOfIssueBetween(email, start, end);
@@ -55,6 +54,7 @@ public class InvoicesServiceImpl implements InvoicesService{
         return calculateNumberOfInvoices(listNumberList);
 
     }
+
 
     private String calculateNumberOfInvoices(List<Invoices> invoicesNb) {
         str.setLength(0);

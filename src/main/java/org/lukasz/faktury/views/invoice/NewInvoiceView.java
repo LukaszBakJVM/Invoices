@@ -4,6 +4,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
@@ -18,9 +19,12 @@ import org.lukasz.faktury.Buyer.dto.BuyerDto;
 import org.lukasz.faktury.exceptions.CustomValidationException;
 import org.lukasz.faktury.exceptions.NipNotFoundException;
 import org.lukasz.faktury.invoices.InvoicesService;
+import org.lukasz.faktury.items.InvoiceItemsService;
+import org.lukasz.faktury.items.dto.InvoiceItemsDto;
 import org.lukasz.faktury.seller.SellerDto;
 import org.lukasz.faktury.seller.SellerService;
 import org.springframework.web.client.RestClientResponseException;
+
 
 @Route("newinvoice")
 @PermitAll
@@ -29,11 +33,18 @@ public class NewInvoiceView extends VerticalLayout {
 
     private final TextField nipField;
     private final BuyerService buyerService;
+    private final Grid<InvoiceItemsDto> invoiceItemsGrid;
+    private final InvoiceItemsService invoiceItemsService;
+    private final ComboBox<String> tax;
+    private final ComboBox<String> unit;
+
 
     private final VerticalLayout buyerDataLayout;
 
-    public NewInvoiceView(BuyerService buyerService, SellerService sellerService, InvoicesService invoicesService) {
+    public NewInvoiceView(BuyerService buyerService, SellerService sellerService, InvoicesService invoicesService, InvoiceItemsService invoiceItemsService) {
         this.buyerService = buyerService;
+        this.invoiceItemsService = invoiceItemsService;
+
 
         setSizeFull();
         setPadding(true);
@@ -108,12 +119,66 @@ public class NewInvoiceView extends VerticalLayout {
         buyerDataLayout.setSpacing(false);
         buyerDataLayout.setPadding(false);
 
+        VerticalLayout centerInvoice = new VerticalLayout();
+
+
+        invoiceItemsGrid = new Grid<>(InvoiceItemsDto.class, false);
+
+
+        invoiceItemsGrid.addColumn(InvoiceItemsDto::description).setHeader("Nazwa").setKey("Nazwa");
+
+        invoiceItemsGrid.addColumn(InvoiceItemsDto::quantity).setHeader("iość");
+        invoiceItemsGrid.addColumn(InvoiceItemsDto::unit).setHeader("Jednostka");
+        invoiceItemsGrid.addColumn(InvoiceItemsDto::priceNetto).setHeader("Cena Netto");
+
+        invoiceItemsGrid.addColumn(InvoiceItemsDto::tax).setHeader("Vat");
+        invoiceItemsGrid.addColumn(InvoiceItemsDto::priceBrutto).setHeader("Cena Brutto");
+        invoiceItemsGrid.addColumn(InvoiceItemsDto::discount).setHeader("Rabat");
+        centerInvoice.setWidthFull();
+
+
+        TextField descriptionField = new TextField("Nazwa");
+        descriptionField.setWidth("150px");
+
+        NumberField quantityField = new NumberField("Ilość");
+        quantityField.setWidth("150px");
+
+        unit = new ComboBox<>("Jednostka");
+        unit.setItems(invoiceItemsService.unit());
+        unit.setWidth("150px");
+
+        NumberField nettoField = new NumberField("Cena Netto");
+        nettoField.setWidth("150px");
+
+        tax = new ComboBox<>("Vat");
+        tax.setItems(invoiceItemsService.tax());
+        tax.setWidth("150");
+        tax.setPlaceholder("Vat");
+
+
+        NumberField bruttoField = new NumberField("Cena Brutto");
+        bruttoField.setWidth("105px");
+
+        NumberField discountField = new NumberField("Rabat");
+        discountField.setWidth("150px");
+        Button addItemButton = new Button("Dodaj pozycję");
+
+        HorizontalLayout fields = new HorizontalLayout();
+        fields.add(descriptionField, quantityField, unit, nettoField, tax, bruttoField);
+
+        centerInvoice.add(invoiceItemsGrid, fields, addItemButton);
+        invoiceItemsGrid.getColumnByKey("Nazwa").setEditorComponent(discountField);
+
+
+        centerInvoice.add(invoiceItemsGrid);
+
         rightLayout.add(buyerTitle, nipField, loadButton, buyerDataLayout);
 
 
-        centerLayout.add(leftLayout, rightLayout);
+        centerLayout.add(leftLayout, centerInvoice, rightLayout);
         add(centerLayout);
     }
+
 
     private void findByNip() {
         buyerDataLayout.removeAll();
