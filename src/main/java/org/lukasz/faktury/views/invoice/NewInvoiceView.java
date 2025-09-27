@@ -55,8 +55,9 @@ public class NewInvoiceView extends VerticalLayout {
         invoiceHeaderLayout.setWidthFull();
 
         TextField numberField = new TextField("Numer faktury");
-        //todo
+
         numberField.setValue(invoicesService.invoicesNumber());
+
 
         DatePicker dateOfIssueField = new DatePicker("Data wystawienia");
 

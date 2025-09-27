@@ -41,5 +41,11 @@ public class AppConfig extends VaadinWebSecurity {
     PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
+
+    @Bean
+    StringBuilder stringBuilder() {
+        return new StringBuilder();
+    }
 }
+
 

@@ -2,8 +2,8 @@ package org.lukasz.faktury.invoices;
 
 import jakarta.persistence.*;
 import org.lukasz.faktury.Buyer.Buyer;
-import org.lukasz.faktury.seller.Seller;
 import org.lukasz.faktury.items.InvoiceItems;
+import org.lukasz.faktury.seller.Seller;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,13 +13,15 @@ public class Invoices {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String number;
     private LocalDate dateOfIssue;
     private String place;
     private LocalDate dateOfSale;
     private long postponement;
     private LocalDate paymentDate;
-    private String TypOfPayment;
+    private String typOfPayment;
+    private LocalDate numberOfIssue;
     @ManyToMany
     private List<Seller> sellers;
     @ManyToMany
@@ -116,10 +118,18 @@ public class Invoices {
     }
 
     public String getTypOfPayment() {
-        return TypOfPayment;
+        return typOfPayment;
     }
 
     public void setTypOfPayment(String typOfPayment) {
-        TypOfPayment = typOfPayment;
+        this.typOfPayment = typOfPayment;
+    }
+
+    public LocalDate getNumberOfIssue() {
+        return numberOfIssue;
+    }
+
+    public void setNumberOfIssue(LocalDate numberOfIssue) {
+        this.numberOfIssue = numberOfIssue;
     }
 }
