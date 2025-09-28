@@ -10,6 +10,8 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.BigDecimalField;
+import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
@@ -25,18 +27,33 @@ import org.lukasz.faktury.seller.SellerDto;
 import org.lukasz.faktury.seller.SellerService;
 import org.springframework.web.client.RestClientResponseException;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 
 @Route("newinvoice")
 @PermitAll
 
 public class NewInvoiceView extends VerticalLayout {
 
-    private final TextField nipField;
+
     private final BuyerService buyerService;
     private final Grid<InvoiceItemsDto> invoiceItemsGrid;
     private final InvoiceItemsService invoiceItemsService;
+
+    private final TextField nipField;
     private final ComboBox<String> tax;
     private final ComboBox<String> unit;
+    private final List<InvoiceItemsDto> items = new ArrayList<>();
+    TextField descriptionField = new TextField("Nazwa");
+    IntegerField quantityField = new IntegerField ("Ilość");
+    BigDecimalField nettoField = new BigDecimalField("Cena Netto");
+    BigDecimalField bruttoField = new BigDecimalField("Cena Brutto");
+
+   IntegerField discountField = new IntegerField ("Rabat");
 
 
     private final VerticalLayout buyerDataLayout;
@@ -121,7 +138,7 @@ public class NewInvoiceView extends VerticalLayout {
 
         VerticalLayout centerInvoice = new VerticalLayout();
 
-
+// faktura
         invoiceItemsGrid = new Grid<>(InvoiceItemsDto.class, false);
 
 
@@ -137,18 +154,31 @@ public class NewInvoiceView extends VerticalLayout {
         centerInvoice.setWidthFull();
 
 
-        TextField descriptionField = new TextField("Nazwa");
+
         descriptionField.setWidth("150px");
 
-        NumberField quantityField = new NumberField("Ilość");
+
         quantityField.setWidth("150px");
 
         unit = new ComboBox<>("Jednostka");
         unit.setItems(invoiceItemsService.unit());
         unit.setWidth("150px");
+        unit.setPlaceholder("Jednostka");
 
-        NumberField nettoField = new NumberField("Cena Netto");
+//todo  poprawic brutto
         nettoField.setWidth("150px");
+        AtomicBoolean updating = new AtomicBoolean(false);
+
+        nettoField.addValueChangeListener(event -> {
+            if (!updating.get() && event.getValue() != null) {
+                updating.set(true);
+                BigDecimal netto = event.getValue();
+                BigDecimal vat = BigDecimal.valueOf(100).divide(BigDecimal.valueOf(getTax()), 2,RoundingMode.HALF_UP);
+                BigDecimal brutto = netto.add(netto.multiply(vat));
+                bruttoField.setValue(brutto.setScale(2, RoundingMode.HALF_UP));
+                updating.set(false);
+            }
+        });
 
         tax = new ComboBox<>("Vat");
         tax.setItems(invoiceItemsService.tax());
@@ -156,15 +186,23 @@ public class NewInvoiceView extends VerticalLayout {
         tax.setPlaceholder("Vat");
 
 
-        NumberField bruttoField = new NumberField("Cena Brutto");
         bruttoField.setWidth("105px");
+        bruttoField.addValueChangeListener(event -> {
+            BigDecimal brutto = bruttoField.getValue();
+            int vat = getTax();
 
-        NumberField discountField = new NumberField("Rabat");
+            if (brutto != null) {
+                BigDecimal netto = brutto.divide(BigDecimal.ONE.add(BigDecimal.valueOf(vat).divide(BigDecimal.valueOf(100))), 2, RoundingMode.HALF_UP);
+                nettoField.setValue(netto);
+                updating.set(false);
+            }
+        });
+
         discountField.setWidth("150px");
-        Button addItemButton = new Button("Dodaj pozycję");
+        Button addItemButton = new Button("Dodaj pozycję",p->addItem());
 
         HorizontalLayout fields = new HorizontalLayout();
-        fields.add(descriptionField, quantityField, unit, nettoField, tax, bruttoField);
+        fields.add(descriptionField, quantityField, unit, nettoField, tax, bruttoField,discountField);
 
         centerInvoice.add(invoiceItemsGrid, fields, addItemButton);
         invoiceItemsGrid.getColumnByKey("Nazwa").setEditorComponent(discountField);
@@ -195,6 +233,25 @@ public class NewInvoiceView extends VerticalLayout {
             Notification.show("Nieprawidłowy Nip ", 5000, Notification.Position.MIDDLE);
 
         }
+    }
+       private void addItem(){
+        try {
+
+
+            InvoiceItemsDto  invoiceItemsDto   = new InvoiceItemsDto(descriptionField.getValue(), quantityField.getValue(), unit.getValue(), nettoField.getValue()
+                    , getTax(), bruttoField.getValue(), discountField.getValue());
+            items.add(invoiceItemsDto);
+            invoiceItemsGrid.setItems(items);
+            invoiceItemsGrid.getDataProvider().refreshAll();
+        }catch (CustomValidationException ex){
+            Notification.show(ex.getMessage(),3000, Notification.Position.MIDDLE);
+        }
+
 
     }
+    int getTax(){
+        return invoiceItemsService.taxValue(tax.getValue());
+    }
+
+
 }

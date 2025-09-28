@@ -27,4 +27,8 @@ public class InvoiceItemsServiceImpl implements InvoiceItemsService {
     public List<String> unit() {
         return Arrays.stream(Unit.values()).map(Unit::getValue).toList();
     }
+    @Override
+   public int taxValue(String tax){
+      return   Tax.valueOf(tax).getVat();
+    }
 }
