@@ -13,6 +13,8 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestClient;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 @Configuration
 @EnableWebSecurity
 @Import(VaadinAwareSecurityContextHolderStrategyConfiguration.class)
@@ -45,6 +47,10 @@ public class AppConfig extends VaadinWebSecurity {
     @Bean
     StringBuilder stringBuilder() {
         return new StringBuilder();
+    }
+    @Bean
+    public AtomicBoolean processFlag() {
+        return new AtomicBoolean(true);
     }
 }
 

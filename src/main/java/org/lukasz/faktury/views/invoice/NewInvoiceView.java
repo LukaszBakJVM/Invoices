@@ -28,10 +28,8 @@ import org.lukasz.faktury.seller.SellerService;
 import org.springframework.web.client.RestClientResponseException;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 
 @Route("newinvoice")
@@ -167,36 +165,23 @@ public class NewInvoiceView extends VerticalLayout {
 
 //todo  poprawic brutto
         nettoField.setWidth("150px");
-        AtomicBoolean updating = new AtomicBoolean(false);
 
-        nettoField.addValueChangeListener(event -> {
-            if (!updating.get() && event.getValue() != null) {
-                updating.set(true);
-                BigDecimal netto = event.getValue();
-                BigDecimal vat = BigDecimal.valueOf(100).divide(BigDecimal.valueOf(getTax()), 2,RoundingMode.HALF_UP);
-                BigDecimal brutto = netto.add(netto.multiply(vat));
-                bruttoField.setValue(brutto.setScale(2, RoundingMode.HALF_UP));
-                updating.set(false);
-            }
-        });
+
+        nettoField.addValueChangeListener(event -> nettoToBrutto());
+
+
+
 
         tax = new ComboBox<>("Vat");
         tax.setItems(invoiceItemsService.tax());
         tax.setWidth("150");
         tax.setPlaceholder("Vat");
+        tax.setValue("VAT23");
 
-
+//todo bruttoto netto
         bruttoField.setWidth("105px");
-        bruttoField.addValueChangeListener(event -> {
-            BigDecimal brutto = bruttoField.getValue();
-            int vat = getTax();
+        bruttoField.addValueChangeListener(event -> bruttoToNetto());
 
-            if (brutto != null) {
-                BigDecimal netto = brutto.divide(BigDecimal.ONE.add(BigDecimal.valueOf(vat).divide(BigDecimal.valueOf(100))), 2, RoundingMode.HALF_UP);
-                nettoField.setValue(netto);
-                updating.set(false);
-            }
-        });
 
         discountField.setWidth("150px");
         Button addItemButton = new Button("Dodaj pozycję",p->addItem());
@@ -234,6 +219,7 @@ public class NewInvoiceView extends VerticalLayout {
 
         }
     }
+    //todo validacja
        private void addItem(){
         try {
 
@@ -249,8 +235,22 @@ public class NewInvoiceView extends VerticalLayout {
 
 
     }
-    int getTax(){
+
+    private int getTax() {
         return invoiceItemsService.taxValue(tax.getValue());
+    }
+
+    private void nettoToBrutto() {
+        BigDecimal brutto = invoiceItemsService.nettoToBrutto(nettoField.getValue(), tax.getValue());
+        bruttoField.setValue(brutto);
+
+    }
+
+    private void bruttoToNetto() {
+        BigDecimal netto = invoiceItemsService.bruttoToNetto(bruttoField.getValue(), tax.getValue());
+        nettoField.setValue(netto);
+
+
     }
 
 
