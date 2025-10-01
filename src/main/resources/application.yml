@@ -6,16 +6,16 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/invoices
     username: postgres
-    password: pass
+    password: demon
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
   mail:
     host: smtp.gmail.com
     port: 587
-    username: email@gmail.com
-    password: pass
+    username: fakturyapp11@gmail.com
+    password: mmcgreeloddihaqv
     properties:
       mail:
         smtp:

@@ -4,7 +4,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import org.hibernate.sql.results.graph.collection.internal.BagInitializer;
 
 import java.math.BigDecimal;
 
@@ -17,9 +16,9 @@ public class InvoiceItems {
     private int quantity;
     private String unit;
     private BigDecimal priceNetto;
-    private int tax;
+    private BigDecimal tax;
     private BigDecimal priceBrutto;
-    private int discount;
+
 
     public InvoiceItems() {
     }
@@ -64,11 +63,11 @@ public class InvoiceItems {
         this.priceNetto = priceNetto;
     }
 
-    public int getTax() {
+    public BigDecimal getTax() {
         return tax;
     }
 
-    public void setTax(int tax) {
+    public void setTax(BigDecimal tax) {
         this.tax = tax;
     }
 
@@ -80,11 +79,5 @@ public class InvoiceItems {
         this.priceBrutto = priceBrutto;
     }
 
-    public int getDiscount() {
-        return discount;
-    }
 
-    public void setDiscount(int discount) {
-        this.discount = discount;
-    }
 }

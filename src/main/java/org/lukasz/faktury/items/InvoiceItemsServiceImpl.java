@@ -2,10 +2,13 @@ package org.lukasz.faktury.items;
 
 import org.lukasz.faktury.enums.Tax;
 import org.lukasz.faktury.enums.Unit;
+import org.lukasz.faktury.items.dto.InvoiceItemsDto;
+import org.lukasz.faktury.utils.validation.Validation;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,12 +16,14 @@ import java.util.List;
 public class InvoiceItemsServiceImpl implements InvoiceItemsService {
     private final InvoiceItemsRepo invoiceItemsRepo;
     private final InvoiceItemsMapper invoiceItemsMapper;
+    private final Validation validation;
 
 
-    public InvoiceItemsServiceImpl(InvoiceItemsRepo invoiceItemsRepo, InvoiceItemsMapper invoiceItemsMapper) {
+    public InvoiceItemsServiceImpl(InvoiceItemsRepo invoiceItemsRepo, InvoiceItemsMapper invoiceItemsMapper, Validation validation) {
         this.invoiceItemsRepo = invoiceItemsRepo;
         this.invoiceItemsMapper = invoiceItemsMapper;
 
+        this.validation = validation;
     }
 
     @Override
@@ -31,10 +36,8 @@ public class InvoiceItemsServiceImpl implements InvoiceItemsService {
     public List<String> unit() {
         return Arrays.stream(Unit.values()).map(Unit::getValue).toList();
     }
-    @Override
-   public int taxValue(String tax){
-      return   Tax.valueOf(tax).getVat();
-    }
+
+
 
     @Override
     public BigDecimal nettoToBrutto(BigDecimal priceNetto, String tax) {
@@ -69,6 +72,13 @@ public class InvoiceItemsServiceImpl implements InvoiceItemsService {
         return priceBrutto.divide(calculateTax, 2, RoundingMode.HALF_UP);
 
 
+
+    }
+   public List<InvoiceItemsDto>addPosition(InvoiceItemsDto position){
+        List<InvoiceItemsDto>added = new ArrayList<>();
+        validation.validation(position);
+        added.add(position);
+        return added;
 
     }
 

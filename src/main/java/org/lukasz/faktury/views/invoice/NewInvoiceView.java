@@ -53,7 +53,7 @@ public class NewInvoiceView extends VerticalLayout {
     BigDecimalField nettoField = new BigDecimalField("Cena Netto");
     BigDecimalField bruttoField = new BigDecimalField("Cena Brutto");
 
-   IntegerField discountField = new IntegerField ("Rabat");
+
 
 
     private final VerticalLayout buyerDataLayout;
@@ -151,7 +151,7 @@ public class NewInvoiceView extends VerticalLayout {
 
         invoiceItemsGrid.addColumn(InvoiceItemsDto::tax).setHeader("Vat");
         invoiceItemsGrid.addColumn(InvoiceItemsDto::priceBrutto).setHeader("Cena Brutto");
-        invoiceItemsGrid.addColumn(InvoiceItemsDto::discount).setHeader("Rabat");
+
         centerInvoice.setWidthFull();
 
 
@@ -186,14 +186,14 @@ public class NewInvoiceView extends VerticalLayout {
         bruttoField.addValueChangeListener(event -> bruttoToNetto());
 
 
-        discountField.setWidth("150px");
+
         Button addItemButton = new Button("Dodaj pozycję",p->addItem());
 
         HorizontalLayout fields = new HorizontalLayout();
-        fields.add(descriptionField, quantityField, unit, nettoField, tax, bruttoField,discountField);
+        fields.add(descriptionField, quantityField, unit, nettoField, tax, bruttoField);
 
         centerInvoice.add(invoiceItemsGrid, fields, addItemButton);
-        invoiceItemsGrid.getColumnByKey("Nazwa").setEditorComponent(discountField);
+
 
 
         centerInvoice.add(invoiceItemsGrid);
@@ -225,13 +225,15 @@ public class NewInvoiceView extends VerticalLayout {
     //todo validacja
        private void addItem(){
         try {
+            BigDecimal tax = bruttoField.getValue().subtract(nettoField.getValue());
 
 
-            InvoiceItemsDto  invoiceItemsDto   = new InvoiceItemsDto(descriptionField.getValue(), quantityField.getValue(), unit.getValue(), nettoField.getValue()
-                    , getTax(), bruttoField.getValue(), discountField.getValue());
+            InvoiceItemsDto  invoiceItemsDto   = new InvoiceItemsDto(descriptionField.getValue(), quantityField.getValue(), unit.getValue(), nettoField.getValue(), tax, bruttoField.getValue());
             items.add(invoiceItemsDto);
             invoiceItemsGrid.setItems(items);
-            invoiceItemsGrid.getDataProvider().refreshAll();
+            invoiceItemsGrid.getDataProvider();
+            clearFields();
+
         }catch (CustomValidationException ex){
             Notification.show(ex.getMessage(),3000, Notification.Position.MIDDLE);
         }
@@ -239,18 +241,18 @@ public class NewInvoiceView extends VerticalLayout {
 
     }
 
-    private int getTax() {
-        return invoiceItemsService.taxValue(tax.getValue());
-    }
 
     private void nettoToBrutto() {
         if ( updating.get()){
             return;
         }
         updating.set(true);
+
         BigDecimal brutto = invoiceItemsService.nettoToBrutto(nettoField.getValue(), tax.getValue());
+
         bruttoField.setValue(brutto);
         updating.set(false);
+
 
     }
 
@@ -259,11 +261,22 @@ public class NewInvoiceView extends VerticalLayout {
             return;
         }
         updating.set(true);
+
         BigDecimal netto = invoiceItemsService.bruttoToNetto(bruttoField.getValue(), tax.getValue());
+
         nettoField.setValue(netto);
         updating.set(false);
 
 
+    }
+
+    private void clearFields() {
+        updating.set(true);
+        descriptionField.clear();
+        quantityField.clear();
+        nettoField.clear();
+        bruttoField.clear();
+        updating.set(false);
     }
 
 
