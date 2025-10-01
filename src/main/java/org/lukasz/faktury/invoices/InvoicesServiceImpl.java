@@ -19,7 +19,7 @@ public class InvoicesServiceImpl implements InvoicesService{
     private final InvoicesMapper mapper;
     private final Validation validation;
     private final StringBuilder str;
-    private LocalDate today = LocalDate.now();
+    private final LocalDate today = LocalDate.now();
     LocalDate start = today.withDayOfMonth(1);
     LocalDate end = today.withDayOfMonth(today.lengthOfMonth());
 
@@ -60,10 +60,12 @@ public class InvoicesServiceImpl implements InvoicesService{
         str.setLength(0);
         String date = today.toString();
 
+
         List<String> list = Arrays.stream(date.split("-")).toList();
+
         String initNumber = "FV/";
         if (invoicesNb.isEmpty()) {
-            return str.append(initNumber).append("1").append("/").append(list.get(1)).append("/").append(list.get(2)).toString();
+            return str.append(initNumber).append("1").append("/").append(list.get(1)).append("/").append(list.get(0)).toString();
         }
 
         Optional<Invoices> first = invoicesNb.stream().max(Comparator.comparing(Invoices::getNumberOfIssue));
