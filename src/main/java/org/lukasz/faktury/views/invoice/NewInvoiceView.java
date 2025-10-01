@@ -30,6 +30,7 @@ import org.springframework.web.client.RestClientResponseException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 @Route("newinvoice")
@@ -41,6 +42,7 @@ public class NewInvoiceView extends VerticalLayout {
     private final BuyerService buyerService;
     private final Grid<InvoiceItemsDto> invoiceItemsGrid;
     private final InvoiceItemsService invoiceItemsService;
+    private final AtomicBoolean updating;
 
     private final TextField nipField;
     private final ComboBox<String> tax;
@@ -56,9 +58,10 @@ public class NewInvoiceView extends VerticalLayout {
 
     private final VerticalLayout buyerDataLayout;
 
-    public NewInvoiceView(BuyerService buyerService, SellerService sellerService, InvoicesService invoicesService, InvoiceItemsService invoiceItemsService) {
+    public NewInvoiceView(BuyerService buyerService, SellerService sellerService, InvoicesService invoicesService, InvoiceItemsService invoiceItemsService, AtomicBoolean updating) {
         this.buyerService = buyerService;
         this.invoiceItemsService = invoiceItemsService;
+        this.updating = updating;
 
 
         setSizeFull();
@@ -241,14 +244,24 @@ public class NewInvoiceView extends VerticalLayout {
     }
 
     private void nettoToBrutto() {
+        if ( updating.get()){
+            return;
+        }
+        updating.set(true);
         BigDecimal brutto = invoiceItemsService.nettoToBrutto(nettoField.getValue(), tax.getValue());
         bruttoField.setValue(brutto);
+        updating.set(false);
 
     }
 
     private void bruttoToNetto() {
+        if (updating.get()){
+            return;
+        }
+        updating.set(true);
         BigDecimal netto = invoiceItemsService.bruttoToNetto(bruttoField.getValue(), tax.getValue());
         nettoField.setValue(netto);
+        updating.set(false);
 
 
     }

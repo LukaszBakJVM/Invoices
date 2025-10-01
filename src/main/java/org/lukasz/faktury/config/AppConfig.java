@@ -50,7 +50,7 @@ public class AppConfig extends VaadinWebSecurity {
     }
     @Bean
     public AtomicBoolean processFlag() {
-        return new AtomicBoolean(true);
+        return new AtomicBoolean(false);
     }
 }
 
