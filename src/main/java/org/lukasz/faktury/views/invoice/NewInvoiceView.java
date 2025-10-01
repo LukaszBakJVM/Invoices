@@ -150,7 +150,7 @@ public class NewInvoiceView extends VerticalLayout {
         invoiceItemsGrid = new Grid<>(InvoiceItemsDto.class, false);
 
 
-        invoiceItemsGrid.addColumn(InvoiceItemsDto::description).setHeader("Nazwa").setKey("Nazwa");
+        invoiceItemsGrid.addColumn(InvoiceItemsDto::description).setHeader("Nazwa");
 
         invoiceItemsGrid.addColumn(InvoiceItemsDto::quantity).setHeader("iość");
         invoiceItemsGrid.addColumn(InvoiceItemsDto::unit).setHeader("Jednostka");
@@ -302,14 +302,22 @@ public class NewInvoiceView extends VerticalLayout {
         sumNettoField.setValue(checkEmpty(sumNettoField));
         BigDecimal netto = sumNettoField.getValue().add(nettoField.getValue());
         sumNettoField.setValue(netto);
-//todo poprawic wy;iczenie vat
+
+
+
         sumTaxField.setValue(checkEmpty(sumTaxField));
+        BigDecimal value = sumTaxField.getValue();
         BigDecimal tax = bruttoField.getValue().subtract(nettoField.getValue());
-        sumTaxField.setValue(tax);
+
+        sumTaxField.setValue(value.add(tax));
+
+
 
         sumBruttoField.setValue(checkEmpty(sumBruttoField));
         BigDecimal brutto = sumBruttoField.getValue().add(bruttoField.getValue());
         sumBruttoField.setValue(brutto);
+
+
 
     }
 
