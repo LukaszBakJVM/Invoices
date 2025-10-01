@@ -5,6 +5,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
@@ -52,6 +53,12 @@ public class NewInvoiceView extends VerticalLayout {
     IntegerField quantityField = new IntegerField ("Ilość");
     BigDecimalField nettoField = new BigDecimalField("Cena Netto");
     BigDecimalField bruttoField = new BigDecimalField("Cena Brutto");
+    BigDecimalField totalValue = new BigDecimalField("Wartość");
+
+
+    BigDecimalField sumNettoField = new BigDecimalField("Suma netto");
+    BigDecimalField sumTaxField = new BigDecimalField("Podatek");
+    BigDecimalField sumBruttoField = new BigDecimalField("Suma brutto");
 
 
 
@@ -152,6 +159,8 @@ public class NewInvoiceView extends VerticalLayout {
         invoiceItemsGrid.addColumn(InvoiceItemsDto::tax).setHeader("Vat");
         invoiceItemsGrid.addColumn(InvoiceItemsDto::priceBrutto).setHeader("Cena Brutto");
 
+        invoiceItemsGrid.addColumn(InvoiceItemsDto::totalValue).setHeader("Wartośc");
+
         centerInvoice.setWidthFull();
 
 
@@ -177,28 +186,36 @@ public class NewInvoiceView extends VerticalLayout {
 
         tax = new ComboBox<>("Vat");
         tax.setItems(invoiceItemsService.tax());
-        tax.setWidth("150");
+        tax.setWidth("105px");
         tax.setPlaceholder("Vat");
         tax.setValue("VAT23");
 
 //todo bruttoto netto
         bruttoField.setWidth("105px");
         bruttoField.addValueChangeListener(event -> bruttoToNetto());
+        //todo aktualizacja wartosci
+        totalValue.setWidth("105px");
 
 
 
         Button addItemButton = new Button("Dodaj pozycję",p->addItem());
 
         HorizontalLayout fields = new HorizontalLayout();
-        fields.add(descriptionField, quantityField, unit, nettoField, tax, bruttoField);
+        fields.add(descriptionField, quantityField, unit, nettoField, tax, bruttoField,totalValue);
 
         centerInvoice.add(invoiceItemsGrid, fields, addItemButton);
 
 
+        HorizontalLayout downLayout = new HorizontalLayout(sumNettoField, sumTaxField, sumBruttoField);
+        Div spacer = new Div();
+        downLayout.add(spacer, sumNettoField, sumTaxField, sumBruttoField);
+        downLayout.expand(spacer);
+        downLayout.setJustifyContentMode(JustifyContentMode.CENTER);
 
-        centerInvoice.add(invoiceItemsGrid);
+        centerInvoice.add(invoiceItemsGrid, downLayout);
 
         rightLayout.add(buyerTitle, nipField, loadButton, buyerDataLayout);
+
 
 
         centerLayout.add(leftLayout, centerInvoice, rightLayout);
@@ -222,16 +239,17 @@ public class NewInvoiceView extends VerticalLayout {
 
         }
     }
-    //todo validacja
+    //todo validacja i  wartosc
        private void addItem(){
         try {
             BigDecimal tax = bruttoField.getValue().subtract(nettoField.getValue());
 
 
-            InvoiceItemsDto  invoiceItemsDto   = new InvoiceItemsDto(descriptionField.getValue(), quantityField.getValue(), unit.getValue(), nettoField.getValue(), tax, bruttoField.getValue());
+            InvoiceItemsDto  invoiceItemsDto   = new InvoiceItemsDto(descriptionField.getValue(), quantityField.getValue(), unit.getValue(), nettoField.getValue(), tax, bruttoField.getValue(),totalValue.getValue());
             items.add(invoiceItemsDto);
             invoiceItemsGrid.setItems(items);
             invoiceItemsGrid.getDataProvider();
+            valueUpdate();
             clearFields();
 
         }catch (CustomValidationException ex){
@@ -277,6 +295,29 @@ public class NewInvoiceView extends VerticalLayout {
         nettoField.clear();
         bruttoField.clear();
         updating.set(false);
+    }
+
+    private void valueUpdate() {
+
+        sumNettoField.setValue(checkEmpty(sumNettoField));
+        BigDecimal netto = sumNettoField.getValue().add(nettoField.getValue());
+        sumNettoField.setValue(netto);
+//todo poprawic wy;iczenie vat
+        sumTaxField.setValue(checkEmpty(sumTaxField));
+        BigDecimal tax = bruttoField.getValue().subtract(nettoField.getValue());
+        sumTaxField.setValue(tax);
+
+        sumBruttoField.setValue(checkEmpty(sumBruttoField));
+        BigDecimal brutto = sumBruttoField.getValue().add(bruttoField.getValue());
+        sumBruttoField.setValue(brutto);
+
+    }
+
+    private BigDecimal checkEmpty(BigDecimalField value) {
+        if (value.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+        return value.getValue();
     }
 
 

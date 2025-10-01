@@ -13,6 +13,7 @@ public class InvoiceItemsMapper {
         entity.setPriceNetto(dto.priceNetto());
         entity.setTax(dto.tax());
         entity.setPriceBrutto(dto.priceBrutto());
+        entity.setTotalValue(dto.totalValue());
 
         return entity;
 

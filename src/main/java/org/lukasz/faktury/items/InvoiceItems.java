@@ -18,6 +18,7 @@ public class InvoiceItems {
     private BigDecimal priceNetto;
     private BigDecimal tax;
     private BigDecimal priceBrutto;
+    private BigDecimal totalValue;
 
 
     public InvoiceItems() {
@@ -79,5 +80,11 @@ public class InvoiceItems {
         this.priceBrutto = priceBrutto;
     }
 
+    public BigDecimal getTotalValue() {
+        return totalValue;
+    }
 
+    public void setTotalValue(BigDecimal totalValue) {
+        this.totalValue = totalValue;
+    }
 }
