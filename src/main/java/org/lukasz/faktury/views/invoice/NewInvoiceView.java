@@ -242,22 +242,30 @@ public class NewInvoiceView extends VerticalLayout {
     //todo validacja i  wartosc
        private void addItem(){
         try {
+
+
+            if (descriptionField.getValue() == null || quantityField.getValue() == null || unit.getValue() == null || nettoField.getValue() == null || tax == null || bruttoField.getValue() == null) {
+
+                throw new CustomValidationException("Uzupełnij wszystkie pola");
+
+            }
             BigDecimal tax = bruttoField.getValue().subtract(nettoField.getValue());
 
 
-            InvoiceItemsDto  invoiceItemsDto   = new InvoiceItemsDto(descriptionField.getValue(), quantityField.getValue(), unit.getValue(), nettoField.getValue(), tax, bruttoField.getValue(),totalValue.getValue());
+            InvoiceItemsDto invoiceItemsDto = new InvoiceItemsDto(descriptionField.getValue(), quantityField.getValue(), unit.getValue(), nettoField.getValue(), tax, bruttoField.getValue(), totalValue.getValue());
             items.add(invoiceItemsDto);
             invoiceItemsGrid.setItems(items);
             invoiceItemsGrid.getDataProvider();
             valueUpdate();
             clearFields();
 
+
         }catch (CustomValidationException ex){
             Notification.show(ex.getMessage(),3000, Notification.Position.MIDDLE);
         }
 
 
-    }
+       }
 
 
     private void nettoToBrutto() {
