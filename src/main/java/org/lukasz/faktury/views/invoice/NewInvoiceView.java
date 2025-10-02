@@ -243,7 +243,6 @@ public class NewInvoiceView extends VerticalLayout {
        private void addItem(){
         try {
 
-
             if (descriptionField.getValue() == null || quantityField.getValue() == null || unit.getValue() == null || nettoField.getValue() == null || tax == null || bruttoField.getValue() == null) {
 
                 throw new CustomValidationException("Uzupełnij wszystkie pola");
