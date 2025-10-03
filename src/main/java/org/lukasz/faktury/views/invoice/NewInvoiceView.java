@@ -169,6 +169,7 @@ public class NewInvoiceView extends VerticalLayout {
 
 
         quantityField.setWidth("150px");
+        quantityField.addValueChangeListener(event->calculateTotalValue());
 
         unit = new ComboBox<>("Jednostka");
         unit.setItems(invoiceItemsService.unit());
@@ -193,9 +194,12 @@ public class NewInvoiceView extends VerticalLayout {
 //todo bruttoto netto
         bruttoField.setWidth("105px");
         bruttoField.addValueChangeListener(event -> bruttoToNetto());
+        bruttoField.addValueChangeListener(event->calculateTotalValue());
 
         //todo aktualizacja wartosci
         totalValue.setWidth("105px");
+       // totalValue.addValueChangeListener(event->calculateTotalValue());
+
 
 
 
@@ -224,6 +228,8 @@ public class NewInvoiceView extends VerticalLayout {
     }
 
 
+// znajdz po nipie
+
     private void findByNip() {
         buyerDataLayout.removeAll();
         try {
@@ -241,6 +247,7 @@ public class NewInvoiceView extends VerticalLayout {
         }
     }
     //todo validacja i  wartosc
+    //dodaj pozycje
        private void addItem(){
         try {
 
@@ -249,6 +256,8 @@ public class NewInvoiceView extends VerticalLayout {
 
             }
             BigDecimal tax = bruttoField.getValue().subtract(nettoField.getValue());
+
+
 
 
             InvoiceItemsDto invoiceItemsDto = new InvoiceItemsDto(descriptionField.getValue(), quantityField.getValue(), unit.getValue(), nettoField.getValue(), tax, bruttoField.getValue(), totalValue.getValue());
@@ -265,7 +274,7 @@ public class NewInvoiceView extends VerticalLayout {
 
 
        }
-
+//wylicz netto ->brutto
 
     private void nettoToBrutto() {
         if ( updating.get()){
@@ -280,7 +289,7 @@ public class NewInvoiceView extends VerticalLayout {
 
 
     }
-
+//wylicz brutto -> netto
     private void bruttoToNetto() {
         if (updating.get()){
             return;
@@ -294,35 +303,25 @@ public class NewInvoiceView extends VerticalLayout {
 
 
     }
-
+//wyczysc pola
     private void clearFields() {
         updating.set(true);
         descriptionField.clear();
         quantityField.clear();
         nettoField.clear();
         bruttoField.clear();
+        totalValue.clear();
         updating.set(false);
     }
-
+//calkowita wartosc
     private void valueUpdate() {
 
-        sumNettoField.setValue(checkEmpty(sumNettoField));
-        BigDecimal netto = sumNettoField.getValue().add(nettoField.getValue());
-        sumNettoField.setValue(netto);
+        List<BigDecimal> prices = totalPrice(nettoField.getValue(), bruttoField.getValue(), quantityField.getValue());
 
+        calculateTotalTax();
 
-
-        sumTaxField.setValue(checkEmpty(sumTaxField));
-        BigDecimal value = sumTaxField.getValue();
-        BigDecimal tax = bruttoField.getValue().subtract(nettoField.getValue());
-
-        sumTaxField.setValue(value.add(tax));
-
-
-
-        sumBruttoField.setValue(checkEmpty(sumBruttoField));
-        BigDecimal brutto = sumBruttoField.getValue().add(bruttoField.getValue());
-        sumBruttoField.setValue(brutto);
+        sumNettoField.setValue(prices.get(0));
+        sumBruttoField.setValue(prices.get(1));
 
 
 
@@ -333,6 +332,37 @@ public class NewInvoiceView extends VerticalLayout {
             return BigDecimal.ZERO;
         }
         return value.getValue();
+    }
+    private void calculateTotalValue() {
+
+            if (bruttoField.getValue() == null || quantityField.getValue() == null) {
+                return;
+            }
+        BigDecimal total = invoiceItemsService.calculateTotalValue(bruttoField.getValue(), quantityField.getValue());
+        totalValue.setValue(total);
+
+    }
+    private void calculateTotalTax(){
+        sumTaxField.setValue(checkEmpty(sumTaxField));
+        BigDecimal value = sumTaxField.getValue();
+        BigDecimal calculateTax = bruttoField.getValue().subtract(nettoField.getValue());
+        BigDecimal totalTax = calculateTax.multiply(BigDecimal.valueOf(quantityField.getValue())).add(value);
+        sumTaxField.setValue(totalTax);
+
+    }
+    private List<BigDecimal> totalPrice(BigDecimal priceNetto ,BigDecimal priceBrutto,int quantity){
+        sumNettoField.setValue(checkEmpty(sumNettoField));
+        sumBruttoField.setValue(checkEmpty(sumBruttoField));
+
+        BigDecimal calculateNetto= invoiceItemsService.calculateTotalValue(priceNetto, quantity);
+        BigDecimal totalNetto = sumNettoField.getValue().add(calculateNetto);
+
+        BigDecimal calculateBrutto = invoiceItemsService.calculateTotalValue(priceBrutto, quantity);
+        BigDecimal totalBrutto = sumBruttoField.getValue().add(calculateBrutto);
+
+        return List.of(totalNetto,totalBrutto);
+
+
     }
 
 

@@ -74,7 +74,13 @@ public class InvoiceItemsServiceImpl implements InvoiceItemsService {
 
 
     }
-   public List<InvoiceItemsDto>addPosition(InvoiceItemsDto position){
+
+    @Override
+    public BigDecimal calculateTotalValue(BigDecimal priceBrutto, int quantity) {
+        return priceBrutto.multiply(BigDecimal.valueOf(quantity));
+    }
+
+    public List<InvoiceItemsDto> addPosition(InvoiceItemsDto position) {
         List<InvoiceItemsDto>added = new ArrayList<>();
         validation.validation(position);
         added.add(position);

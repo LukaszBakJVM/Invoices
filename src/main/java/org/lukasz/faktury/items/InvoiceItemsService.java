@@ -11,5 +11,6 @@ public interface InvoiceItemsService {
 
     BigDecimal nettoToBrutto (BigDecimal priceNetto , String tax);
     BigDecimal bruttoToNetto(BigDecimal priceBrutto ,String tax);
+    BigDecimal calculateTotalValue(BigDecimal priceBrutto,int quantity);
     List<InvoiceItemsDto>addPosition(InvoiceItemsDto position);
 }
