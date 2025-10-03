@@ -193,6 +193,7 @@ public class NewInvoiceView extends VerticalLayout {
 //todo bruttoto netto
         bruttoField.setWidth("105px");
         bruttoField.addValueChangeListener(event -> bruttoToNetto());
+
         //todo aktualizacja wartosci
         totalValue.setWidth("105px");
 
