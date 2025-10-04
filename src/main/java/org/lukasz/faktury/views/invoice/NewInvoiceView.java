@@ -1,13 +1,17 @@
 package org.lukasz.faktury.views.invoice;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.dataview.GridListDataView;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -20,6 +24,7 @@ import jakarta.annotation.security.PermitAll;
 import org.lukasz.faktury.Buyer.BuyerService;
 import org.lukasz.faktury.Buyer.dto.BuyerDto;
 import org.lukasz.faktury.exceptions.CustomValidationException;
+import org.lukasz.faktury.exceptions.ItemExistException;
 import org.lukasz.faktury.exceptions.NipNotFoundException;
 import org.lukasz.faktury.invoices.InvoicesService;
 import org.lukasz.faktury.items.InvoiceItemsService;
@@ -41,24 +46,30 @@ public class NewInvoiceView extends VerticalLayout {
 
 
     private final BuyerService buyerService;
-    private final Grid<InvoiceItemsDto> invoiceItemsGrid;
+    private final List<InvoiceItemsDto> items = new ArrayList<>();
+
     private final InvoiceItemsService invoiceItemsService;
     private final AtomicBoolean updating;
 
     private final TextField nipField;
     private final ComboBox<String> tax;
     private final ComboBox<String> unit;
-    private final List<InvoiceItemsDto> items = new ArrayList<>();
-    TextField descriptionField = new TextField("Nazwa");
-    IntegerField quantityField = new IntegerField ("Ilość");
-    BigDecimalField nettoField = new BigDecimalField("Cena Netto");
-    BigDecimalField bruttoField = new BigDecimalField("Cena Brutto");
-    BigDecimalField totalValue = new BigDecimalField("Wartość");
+
+    private final Grid<InvoiceItemsDto> invoiceItemsGrid;
+    private final GridListDataView<InvoiceItemsDto> dataView;
+
+    private final TextField descriptionField = new TextField("Nazwa");
+    private final IntegerField quantityField = new IntegerField("Ilość");
+    private final BigDecimalField nettoField = new BigDecimalField("Cena Netto");
+    private final BigDecimalField bruttoField = new BigDecimalField("Cena Brutto");
+    private final BigDecimalField totalValue = new BigDecimalField("Wartość");
 
 
-    BigDecimalField sumNettoField = new BigDecimalField("Suma netto");
-    BigDecimalField sumTaxField = new BigDecimalField("Podatek");
-    BigDecimalField sumBruttoField = new BigDecimalField("Suma brutto");
+    private final BigDecimalField sumNettoField = new BigDecimalField("Suma netto");
+    private final BigDecimalField sumTaxField = new BigDecimalField("Podatek");
+    private final BigDecimalField sumBruttoField = new BigDecimalField("Suma brutto");
+
+    private final Button saveAndDownloads = new Button("Zapisz i pobierz", new Icon(VaadinIcon.DOWNLOAD));
 
 
 
@@ -147,7 +158,19 @@ public class NewInvoiceView extends VerticalLayout {
         VerticalLayout centerInvoice = new VerticalLayout();
 
 // faktura
+
+
         invoiceItemsGrid = new Grid<>(InvoiceItemsDto.class, false);
+        dataView = invoiceItemsGrid.setItems(items);
+
+
+        invoiceItemsGrid.addColumn(item -> {
+            int index = new ArrayList<>(dataView.getItems().toList()).indexOf(item) + 1;
+            return String.valueOf(index);
+        }).setHeader("Lp");
+
+
+
 
 
         invoiceItemsGrid.addColumn(InvoiceItemsDto::description).setHeader("Nazwa");
@@ -160,6 +183,9 @@ public class NewInvoiceView extends VerticalLayout {
         invoiceItemsGrid.addColumn(InvoiceItemsDto::priceBrutto).setHeader("Cena Brutto");
 
         invoiceItemsGrid.addColumn(InvoiceItemsDto::totalValue).setHeader("Wartośc");
+
+        invoiceItemsGrid.addComponentColumn(this::deleteButton);
+
 
         centerInvoice.setWidthFull();
 
@@ -191,27 +217,27 @@ public class NewInvoiceView extends VerticalLayout {
         tax.setPlaceholder("Vat");
         tax.setValue("VAT23");
 
-//todo bruttoto netto
+
         bruttoField.setWidth("105px");
         bruttoField.addValueChangeListener(event -> bruttoToNetto());
         bruttoField.addValueChangeListener(event->calculateTotalValue());
 
-        //todo aktualizacja wartosci
+
         totalValue.setWidth("105px");
-       // totalValue.addValueChangeListener(event->calculateTotalValue());
-
-
 
 
         Button addItemButton = new Button("Dodaj pozycję",p->addItem());
+
 
         HorizontalLayout fields = new HorizontalLayout();
         fields.add(descriptionField, quantityField, unit, nettoField, tax, bruttoField,totalValue);
 
         centerInvoice.add(invoiceItemsGrid, fields, addItemButton);
+//pobierz
+        saveAndDownloads.addClickListener(event -> saveAndDownloads());
 
 
-        HorizontalLayout downLayout = new HorizontalLayout(sumNettoField, sumTaxField, sumBruttoField);
+        HorizontalLayout downLayout = new HorizontalLayout(saveAndDownloads, sumNettoField, sumTaxField, sumBruttoField);
         Div spacer = new Div();
         downLayout.add(spacer, sumNettoField, sumTaxField, sumBruttoField);
         downLayout.expand(spacer);
@@ -225,6 +251,9 @@ public class NewInvoiceView extends VerticalLayout {
 
         centerLayout.add(leftLayout, centerInvoice, rightLayout);
         add(centerLayout);
+    }
+
+    private void saveAndDownloads() {
     }
 
 
@@ -249,31 +278,54 @@ public class NewInvoiceView extends VerticalLayout {
     //todo validacja i  wartosc
     //dodaj pozycje
        private void addItem(){
-        try {
-
-            if (descriptionField.getValue() == null || quantityField.getValue() == null || unit.getValue() == null || nettoField.getValue() == null || tax == null || bruttoField.getValue() == null) {
-                throw new CustomValidationException("Uzupełnij wszystkie pola");
-
-            }
-            BigDecimal tax = bruttoField.getValue().subtract(nettoField.getValue());
 
 
+           try {
 
 
-            InvoiceItemsDto invoiceItemsDto = new InvoiceItemsDto(descriptionField.getValue(), quantityField.getValue(), unit.getValue(), nettoField.getValue(), tax, bruttoField.getValue(), totalValue.getValue());
-            items.add(invoiceItemsDto);
-            invoiceItemsGrid.setItems(items);
-            invoiceItemsGrid.getDataProvider();
-            valueUpdate();
+               InvoiceItemsDto invoiceItemsDto = getInvoiceItemsDto();
+               if (items.contains(invoiceItemsDto)) {
+                   throw new ItemExistException(("Pozycja  już jest na fakturze"));
+               }
+
+
+               items.add(invoiceItemsDto);
+               invoiceItemsGrid.setItems(items);
+
+
+               valueUpdate();
             clearFields();
 
 
-        }catch (CustomValidationException ex){
+           } catch (CustomValidationException | ItemExistException ex) {
             Notification.show(ex.getMessage(),3000, Notification.Position.MIDDLE);
         }
 
 
        }
+    private Button deleteButton(InvoiceItemsDto item) {
+        Button deleteButton = new Button("Usuń", e -> {
+            items.remove(item);
+            dataView.refreshAll();
+           //todo  update total  value
+        });
+        deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_ICON);
+        return deleteButton;
+    }
+
+    private InvoiceItemsDto getInvoiceItemsDto() {
+
+        if (descriptionField.getValue() == null || quantityField.getValue() == null || unit.getValue() == null || nettoField.getValue() == null || tax == null || bruttoField.getValue() == null) {
+            throw new CustomValidationException("Uzupełnij wszystkie pola");
+
+        }
+
+        BigDecimal tax = bruttoField.getValue().subtract(nettoField.getValue());
+
+
+        return new InvoiceItemsDto(descriptionField.getValue(), quantityField.getValue(), unit.getValue(), nettoField.getValue(), tax, bruttoField.getValue(), totalValue.getValue());
+
+    }
 //wylicz netto ->brutto
 
     private void nettoToBrutto() {

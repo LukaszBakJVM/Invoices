@@ -80,6 +80,7 @@ public class InvoiceItemsServiceImpl implements InvoiceItemsService {
         return priceBrutto.multiply(BigDecimal.valueOf(quantity));
     }
 
+
     public List<InvoiceItemsDto> addPosition(InvoiceItemsDto position) {
         List<InvoiceItemsDto>added = new ArrayList<>();
         validation.validation(position);
