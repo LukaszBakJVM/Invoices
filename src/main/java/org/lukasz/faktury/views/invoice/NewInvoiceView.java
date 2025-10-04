@@ -202,7 +202,7 @@ public class NewInvoiceView extends VerticalLayout {
         unit.setWidth("150px");
         unit.setPlaceholder("Jednostka");
 
-//todo  poprawic brutto
+
         nettoField.setWidth("150px");
 
 
@@ -275,8 +275,7 @@ public class NewInvoiceView extends VerticalLayout {
 
         }
     }
-    //todo validacja i  wartosc
-    //dodaj pozycje
+
        private void addItem(){
 
 
@@ -304,13 +303,33 @@ public class NewInvoiceView extends VerticalLayout {
 
        }
     private Button deleteButton(InvoiceItemsDto item) {
-        Button deleteButton = new Button("Usuń", e -> {
-            items.remove(item);
-            dataView.refreshAll();
+        Button deleteButton = new Button(new Icon(VaadinIcon.TRASH));
+
+
+            deleteButton.addClickListener(e->{
+                items.remove(item);
+                reduceTotalValues(item.quantity(),item.priceNetto(),item.tax(),item.totalValue());
+                dataView.refreshAll();
+            });
+
+
            //todo  update total  value
-        });
+
         deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_ICON);
         return deleteButton;
+    }
+
+    private void reduceTotalValues(int quantity, BigDecimal priceNetto,BigDecimal tax,BigDecimal totalValue){
+        BigDecimal netto = sumNettoField.getValue().subtract(invoiceItemsService.reduceTotalValues(priceNetto, quantity));
+        sumNettoField.setValue(netto);
+
+        BigDecimal vat = sumTaxField.getValue().subtract(invoiceItemsService.reduceTotalValues(tax, quantity));
+        sumTaxField.setValue(vat);
+
+        BigDecimal brutto = sumBruttoField.getValue().subtract(totalValue);
+        sumBruttoField.setValue(brutto);
+
+
     }
 
     private InvoiceItemsDto getInvoiceItemsDto() {
@@ -379,6 +398,7 @@ public class NewInvoiceView extends VerticalLayout {
 
     }
 
+
     private BigDecimal checkEmpty(BigDecimalField value) {
         if (value.isEmpty()) {
             return BigDecimal.ZERO;
@@ -413,7 +433,6 @@ public class NewInvoiceView extends VerticalLayout {
         BigDecimal totalBrutto = sumBruttoField.getValue().add(calculateBrutto);
 
         return List.of(totalNetto,totalBrutto);
-
 
     }
 

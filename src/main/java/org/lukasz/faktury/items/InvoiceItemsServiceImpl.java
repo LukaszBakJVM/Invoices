@@ -2,13 +2,11 @@ package org.lukasz.faktury.items;
 
 import org.lukasz.faktury.enums.Tax;
 import org.lukasz.faktury.enums.Unit;
-import org.lukasz.faktury.items.dto.InvoiceItemsDto;
 import org.lukasz.faktury.utils.validation.Validation;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -80,14 +78,12 @@ public class InvoiceItemsServiceImpl implements InvoiceItemsService {
         return priceBrutto.multiply(BigDecimal.valueOf(quantity));
     }
 
-
-    public List<InvoiceItemsDto> addPosition(InvoiceItemsDto position) {
-        List<InvoiceItemsDto>added = new ArrayList<>();
-        validation.validation(position);
-        added.add(position);
-        return added;
+    @Override
+    public BigDecimal reduceTotalValues(BigDecimal price, int quantity) {
+        return price.multiply(BigDecimal.valueOf(quantity));
 
     }
+
 
     private int getTax(String tax) {
         return Tax.valueOf(tax).getVat();
