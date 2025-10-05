@@ -21,10 +21,11 @@ public class Invoices {
     private LocalDate paymentDate;
     private String typOfPayment;
     private LocalDate generatedDateOfIssue;
-    @ManyToMany
-    private List<Seller> sellers;
-    @ManyToMany
-    private List<Buyer> buyers;
+    @ManyToOne()
+    private Seller seller;
+    @ManyToOne()
+
+    private Buyer buyer;
 
 
     public Invoices() {
@@ -100,20 +101,20 @@ public class Invoices {
         this.items = items;
     }
 
-    public List<Seller> getSellers() {
-        return sellers;
+    public Seller getSeller() {
+        return seller;
     }
 
-    public void setSellers(List<Seller> sellers) {
-        this.sellers = sellers;
+    public void setSeller(Seller seller) {
+        this.seller = seller;
     }
 
-    public List<Buyer> getBuyers() {
-        return buyers;
+    public Buyer getBuyer() {
+        return buyer;
     }
 
-    public void setBuyers(List<Buyer> buyers) {
-        this.buyers = buyers;
+    public void setBuyer(Buyer buyer) {
+        this.buyer = buyer;
     }
 
     public String getTypOfPayment() {

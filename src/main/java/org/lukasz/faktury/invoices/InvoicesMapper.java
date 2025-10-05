@@ -18,7 +18,9 @@ public class InvoicesMapper {
         invoices.setTypOfPayment(dto.TypOfPayment());
         invoices.setGeneratedDateOfIssue(generatedDateOfIssue);
         return invoices;
-
-
     }
+
+
+
+
 }
