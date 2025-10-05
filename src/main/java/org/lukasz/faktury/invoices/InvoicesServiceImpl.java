@@ -1,7 +1,9 @@
 package org.lukasz.faktury.invoices;
 
+import org.lukasz.faktury.Buyer.dto.BuyerDto;
 import org.lukasz.faktury.enums.Payment;
 import org.lukasz.faktury.invoices.dto.InvoicesDto;
+import org.lukasz.faktury.items.dto.InvoiceItemsDto;
 import org.lukasz.faktury.seller.SellerService;
 import org.lukasz.faktury.utils.validation.Validation;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,10 +34,13 @@ public class InvoicesServiceImpl implements InvoicesService{
     }
 
     @Override
-    public void createInvoices(InvoicesDto request) {
-        validation.validation(request);
+    public void createInvoices(InvoicesDto request, BuyerDto buyerDto, List<InvoiceItemsDto> invoiceItemsDtos) {
+        //todo
+        // validation.validation(request);
 
-        Invoices invoices = mapper.ToEntity(request);
+        Invoices invoices = mapper.ToEntity(request,today);
+
+
         repo.save(invoices);
 
 
@@ -48,7 +53,7 @@ public class InvoicesServiceImpl implements InvoicesService{
     @Override
    public String invoicesNumber(){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<Invoices> listNumberList = repo.findAllBySellers_User_EmailAndNumberOfIssueBetween(email, start, end);
+        List<Invoices> listNumberList = repo.findAllBySellers_User_EmailAndGeneratedDateOfIssueBetween(email, start, end);
 
 
         return calculateNumberOfInvoices(listNumberList);
@@ -73,7 +78,7 @@ public class InvoicesServiceImpl implements InvoicesService{
             return str.append(initNumber).append("1").append("/").append(list.get(1)).append("/").append(list.get(0)).toString();
         }
 
-        Optional<Invoices> first = invoicesNb.stream().max(Comparator.comparing(Invoices::getNumberOfIssue));
+        Optional<Invoices> first = invoicesNb.stream().max(Comparator.comparing(Invoices::getGeneratedDateOfIssue));
         Invoices invoices = first.get();
 
         List<String> incrementNumber = Arrays.stream(invoices.getNumber().split("/")).toList();

@@ -8,5 +8,5 @@ import java.util.List;
 public interface InvoicesRepo extends JpaRepository<Invoices,Long> {
 
 
-    List<Invoices> findAllBySellers_User_EmailAndNumberOfIssueBetween(String email, LocalDate start, LocalDate end);
+    List<Invoices> findAllBySellers_User_EmailAndGeneratedDateOfIssueBetween(String email, LocalDate start, LocalDate end);
 }

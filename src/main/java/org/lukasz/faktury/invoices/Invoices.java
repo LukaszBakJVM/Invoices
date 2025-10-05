@@ -13,7 +13,6 @@ public class Invoices {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
     private String number;
     private LocalDate dateOfIssue;
     private String place;
@@ -21,7 +20,7 @@ public class Invoices {
     private long postponement;
     private LocalDate paymentDate;
     private String typOfPayment;
-    private LocalDate numberOfIssue;
+    private LocalDate generatedDateOfIssue;
     @ManyToMany
     private List<Seller> sellers;
     @ManyToMany
@@ -125,11 +124,11 @@ public class Invoices {
         this.typOfPayment = typOfPayment;
     }
 
-    public LocalDate getNumberOfIssue() {
-        return numberOfIssue;
+    public LocalDate getGeneratedDateOfIssue() {
+        return generatedDateOfIssue;
     }
 
-    public void setNumberOfIssue(LocalDate numberOfIssue) {
-        this.numberOfIssue = numberOfIssue;
+    public void setGeneratedDateOfIssue(LocalDate numberOfIssue) {
+        this.generatedDateOfIssue = numberOfIssue;
     }
 }
