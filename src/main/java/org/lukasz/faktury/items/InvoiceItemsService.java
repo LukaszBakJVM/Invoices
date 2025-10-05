@@ -1,7 +1,5 @@
 package org.lukasz.faktury.items;
 
-import org.lukasz.faktury.items.dto.InvoiceItemsDto;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -11,5 +9,8 @@ public interface InvoiceItemsService {
 
     BigDecimal nettoToBrutto (BigDecimal priceNetto , String tax);
     BigDecimal bruttoToNetto(BigDecimal priceBrutto ,String tax);
-    List<InvoiceItemsDto>addPosition(InvoiceItemsDto position);
+    BigDecimal calculateTotalValue(BigDecimal priceBrutto,int quantity);
+
+    BigDecimal reduceTotalValues(BigDecimal price, int quantity);
+
 }
