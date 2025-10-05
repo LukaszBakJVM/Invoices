@@ -19,6 +19,7 @@ public class Seller {
     private String zipCode;
     private String street;
     private String houseNumber;
+    private String accountNb;
 
     public Seller() {
     }
@@ -116,5 +117,13 @@ public class Seller {
 
     public void setInvoices(List<Invoices> invoices) {
         this.invoices = invoices;
+    }
+
+    public String getAccountNb() {
+        return accountNb;
+    }
+
+    public void setAccountNb(String accountNb) {
+        this.accountNb = accountNb;
     }
 }

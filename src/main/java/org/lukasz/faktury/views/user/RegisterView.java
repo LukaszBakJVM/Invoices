@@ -11,7 +11,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.lukasz.faktury.exceptions.CustomValidationException;
-import org.lukasz.faktury.exceptions.NipAlreadyRegistered;
+import org.lukasz.faktury.exceptions.NipAlreadyRegisteredException;
 import org.lukasz.faktury.exceptions.NipNotFoundException;
 import org.lukasz.faktury.exceptions.UserException;
 import org.lukasz.faktury.user.UserService;
@@ -70,7 +70,7 @@ public class RegisterView extends VerticalLayout {
             getUI().ifPresent(ui -> ui.getPage().executeJs("setTimeout(function() { window.location.href = $0; }, 5000);", "login"
 
             ));
-        } catch (CustomValidationException | NipNotFoundException | NipAlreadyRegistered | UserException ex) {
+        } catch (CustomValidationException | NipNotFoundException | NipAlreadyRegisteredException | UserException ex) {
 
             Notification.show(ex.getMessage(), 5000, Notification.Position.MIDDLE);
         }

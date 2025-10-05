@@ -22,9 +22,7 @@ import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import org.lukasz.faktury.Buyer.BuyerService;
 import org.lukasz.faktury.Buyer.dto.BuyerDto;
-import org.lukasz.faktury.exceptions.CustomValidationException;
-import org.lukasz.faktury.exceptions.ItemExistException;
-import org.lukasz.faktury.exceptions.NipNotFoundException;
+import org.lukasz.faktury.exceptions.*;
 import org.lukasz.faktury.invoices.InvoicesService;
 import org.lukasz.faktury.invoices.dto.InvoicesDto;
 import org.lukasz.faktury.items.InvoiceItemsService;
@@ -277,17 +275,33 @@ public class NewInvoiceView extends VerticalLayout {
 
     private void saveAndDownloads() {
         try {
+            invoicesCheck();
 
 
             InvoicesDto invoicesDto = new InvoicesDto(numberField.getValue(), dateOfIssueField.getValue(), placeField.getValue(), dateOfSaleField.getValue()
                     , postponementField.getValue(), paymentDateField.getValue(), paymentTypeField.getValue());
 
-//todo poprawic  nabywce i wyczyscic  pola
+
             BuyerDto buyer = buyerService.findByNipAndSave(nipField.getValue());
             invoicesService.createInvoices(invoicesDto, buyer, items);
-        }catch (CustomValidationException ex){
+            items.clear();
+            dataView.refreshAll();
+            clearInvoicesFields();
+
+        } catch (CustomValidationException | AccountNumberException | NipConflictException | NipNotFoundException ex) {
             Notification.show(ex.getMessage(),4000, Notification.Position.MIDDLE);
         }
+    }
+
+    private void clearInvoicesFields() {
+        numberField.setValue(invoicesService.invoicesNumber());
+        dateOfIssueField.clear();
+        placeField.clear();
+        dateOfSaleField.clear();
+        postponementField.clear();
+        paymentDateField.clear();
+        paymentTypeField.clear();
+
     }
 
 
@@ -468,6 +482,12 @@ public class NewInvoiceView extends VerticalLayout {
 
         return List.of(totalNetto,totalBrutto);
 
+    }
+
+    private void invoicesCheck() {
+        if (numberField.isEmpty() || dateOfIssueField.isEmpty() || placeField.isEmpty() || dateOfSaleField.isEmpty() || postponementField.isEmpty() || paymentDateField.isEmpty() || paymentTypeField.isEmpty()) {
+            throw new CustomValidationException("Uzupełnij wszystkie pola");
+        }
     }
 
 

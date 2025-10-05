@@ -6,6 +6,7 @@ import org.lukasz.faktury.items.InvoiceItems;
 import org.lukasz.faktury.seller.Seller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -20,7 +21,7 @@ public class Invoices {
     private long postponement;
     private LocalDate paymentDate;
     private String typOfPayment;
-    private LocalDate generatedDateOfIssue;
+    private LocalDateTime generatedDateOfIssue;
     @ManyToOne()
     private Seller seller;
     @ManyToOne()
@@ -33,8 +34,6 @@ public class Invoices {
 
     @OneToMany
     List<InvoiceItems> items;
-
-
 
 
     public Long getId() {
@@ -125,11 +124,11 @@ public class Invoices {
         this.typOfPayment = typOfPayment;
     }
 
-    public LocalDate getGeneratedDateOfIssue() {
+    public LocalDateTime getGeneratedDateOfIssue() {
         return generatedDateOfIssue;
     }
 
-    public void setGeneratedDateOfIssue(LocalDate numberOfIssue) {
-        this.generatedDateOfIssue = numberOfIssue;
+    public void setGeneratedDateOfIssue(LocalDateTime generatedDateOfIssue) {
+        this.generatedDateOfIssue = generatedDateOfIssue;
     }
 }
