@@ -39,6 +39,17 @@ public class SellerServiceImp implements SellerService {
 
 
     }
+
+    @Override
+    public void addAccountNb(String nb) {
+        Seller seller = getAuthentication();
+        seller.setAccountNb(nb);
+        repository.save(seller);
+
+
+
+    }
+
     private Seller getAuthentication (){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return repository.findByUserEmail(email).orElseThrow();

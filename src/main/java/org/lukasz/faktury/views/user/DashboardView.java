@@ -36,7 +36,9 @@ public class DashboardView extends VerticalLayout {
         RouterLink clients = new RouterLink("👥 Klienci", ClientsView.class);
         RouterLink reports = new RouterLink("📊 Raporty", ReportsView.class);
 
-        add(header, sellerInfo, newInvoice, invoicesList, clients, reports);
+        RouterLink account =new RouterLink("➕ Dodaj  nr konta",AccountNb.class);
+
+        add(header, sellerInfo, newInvoice, invoicesList, clients, reports,account);
     }
 }
 
