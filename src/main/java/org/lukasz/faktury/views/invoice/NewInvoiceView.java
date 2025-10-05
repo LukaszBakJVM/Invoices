@@ -26,6 +26,7 @@ import org.lukasz.faktury.exceptions.CustomValidationException;
 import org.lukasz.faktury.exceptions.ItemExistException;
 import org.lukasz.faktury.exceptions.NipNotFoundException;
 import org.lukasz.faktury.invoices.InvoicesService;
+import org.lukasz.faktury.invoices.dto.InvoicesDto;
 import org.lukasz.faktury.items.InvoiceItemsService;
 import org.lukasz.faktury.items.dto.InvoiceItemsDto;
 import org.lukasz.faktury.seller.SellerDto;
@@ -275,6 +276,18 @@ public class NewInvoiceView extends VerticalLayout {
     }
 
     private void saveAndDownloads() {
+        try {
+
+
+            InvoicesDto invoicesDto = new InvoicesDto(numberField.getValue(), dateOfIssueField.getValue(), placeField.getValue(), dateOfSaleField.getValue()
+                    , postponementField.getValue(), paymentDateField.getValue(), paymentTypeField.getValue());
+
+//todo poprawic  nabywce i wyczyscic  pola
+            BuyerDto buyer = buyerService.findByNipAndSave(nipField.getValue());
+            invoicesService.createInvoices(invoicesDto, buyer, items);
+        }catch (CustomValidationException ex){
+            Notification.show(ex.getMessage(),4000, Notification.Position.MIDDLE);
+        }
     }
 
 
@@ -283,7 +296,7 @@ public class NewInvoiceView extends VerticalLayout {
     private void findByNip() {
         buyerDataLayout.removeAll();
         try {
-            BuyerDto buyer = buyerService.findByNip(nipField.getValue());
+            BuyerDto buyer = buyerService.findByNipAndSave(nipField.getValue());
             Span buyerName = new Span("Firma: " + buyer.name());
             Span buyerNip = new Span("NIP: " + buyer.nip());
             Span buyerRegon = new Span("REGON: " + buyer.regon());

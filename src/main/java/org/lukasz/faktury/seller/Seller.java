@@ -26,7 +26,7 @@ public class Seller {
     @OneToOne(mappedBy = "seller")
     private User user;
 
-    @ManyToMany(mappedBy = "sellers")
+    @OneToMany(mappedBy = "seller")
     private List<Invoices> invoices;
 
     public Long getId() {

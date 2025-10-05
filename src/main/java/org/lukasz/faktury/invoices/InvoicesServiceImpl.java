@@ -1,7 +1,10 @@
 package org.lukasz.faktury.invoices;
 
+import org.lukasz.faktury.Buyer.BuyerService;
+import org.lukasz.faktury.Buyer.dto.BuyerDto;
 import org.lukasz.faktury.enums.Payment;
 import org.lukasz.faktury.invoices.dto.InvoicesDto;
+import org.lukasz.faktury.items.dto.InvoiceItemsDto;
 import org.lukasz.faktury.seller.SellerService;
 import org.lukasz.faktury.utils.validation.Validation;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +20,8 @@ import java.util.Optional;
 public class InvoicesServiceImpl implements InvoicesService{
     private final InvoicesRepo repo;
     private final InvoicesMapper mapper;
+    private final BuyerService buyerService;
+
     private final Validation validation;
     private final StringBuilder str;
     private final LocalDate today = LocalDate.now();
@@ -24,18 +29,26 @@ public class InvoicesServiceImpl implements InvoicesService{
     LocalDate end = today.withDayOfMonth(today.lengthOfMonth());
 
 
-    public InvoicesServiceImpl(InvoicesRepo repo, InvoicesMapper mapper, Validation validation, StringBuilder str, SellerService sellerService) {
+    public InvoicesServiceImpl(InvoicesRepo repo, InvoicesMapper mapper, Validation validation, StringBuilder str, SellerService sellerService, BuyerService buyerService) {
         this.repo = repo;
         this.mapper = mapper;
         this.validation = validation;
         this.str = str;
+
+        this.buyerService = buyerService;
     }
 
     @Override
-    public void createInvoices(InvoicesDto request) {
-        validation.validation(request);
+    public void createInvoices(InvoicesDto request, BuyerDto buyerDto, List<InvoiceItemsDto> invoiceItemsDtos) {
+        //todo
+        // validation.validation(request);
 
-        Invoices invoices = mapper.ToEntity(request);
+        Invoices invoices = mapper.ToEntity(request,today);
+
+        invoices.setBuyer(buyerService.findBuyer(buyerDto.nip()));
+
+
+
         repo.save(invoices);
 
 
@@ -47,8 +60,10 @@ public class InvoicesServiceImpl implements InvoicesService{
     }
     @Override
    public String invoicesNumber(){
+
+        //todo poprawic zly  numer
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<Invoices> listNumberList = repo.findAllBySellers_User_EmailAndNumberOfIssueBetween(email, start, end);
+        List<Invoices> listNumberList = repo.findAllBySeller_User_EmailAndGeneratedDateOfIssueBetween(email, start, end);
 
 
         return calculateNumberOfInvoices(listNumberList);
@@ -73,7 +88,7 @@ public class InvoicesServiceImpl implements InvoicesService{
             return str.append(initNumber).append("1").append("/").append(list.get(1)).append("/").append(list.get(0)).toString();
         }
 
-        Optional<Invoices> first = invoicesNb.stream().max(Comparator.comparing(Invoices::getNumberOfIssue));
+        Optional<Invoices> first = invoicesNb.stream().max(Comparator.comparing(Invoices::getGeneratedDateOfIssue));
         Invoices invoices = first.get();
 
         List<String> incrementNumber = Arrays.stream(invoices.getNumber().split("/")).toList();

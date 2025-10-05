@@ -3,6 +3,7 @@ package org.lukasz.faktury.Buyer;
 import jakarta.persistence.*;
 import org.lukasz.faktury.invoices.Invoices;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,8 +19,9 @@ public class Buyer {
     private String zipCode;
     private String street;
     private String houseNumber;
-    @ManyToMany(mappedBy = "buyers")
-    private List<Invoices> invoices;
+    @OneToMany(mappedBy = "buyer")
+    private List<Invoices> invoices = new ArrayList<>();
+
 
     public Buyer() {
     }

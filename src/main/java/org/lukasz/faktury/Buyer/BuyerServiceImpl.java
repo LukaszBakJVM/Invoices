@@ -4,6 +4,7 @@ import org.lukasz.faktury.Buyer.dto.BuyerDto;
 import org.lukasz.faktury.gusapi.ApiConnection;
 import org.lukasz.faktury.gusapi.Subject;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,18 +23,26 @@ public class BuyerServiceImpl implements BuyerService {
     }
 
     @Override
-    public BuyerDto findByNip(String nip) {
+    @Transactional
+    public BuyerDto findByNipAndSave(String nip) {
         Optional<Buyer> byNip = buyerRepo.findByNip(nip);
         if (byNip.isPresent()) {
             Buyer buyer = byNip.get();
-            Buyer save = buyerRepo.save(buyer);
-            return buyerMapper.entityToDto(save);
+
+            return buyerMapper.entityToDto(buyer);
         }
         BuyerDto dataByNip = findDataByNip(nip);
         Buyer entity = buyerMapper.toEntity(dataByNip);
         Buyer save = buyerRepo.save(entity);
         return buyerMapper.entityToDto(save);
     }
+
+    @Override
+    public Buyer findBuyer(String nip) {
+        return buyerRepo.findByNip(nip).orElseThrow();
+
+    }
+
 
     private BuyerDto findDataByNip(String nip) {
         Subject subject = connection.result(nip).result().subject();

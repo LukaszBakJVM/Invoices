@@ -13,7 +13,6 @@ public class Invoices {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
     private String number;
     private LocalDate dateOfIssue;
     private String place;
@@ -21,11 +20,12 @@ public class Invoices {
     private long postponement;
     private LocalDate paymentDate;
     private String typOfPayment;
-    private LocalDate numberOfIssue;
-    @ManyToMany
-    private List<Seller> sellers;
-    @ManyToMany
-    private List<Buyer> buyers;
+    private LocalDate generatedDateOfIssue;
+    @ManyToOne()
+    private Seller seller;
+    @ManyToOne()
+
+    private Buyer buyer;
 
 
     public Invoices() {
@@ -101,20 +101,20 @@ public class Invoices {
         this.items = items;
     }
 
-    public List<Seller> getSellers() {
-        return sellers;
+    public Seller getSeller() {
+        return seller;
     }
 
-    public void setSellers(List<Seller> sellers) {
-        this.sellers = sellers;
+    public void setSeller(Seller seller) {
+        this.seller = seller;
     }
 
-    public List<Buyer> getBuyers() {
-        return buyers;
+    public Buyer getBuyer() {
+        return buyer;
     }
 
-    public void setBuyers(List<Buyer> buyers) {
-        this.buyers = buyers;
+    public void setBuyer(Buyer buyer) {
+        this.buyer = buyer;
     }
 
     public String getTypOfPayment() {
@@ -125,11 +125,11 @@ public class Invoices {
         this.typOfPayment = typOfPayment;
     }
 
-    public LocalDate getNumberOfIssue() {
-        return numberOfIssue;
+    public LocalDate getGeneratedDateOfIssue() {
+        return generatedDateOfIssue;
     }
 
-    public void setNumberOfIssue(LocalDate numberOfIssue) {
-        this.numberOfIssue = numberOfIssue;
+    public void setGeneratedDateOfIssue(LocalDate numberOfIssue) {
+        this.generatedDateOfIssue = numberOfIssue;
     }
 }
