@@ -17,7 +17,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.BigDecimalField;
 import com.vaadin.flow.component.textfield.IntegerField;
-import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
@@ -34,6 +33,7 @@ import org.lukasz.faktury.seller.SellerService;
 import org.springframework.web.client.RestClientResponseException;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -49,12 +49,23 @@ public class NewInvoiceView extends VerticalLayout {
     private final List<InvoiceItemsDto> items = new ArrayList<>();
 
     private final InvoiceItemsService invoiceItemsService;
+    private final InvoicesService invoicesService;
     private final AtomicBoolean updating;
 
     private final TextField nipField;
     private final ComboBox<String> tax;
     private final ComboBox<String> unit;
+    // dane faktury
+    TextField numberField = new TextField("Numer faktury");
+    DatePicker dateOfIssueField = new DatePicker("Data wystawienia");
+    TextField placeField = new TextField("Miejsce wystawienia");
+    DatePicker dateOfSaleField = new DatePicker("Data sprzedaży");
+    IntegerField postponementField = new IntegerField("Odroczenie (dni)");
+    DatePicker paymentDateField = new DatePicker("Termin płatności");
+    ComboBox<String> paymentTypeField = new ComboBox<>("Forma płatności");
 
+
+    //items
     private final Grid<InvoiceItemsDto> invoiceItemsGrid;
     private final GridListDataView<InvoiceItemsDto> dataView;
 
@@ -76,9 +87,10 @@ public class NewInvoiceView extends VerticalLayout {
 
     private final VerticalLayout buyerDataLayout;
 
-    public NewInvoiceView(BuyerService buyerService, SellerService sellerService, InvoicesService invoicesService, InvoiceItemsService invoiceItemsService, AtomicBoolean updating) {
+    public NewInvoiceView(BuyerService buyerService, SellerService sellerService, InvoiceItemsService invoiceItemsService, InvoicesService invoicesService, AtomicBoolean updating) {
         this.buyerService = buyerService;
         this.invoiceItemsService = invoiceItemsService;
+        this.invoicesService = invoicesService;
         this.updating = updating;
 
 
@@ -101,23 +113,20 @@ public class NewInvoiceView extends VerticalLayout {
         invoiceHeaderLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 7));
         invoiceHeaderLayout.setWidthFull();
 
-        TextField numberField = new TextField("Numer faktury");
 
+        //nr faktury
         numberField.setValue(invoicesService.invoicesNumber());
 
+        //data platnosci
 
-        DatePicker dateOfIssueField = new DatePicker("Data wystawienia");
+        dateOfIssueField.addValueChangeListener(e -> calculatePaymentDate());
+        postponementField.addValueChangeListener(e -> calculatePaymentDate());
 
-        TextField placeField = new TextField("Miejsce wystawienia");
 
-        DatePicker dateOfSaleField = new DatePicker("Data sprzedaży");
+        //  typ płatności pobierany z serwisu
 
-        NumberField postponementField = new NumberField("Odroczenie (dni)");
 
-        DatePicker paymentDateField = new DatePicker("Termin płatności");
 
-        //  płatności pobierany z serwisu
-        ComboBox<String> paymentTypeField = new ComboBox<>("Forma płatności");
         paymentTypeField.setItems(invoicesService.paymentsMethod());
 
         invoiceHeaderLayout.add(numberField, dateOfIssueField, placeField, dateOfSaleField, postponementField, paymentDateField, paymentTypeField);
@@ -251,6 +260,18 @@ public class NewInvoiceView extends VerticalLayout {
 
         centerLayout.add(leftLayout, centerInvoice, rightLayout);
         add(centerLayout);
+    }
+
+    private void calculatePaymentDate() {
+        if (dateOfIssueField.isEmpty() || postponementField.isEmpty()) {
+            return;
+        }
+        LocalDate dateOfIssue = dateOfIssueField.getValue();
+        Integer postponement = postponementField.getValue();
+        LocalDate paymentDate = invoicesService.calculatePaymentDate(dateOfIssue, postponement);
+        paymentDateField.setValue(paymentDate);
+
+
     }
 
     private void saveAndDownloads() {

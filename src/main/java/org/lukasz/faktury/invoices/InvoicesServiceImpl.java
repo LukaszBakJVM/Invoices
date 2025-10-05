@@ -55,6 +55,11 @@ public class InvoicesServiceImpl implements InvoicesService{
 
     }
 
+    @Override
+    public LocalDate calculatePaymentDate(LocalDate dateOfIssue, int postponement) {
+        return dateOfIssue.plusDays(postponement);
+    }
+
 
     private String calculateNumberOfInvoices(List<Invoices> invoicesNb) {
         str.setLength(0);
