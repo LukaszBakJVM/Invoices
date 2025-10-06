@@ -1,5 +1,6 @@
 package org.lukasz.faktury.views.invoice;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -22,19 +23,23 @@ import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import org.lukasz.faktury.Buyer.BuyerService;
 import org.lukasz.faktury.Buyer.dto.BuyerDto;
-import org.lukasz.faktury.exceptions.CustomValidationException;
-import org.lukasz.faktury.exceptions.ItemExistException;
-import org.lukasz.faktury.exceptions.NipNotFoundException;
+import org.lukasz.faktury.exceptions.*;
 import org.lukasz.faktury.invoices.InvoicesService;
+import org.lukasz.faktury.invoices.dto.InvoicesDto;
+import org.lukasz.faktury.invoices.dto.InvoicesPdf;
 import org.lukasz.faktury.items.InvoiceItemsService;
 import org.lukasz.faktury.items.dto.InvoiceItemsDto;
 import org.lukasz.faktury.seller.SellerDto;
 import org.lukasz.faktury.seller.SellerService;
+import org.lukasz.faktury.utils.pdfenerator.PDFGenerator;
+import org.lukasz.faktury.views.user.DashboardView;
 import org.springframework.web.client.RestClientResponseException;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -47,6 +52,7 @@ public class NewInvoiceView extends VerticalLayout {
 
     private final BuyerService buyerService;
     private final List<InvoiceItemsDto> items = new ArrayList<>();
+    private final PDFGenerator pdfGenerator;
 
     private final InvoiceItemsService invoiceItemsService;
     private final InvoicesService invoicesService;
@@ -65,6 +71,7 @@ public class NewInvoiceView extends VerticalLayout {
     ComboBox<String> paymentTypeField = new ComboBox<>("Forma płatności");
 
 
+
     //items
     private final Grid<InvoiceItemsDto> invoiceItemsGrid;
     private final GridListDataView<InvoiceItemsDto> dataView;
@@ -75,20 +82,17 @@ public class NewInvoiceView extends VerticalLayout {
     private final BigDecimalField bruttoField = new BigDecimalField("Cena Brutto");
     private final BigDecimalField totalValue = new BigDecimalField("Wartość");
 
-
+    Button homeButton = new Button("← Powrót na poprzednia stronę", e -> UI.getCurrent().navigate(DashboardView.class));
     private final BigDecimalField sumNettoField = new BigDecimalField("Suma netto");
     private final BigDecimalField sumTaxField = new BigDecimalField("Podatek");
     private final BigDecimalField sumBruttoField = new BigDecimalField("Suma brutto");
 
-    private final Button saveAndDownloads = new Button("Zapisz i pobierz", new Icon(VaadinIcon.DOWNLOAD));
-
-
-
 
     private final VerticalLayout buyerDataLayout;
 
-    public NewInvoiceView(BuyerService buyerService, SellerService sellerService, InvoiceItemsService invoiceItemsService, InvoicesService invoicesService, AtomicBoolean updating) {
+    public NewInvoiceView(BuyerService buyerService, SellerService sellerService, PDFGenerator pdfGenerator, InvoiceItemsService invoiceItemsService, InvoicesService invoicesService, AtomicBoolean updating) {
         this.buyerService = buyerService;
+        this.pdfGenerator = pdfGenerator;
         this.invoiceItemsService = invoiceItemsService;
         this.invoicesService = invoicesService;
         this.updating = updating;
@@ -243,6 +247,7 @@ public class NewInvoiceView extends VerticalLayout {
 
         centerInvoice.add(invoiceItemsGrid, fields, addItemButton);
 //pobierz
+        Button saveAndDownloads = new Button("Zapisz i pobierz", new Icon(VaadinIcon.DOWNLOAD));
         saveAndDownloads.addClickListener(event -> saveAndDownloads());
 
 
@@ -252,7 +257,8 @@ public class NewInvoiceView extends VerticalLayout {
         downLayout.expand(spacer);
         downLayout.setJustifyContentMode(JustifyContentMode.CENTER);
 
-        centerInvoice.add(invoiceItemsGrid, downLayout);
+        centerInvoice.add(invoiceItemsGrid, downLayout, homeButton);
+
 
         rightLayout.add(buyerTitle, nipField, loadButton, buyerDataLayout);
 
@@ -275,6 +281,47 @@ public class NewInvoiceView extends VerticalLayout {
     }
 
     private void saveAndDownloads() {
+        try {
+            invoicesCheck();
+
+
+            InvoicesDto invoicesDto = new InvoicesDto(numberField.getValue(), dateOfIssueField.getValue(), placeField.getValue(), dateOfSaleField.getValue()
+                    , postponementField.getValue(), paymentDateField.getValue(), paymentTypeField.getValue());
+
+
+            BuyerDto buyer = buyerService.findByNipAndSave(nipField.getValue());
+
+            invoicesService.createInvoices(invoicesDto, buyer, items);
+            TotalValues totalValues = new TotalValues(sumNettoField.getValue(),sumTaxField.getValue(),sumBruttoField.getValue());
+
+            byte[] pdfBytes = pdfGenerator.generatePDF(new InvoicesPdf(invoicesDto, buyer, items,totalValues));
+
+            String number = String.format("%s.pdf", invoicesDto.number());
+
+            getUI().ifPresent(ui -> ui.getPage().executeJs("var link = document.createElement('a');" + "link.href = 'data:application/pdf;base64,' + $0;" + "link.download = $1;" + "link.click();", Base64.getEncoder().encodeToString(pdfBytes), number));
+
+
+            items.clear();
+            dataView.refreshAll();
+            clearInvoicesFields();
+
+        } catch (IOException | CustomValidationException | AccountNumberException | NipConflictException |
+                 NipNotFoundException ex) {
+            Notification.show(ex.getMessage(),4000, Notification.Position.MIDDLE);
+        }
+
+    }
+
+
+    private void clearInvoicesFields() {
+        numberField.setValue(invoicesService.invoicesNumber());
+        dateOfIssueField.clear();
+        placeField.clear();
+        dateOfSaleField.clear();
+        postponementField.clear();
+        paymentDateField.clear();
+        paymentTypeField.clear();
+
     }
 
 
@@ -283,7 +330,7 @@ public class NewInvoiceView extends VerticalLayout {
     private void findByNip() {
         buyerDataLayout.removeAll();
         try {
-            BuyerDto buyer = buyerService.findByNip(nipField.getValue());
+            BuyerDto buyer = buyerService.findByNipAndSave(nipField.getValue());
             Span buyerName = new Span("Firma: " + buyer.name());
             Span buyerNip = new Span("NIP: " + buyer.nip());
             Span buyerRegon = new Span("REGON: " + buyer.regon());
@@ -334,7 +381,7 @@ public class NewInvoiceView extends VerticalLayout {
             });
 
 
-           //todo  update total  value
+
 
         deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_ICON);
         return deleteButton;
@@ -457,5 +504,14 @@ public class NewInvoiceView extends VerticalLayout {
 
     }
 
+    private void invoicesCheck() {
+        if (numberField.isEmpty() || dateOfIssueField.isEmpty() || placeField.isEmpty() || dateOfSaleField.isEmpty() || postponementField.isEmpty() || paymentDateField.isEmpty() || paymentTypeField.isEmpty()) {
+            throw new CustomValidationException("Uzupełnij wszystkie pola");
+        }
+    }
+
 
 }
+
+
+

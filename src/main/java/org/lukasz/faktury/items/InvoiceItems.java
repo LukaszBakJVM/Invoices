@@ -1,9 +1,7 @@
 package org.lukasz.faktury.items;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import org.lukasz.faktury.invoices.Invoices;
 
 import java.math.BigDecimal;
 
@@ -19,6 +17,8 @@ public class InvoiceItems {
     private BigDecimal tax;
     private BigDecimal priceBrutto;
     private BigDecimal totalValue;
+    @ManyToOne
+    private Invoices invoices;
 
 
     public InvoiceItems() {
@@ -86,5 +86,13 @@ public class InvoiceItems {
 
     public void setTotalValue(BigDecimal totalValue) {
         this.totalValue = totalValue;
+    }
+
+    public Invoices getInvoices() {
+        return invoices;
+    }
+
+    public void setInvoices(Invoices invoices) {
+        this.invoices = invoices;
     }
 }

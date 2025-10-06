@@ -1,11 +1,12 @@
 package org.lukasz.faktury.views.index;
 
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.lukasz.faktury.views.user.LoginView;
 import org.lukasz.faktury.views.user.RegisterView;
@@ -30,8 +31,9 @@ public class IndexView extends VerticalLayout {
         header.addClassName("dashboard-header");
 
 
-        RouterLink login = new RouterLink("Zaloguj się", LoginView.class);
-        RouterLink registration = new RouterLink("Zarejstruj się", RegisterView.class);
+        Button login = new Button("Zaloguj się", e -> UI.getCurrent().navigate(LoginView.class));
+
+        Button registration = new Button("Zarejstruj się", e -> UI.getCurrent().navigate(RegisterView.class));
         add(header, login, registration);
 
 

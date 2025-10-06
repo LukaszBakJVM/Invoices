@@ -1,5 +1,8 @@
 package org.lukasz.faktury.items;
 
+import org.lukasz.faktury.invoices.Invoices;
+import org.lukasz.faktury.items.dto.InvoiceItemsDto;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -12,5 +15,6 @@ public interface InvoiceItemsService {
     BigDecimal calculateTotalValue(BigDecimal priceBrutto,int quantity);
 
     BigDecimal reduceTotalValues(BigDecimal price, int quantity);
+    void saveItems(List<InvoiceItemsDto>dtos, Invoices invoices);
 
 }

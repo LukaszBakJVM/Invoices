@@ -19,6 +19,7 @@ public class Seller {
     private String zipCode;
     private String street;
     private String houseNumber;
+    private String accountNb;
 
     public Seller() {
     }
@@ -26,7 +27,7 @@ public class Seller {
     @OneToOne(mappedBy = "seller")
     private User user;
 
-    @ManyToMany(mappedBy = "sellers")
+    @OneToMany(mappedBy = "seller")
     private List<Invoices> invoices;
 
     public Long getId() {
@@ -116,5 +117,13 @@ public class Seller {
 
     public void setInvoices(List<Invoices> invoices) {
         this.invoices = invoices;
+    }
+
+    public String getAccountNb() {
+        return accountNb;
+    }
+
+    public void setAccountNb(String accountNb) {
+        this.accountNb = accountNb;
     }
 }

@@ -32,7 +32,7 @@ public class ActivationEmailSenderServiceImpl implements EmailSenderService {
         logger.info("Sending message {} ", message);
 
         //TODO
-        // mailSender.send(send);
+         mailSender.send(send);
 
 
 

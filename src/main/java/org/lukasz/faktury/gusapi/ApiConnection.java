@@ -17,6 +17,10 @@ public class ApiConnection {
     }
 
     public NipApiResponse result(String nip) {
+        if (nip.isEmpty()){
+            throw new NipNotFoundException("Uzupełnij nip nabywcy");
+
+        }
         NipApiResponse response = restClient.get().uri(searchByNip(nip)).retrieve().body(NipApiResponse.class);
         if (response.result().subject()==null){
             throw new NipNotFoundException("Nie znaleziono Nipu");

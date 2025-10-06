@@ -1,7 +1,10 @@
 package org.lukasz.faktury.items;
 
+import jakarta.transaction.Transactional;
 import org.lukasz.faktury.enums.Tax;
 import org.lukasz.faktury.enums.Unit;
+import org.lukasz.faktury.invoices.Invoices;
+import org.lukasz.faktury.items.dto.InvoiceItemsDto;
 import org.lukasz.faktury.utils.validation.Validation;
 import org.springframework.stereotype.Service;
 
@@ -81,6 +84,16 @@ public class InvoiceItemsServiceImpl implements InvoiceItemsService {
     @Override
     public BigDecimal reduceTotalValues(BigDecimal price, int quantity) {
         return price.multiply(BigDecimal.valueOf(quantity));
+
+    }
+
+    @Override
+    @Transactional
+    public void saveItems(List<InvoiceItemsDto> dtos, Invoices invoices) {
+        List<InvoiceItems> invoiceItems = invoiceItemsMapper.saveItems(dtos,invoices);
+
+        invoiceItemsRepo.saveAll(invoiceItems);
+
 
     }
 

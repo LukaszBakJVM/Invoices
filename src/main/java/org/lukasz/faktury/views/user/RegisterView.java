@@ -11,7 +11,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.lukasz.faktury.exceptions.CustomValidationException;
-import org.lukasz.faktury.exceptions.NipAlreadyRegistered;
+import org.lukasz.faktury.exceptions.NipAlreadyRegisteredException;
 import org.lukasz.faktury.exceptions.NipNotFoundException;
 import org.lukasz.faktury.exceptions.UserException;
 import org.lukasz.faktury.user.UserService;
@@ -25,9 +25,10 @@ public class RegisterView extends VerticalLayout {
 
     private final UserService userService;
 
-
-    private final PasswordField password;
     private final EmailField email;
+    private final PasswordField password;
+    private final PasswordField confirmPassword;
+
     private final TextField nip;
 
     public RegisterView(UserService userService) {
@@ -46,6 +47,8 @@ public class RegisterView extends VerticalLayout {
 
         password = new PasswordField("Hasło");
         password.setRequired(true);
+        confirmPassword = new PasswordField("Powtórz hasło");
+        confirmPassword.setRequired(true);
 
         nip = new TextField("Nip");
         nip.setRequired(true);
@@ -54,14 +57,18 @@ public class RegisterView extends VerticalLayout {
         Button registerButton = new Button("Zarejestruj się", event -> register());
         RouterLink index = new RouterLink("Powrót do strony głównej", IndexView.class);
 
-        add(header, email, password, nip, registerButton,index);
+        add(header, email, password,confirmPassword, nip, registerButton,index);
     }
 
     private void register() {
+
         UserRequest request = new UserRequest(email.getValue(), password.getValue(), nip.getValue());
 
 
         try {
+            if (!password.getValue().equals(confirmPassword.getValue())){
+                throw new UserException("Wprowadzone hasła nie są identyczne");
+            }
 
 
             UserResponse response = userService.register(request);
@@ -70,7 +77,7 @@ public class RegisterView extends VerticalLayout {
             getUI().ifPresent(ui -> ui.getPage().executeJs("setTimeout(function() { window.location.href = $0; }, 5000);", "login"
 
             ));
-        } catch (CustomValidationException | NipNotFoundException | NipAlreadyRegistered | UserException ex) {
+        } catch (CustomValidationException | NipNotFoundException | NipAlreadyRegisteredException | UserException ex) {
 
             Notification.show(ex.getMessage(), 5000, Notification.Position.MIDDLE);
         }

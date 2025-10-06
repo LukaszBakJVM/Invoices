@@ -1,7 +1,7 @@
 package org.lukasz.faktury.seller;
 
 import jakarta.transaction.Transactional;
-import org.lukasz.faktury.exceptions.NipAlreadyRegistered;
+import org.lukasz.faktury.exceptions.NipAlreadyRegisteredException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ public class SellerServiceImp implements SellerService {
     @Transactional
     public Seller save(SellerDto dto) {
         repository.findByNip(dto.nip()).ifPresent(nip -> {
-            throw new NipAlreadyRegistered(String.format("NIP %s już jest zapisany, można mieć tylko jedno konto", dto.nip()));
+            throw new NipAlreadyRegisteredException(String.format("NIP %s już jest zapisany, można mieć tylko jedno konto", dto.nip()));
         });
         Seller entity = mapper.toEntity(dto);
       return   repository.save(entity);
@@ -28,10 +28,31 @@ public class SellerServiceImp implements SellerService {
 
     @Override
     public SellerDto findByUserEmail() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Seller seller = repository.findByUserEmail(email).orElseThrow();
+        Seller seller = getAuthentication();
         return mapper.entityToDto(seller);
 
+    }
+
+    @Override
+    public Seller findByEmail() {
+        return  getAuthentication();
+
+
+    }
+
+    @Override
+    public void addAccountNb(String nb) {
+        Seller seller = getAuthentication();
+        seller.setAccountNb(nb);
+        repository.save(seller);
+
+
+
+    }
+
+    private Seller getAuthentication (){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return repository.findByUserEmail(email).orElseThrow();
     }
 
 

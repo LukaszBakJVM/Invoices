@@ -41,7 +41,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
-//todo
+
     @Override
     @Transactional
     public void createToken(String email) {
@@ -64,7 +64,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
             ChangePassword entity = resetPasswordMapper.toEntity(resetPasswordDto);
             entity.setUsed(false);
             changePasswordRepo.save(entity);
-
+//todo
             emailSenderService.sendEmail(user.getEmail(), link);
 
 

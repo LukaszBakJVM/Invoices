@@ -22,7 +22,7 @@ public class ResetPasswordEmailSenderServiceImpl implements EmailSenderService {
     }
 
     @Override
-    //todo link poprawic na reset hasla
+
     public void sendEmail(String email, String link) {
         logger.info("Sending email to {} ", email);
         SimpleMailMessage send = new SimpleMailMessage();
@@ -35,7 +35,7 @@ public class ResetPasswordEmailSenderServiceImpl implements EmailSenderService {
         logger.info("Sending message {} ", message);
 
         //TODO
-        // mailSender.send(send);
+         mailSender.send(send);
 
 
     }
