@@ -32,7 +32,7 @@ public class Invoices {
     public Invoices() {
     }
 
-    @OneToMany
+    @OneToMany(mappedBy = "invoices")
     List<InvoiceItems> items;
 
 

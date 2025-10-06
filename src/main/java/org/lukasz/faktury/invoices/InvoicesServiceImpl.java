@@ -7,6 +7,7 @@ import org.lukasz.faktury.enums.Payment;
 import org.lukasz.faktury.exceptions.AccountNumberException;
 import org.lukasz.faktury.exceptions.NipConflictException;
 import org.lukasz.faktury.invoices.dto.InvoicesDto;
+import org.lukasz.faktury.items.InvoiceItemsService;
 import org.lukasz.faktury.items.dto.InvoiceItemsDto;
 import org.lukasz.faktury.seller.Seller;
 import org.lukasz.faktury.seller.SellerService;
@@ -28,6 +29,7 @@ public class InvoicesServiceImpl implements InvoicesService{
     private final InvoicesMapper mapper;
     private final BuyerService buyerService;
     private final SellerService sellerService;
+    private final InvoiceItemsService invoiceItemsService;
 
     private final Validation validation;
     private final StringBuilder str;
@@ -37,7 +39,7 @@ public class InvoicesServiceImpl implements InvoicesService{
     LocalDate end = today.withDayOfMonth(today.lengthOfMonth());
 
 
-    public InvoicesServiceImpl(InvoicesRepo repo, InvoicesMapper mapper, Validation validation, StringBuilder str, SellerService sellerService, BuyerService buyerService) {
+    public InvoicesServiceImpl(InvoicesRepo repo, InvoicesMapper mapper, Validation validation, StringBuilder str, SellerService sellerService, BuyerService buyerService, InvoiceItemsService invoiceItemsService) {
         this.repo = repo;
         this.mapper = mapper;
         this.validation = validation;
@@ -45,6 +47,7 @@ public class InvoicesServiceImpl implements InvoicesService{
 
         this.buyerService = buyerService;
         this.sellerService = sellerService;
+        this.invoiceItemsService = invoiceItemsService;
     }
 
     @Override
@@ -69,7 +72,9 @@ public class InvoicesServiceImpl implements InvoicesService{
         invoices.setSeller(seller);
 
 
-        repo.save(invoices);
+        Invoices save = repo.save(invoices);
+
+        invoiceItemsService.saveItems(invoiceItemsDtos, save);
 
 
     }

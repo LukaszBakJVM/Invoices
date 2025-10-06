@@ -1,5 +1,6 @@
 package org.lukasz.faktury.views.invoice;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -29,8 +30,11 @@ import org.lukasz.faktury.items.InvoiceItemsService;
 import org.lukasz.faktury.items.dto.InvoiceItemsDto;
 import org.lukasz.faktury.seller.SellerDto;
 import org.lukasz.faktury.seller.SellerService;
+import org.lukasz.faktury.utils.pdfenerator.PDFGenerator;
+import org.lukasz.faktury.views.user.DashboardView;
 import org.springframework.web.client.RestClientResponseException;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -46,6 +50,7 @@ public class NewInvoiceView extends VerticalLayout {
 
     private final BuyerService buyerService;
     private final List<InvoiceItemsDto> items = new ArrayList<>();
+    private final PDFGenerator pdfGenerator;
 
     private final InvoiceItemsService invoiceItemsService;
     private final InvoicesService invoicesService;
@@ -64,6 +69,7 @@ public class NewInvoiceView extends VerticalLayout {
     ComboBox<String> paymentTypeField = new ComboBox<>("Forma płatności");
 
 
+
     //items
     private final Grid<InvoiceItemsDto> invoiceItemsGrid;
     private final GridListDataView<InvoiceItemsDto> dataView;
@@ -74,7 +80,7 @@ public class NewInvoiceView extends VerticalLayout {
     private final BigDecimalField bruttoField = new BigDecimalField("Cena Brutto");
     private final BigDecimalField totalValue = new BigDecimalField("Wartość");
 
-
+    Button homeButton = new Button("← Powrót na poprzednia stronę", e -> UI.getCurrent().navigate(DashboardView.class));
     private final BigDecimalField sumNettoField = new BigDecimalField("Suma netto");
     private final BigDecimalField sumTaxField = new BigDecimalField("Podatek");
     private final BigDecimalField sumBruttoField = new BigDecimalField("Suma brutto");
@@ -86,8 +92,9 @@ public class NewInvoiceView extends VerticalLayout {
 
     private final VerticalLayout buyerDataLayout;
 
-    public NewInvoiceView(BuyerService buyerService, SellerService sellerService, InvoiceItemsService invoiceItemsService, InvoicesService invoicesService, AtomicBoolean updating) {
+    public NewInvoiceView(BuyerService buyerService, SellerService sellerService, PDFGenerator pdfGenerator, InvoiceItemsService invoiceItemsService, InvoicesService invoicesService, AtomicBoolean updating) {
         this.buyerService = buyerService;
+        this.pdfGenerator = pdfGenerator;
         this.invoiceItemsService = invoiceItemsService;
         this.invoicesService = invoicesService;
         this.updating = updating;
@@ -251,7 +258,8 @@ public class NewInvoiceView extends VerticalLayout {
         downLayout.expand(spacer);
         downLayout.setJustifyContentMode(JustifyContentMode.CENTER);
 
-        centerInvoice.add(invoiceItemsGrid, downLayout);
+        centerInvoice.add(invoiceItemsGrid, downLayout, homeButton);
+
 
         rightLayout.add(buyerTitle, nipField, loadButton, buyerDataLayout);
 
@@ -284,13 +292,25 @@ public class NewInvoiceView extends VerticalLayout {
 
             BuyerDto buyer = buyerService.findByNipAndSave(nipField.getValue());
             invoicesService.createInvoices(invoicesDto, buyer, items);
+            byte[] zipBytes = pdfGenerator.generatePDFsIn(List.of(invoicesDto));
+            zip(zipBytes);
+
             items.clear();
             dataView.refreshAll();
             clearInvoicesFields();
 
         } catch (CustomValidationException | AccountNumberException | NipConflictException | NipNotFoundException ex) {
             Notification.show(ex.getMessage(),4000, Notification.Position.MIDDLE);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
+
+    }
+
+    private void zip(byte[] zipBytes) {
+
     }
 
     private void clearInvoicesFields() {
