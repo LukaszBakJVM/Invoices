@@ -34,7 +34,7 @@ public class InvoicesServiceImpl implements InvoicesService{
     private final Validation validation;
     private final StringBuilder str;
     private final LocalDate today = LocalDate.now();
-    private final LocalDateTime now = LocalDateTime.now();
+
     LocalDate start = today.withDayOfMonth(1);
     LocalDate end = today.withDayOfMonth(today.lengthOfMonth());
 
@@ -53,6 +53,7 @@ public class InvoicesServiceImpl implements InvoicesService{
     @Override
     @Transactional
     public void createInvoices(InvoicesDto request, BuyerDto buyerDto, List<InvoiceItemsDto> invoiceItemsDtos) {
+        LocalDateTime now = LocalDateTime.now();
         Seller seller = sellerService.findByEmail();
         if (seller.getNip().equals(buyerDto.nip())) {
             throw new NipConflictException("Podano ten sam NIP dla sprzedawcy i nabywcy");
@@ -86,7 +87,7 @@ public class InvoicesServiceImpl implements InvoicesService{
     @Override
    public String invoicesNumber(){
 
-        //todo poprawic zly  numer
+
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         List<Invoices> listNumberList = repo.findAllBySeller_User_EmailAndGeneratedDateOfIssueBetween(email, start.atStartOfDay(), end.atTime(LocalTime.MAX));
 

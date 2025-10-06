@@ -26,6 +26,7 @@ import org.lukasz.faktury.Buyer.dto.BuyerDto;
 import org.lukasz.faktury.exceptions.*;
 import org.lukasz.faktury.invoices.InvoicesService;
 import org.lukasz.faktury.invoices.dto.InvoicesDto;
+import org.lukasz.faktury.invoices.dto.InvoicesPdf;
 import org.lukasz.faktury.items.InvoiceItemsService;
 import org.lukasz.faktury.items.dto.InvoiceItemsDto;
 import org.lukasz.faktury.seller.SellerDto;
@@ -38,6 +39,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -84,10 +86,6 @@ public class NewInvoiceView extends VerticalLayout {
     private final BigDecimalField sumNettoField = new BigDecimalField("Suma netto");
     private final BigDecimalField sumTaxField = new BigDecimalField("Podatek");
     private final BigDecimalField sumBruttoField = new BigDecimalField("Suma brutto");
-
-    private final Button saveAndDownloads = new Button("Zapisz i pobierz", new Icon(VaadinIcon.DOWNLOAD));
-
-
 
 
     private final VerticalLayout buyerDataLayout;
@@ -249,6 +247,7 @@ public class NewInvoiceView extends VerticalLayout {
 
         centerInvoice.add(invoiceItemsGrid, fields, addItemButton);
 //pobierz
+        Button saveAndDownloads = new Button("Zapisz i pobierz", new Icon(VaadinIcon.DOWNLOAD));
         saveAndDownloads.addClickListener(event -> saveAndDownloads());
 
 
@@ -291,27 +290,28 @@ public class NewInvoiceView extends VerticalLayout {
 
 
             BuyerDto buyer = buyerService.findByNipAndSave(nipField.getValue());
+
             invoicesService.createInvoices(invoicesDto, buyer, items);
-            byte[] zipBytes = pdfGenerator.generatePDFsIn(List.of(invoicesDto));
-            zip(zipBytes);
+            TotalValues totalValues = new TotalValues(sumNettoField.getValue(),sumTaxField.getValue(),sumBruttoField.getValue());
+
+            byte[] pdfBytes = pdfGenerator.generatePDF(new InvoicesPdf(invoicesDto, buyer, items,totalValues));
+
+            String number = String.format("%s.pdf", invoicesDto.number());
+
+            getUI().ifPresent(ui -> ui.getPage().executeJs("var link = document.createElement('a');" + "link.href = 'data:application/pdf;base64,' + $0;" + "link.download = $1;" + "link.click();", Base64.getEncoder().encodeToString(pdfBytes), number));
+
 
             items.clear();
             dataView.refreshAll();
             clearInvoicesFields();
 
-        } catch (CustomValidationException | AccountNumberException | NipConflictException | NipNotFoundException ex) {
+        } catch (IOException | CustomValidationException | AccountNumberException | NipConflictException |
+                 NipNotFoundException ex) {
             Notification.show(ex.getMessage(),4000, Notification.Position.MIDDLE);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
 
     }
 
-    private void zip(byte[] zipBytes) {
-
-    }
 
     private void clearInvoicesFields() {
         numberField.setValue(invoicesService.invoicesNumber());
@@ -381,7 +381,7 @@ public class NewInvoiceView extends VerticalLayout {
             });
 
 
-           //todo  update total  value
+
 
         deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_ICON);
         return deleteButton;
@@ -512,3 +512,6 @@ public class NewInvoiceView extends VerticalLayout {
 
 
 }
+
+
+
