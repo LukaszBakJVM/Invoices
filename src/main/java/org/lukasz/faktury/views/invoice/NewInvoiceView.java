@@ -295,10 +295,10 @@ public class NewInvoiceView extends VerticalLayout {
             TotalValues totalValues = new TotalValues(sumNettoField.getValue(),sumTaxField.getValue(),sumBruttoField.getValue());
 
             byte[] pdfBytes = pdfGenerator.generatePDF(new InvoicesPdf(invoicesDto, buyer, items,totalValues));
-            String base64 = Base64.getEncoder().encodeToString(pdfBytes);
-            String number = invoicesDto.number();
 
-            getUI().ifPresent(ui -> ui.getPage().executeJs("var link = document.createElement('a');" + "link.href = 'data:application/pdf;base64,' + $0;" + "link.download = 'faktury.pdf';" + "link.click();", base64));
+            String number = String.format("%s.pdf", invoicesDto.number());
+
+            getUI().ifPresent(ui -> ui.getPage().executeJs("var link = document.createElement('a');" + "link.href = 'data:application/pdf;base64,' + $0;" + "link.download = $1;" + "link.click();", Base64.getEncoder().encodeToString(pdfBytes), number));
 
 
             items.clear();
