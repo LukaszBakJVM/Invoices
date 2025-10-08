@@ -1,14 +1,16 @@
 package org.lukasz.faktury;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
-import com.icegreen.greenmail.util.GreenMail;
-import com.icegreen.greenmail.util.ServerSetupTest;
+import com.icegreen.greenmail.junit5.GreenMailExtension;
+import com.icegreen.greenmail.util.ServerSetup;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.lukasz.faktury.user.UserServiceImpl;
+import org.lukasz.faktury.user.dto.UserRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -21,8 +23,13 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 
 
 class FakturyApplicationTests {
+    @Autowired
+    private UserServiceImpl userService;
+    static final int MAIL_PORT = 3025;
 
-    static GreenMail greenMail = new GreenMail(ServerSetupTest.SMTP);
+
+    @RegisterExtension
+    static GreenMailExtension greenMailExtension = new GreenMailExtension(new ServerSetup(MAIL_PORT, null, ServerSetup.PROTOCOL_SMTP));
     static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest").withDatabaseName("invoices").withUsername("test").withPassword("test");
 
 
@@ -30,8 +37,7 @@ class FakturyApplicationTests {
     @RegisterExtension
     static WireMockExtension wireMockServer = WireMockExtension.newInstance().options(wireMockConfig().dynamicPort()).build();
 
-    @LocalServerPort
-    int dynamicPort;
+
 
     @DynamicPropertySource
     static void registerDynamicProperties(DynamicPropertyRegistry registry) {
@@ -41,17 +47,17 @@ class FakturyApplicationTests {
         registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
         registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
         registry.add("spring.mail.host", () -> "localhost");
-        registry.add("spring.mail.port", () -> greenMail.getSmtp().getPort());
-        registry.add("spring.mail.username", () -> "user");
-        registry.add("spring.mail.password", () -> "pass");
+        registry.add("spring.mail.port", () -> MAIL_PORT);
+        registry.add("spring.mail.username", () -> "");
+        registry.add("spring.mail.password", () -> "");
         registry.add("spring.mail.properties.mail.smtp.auth", () -> "false");
         registry.add("spring.mail.properties.mail.smtp.starttls.enable", () -> "false");
     }
 
+
     @BeforeAll
     static void startPostgres() {
         postgreSQLContainer.start();
-        greenMail.start();
 
 
     }
@@ -59,11 +65,15 @@ class FakturyApplicationTests {
     @AfterAll
     static void stopPostgres() {
         postgreSQLContainer.stop();
-        greenMail.stop();
+
     }
 
     @Test
-    void contextLoads() {
+    void aaaa() {
+        UserRequest request = new UserRequest("test@test.pl", "pass", "7151536825");
+
+        userService.register(request);
+
 
     }
 }

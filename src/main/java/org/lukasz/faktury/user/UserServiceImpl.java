@@ -12,6 +12,7 @@ import org.lukasz.faktury.user.dto.UserResponse;
 import org.lukasz.faktury.utils.confirmationtoken.activationtoken.ActivationTokenService;
 import org.lukasz.faktury.utils.validation.Validation;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserResponse register(UserRequest request) {
         validation.validation(request);
         findUserByEmail(request.email());
