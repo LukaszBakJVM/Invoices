@@ -27,6 +27,7 @@ public class ActivationTokenServiceImpl implements ActivationTokenService {
     }
 
     @Override
+    @Transactional
     public void createToken(User user) {
         ActivationToken token = new ActivationToken();
         token.setToken(UUID.randomUUID().toString());
@@ -40,7 +41,6 @@ public class ActivationTokenServiceImpl implements ActivationTokenService {
     }
 
     @Override
-    @Transactional
     public void findToken(String token) {
         ActivationToken activationToken = tokenRepository.findByToken(token).orElseThrow(() -> new TokenException("Token nie istnieje"));
         LocalDateTime expiresAt = activationToken.getExpiresAt();
