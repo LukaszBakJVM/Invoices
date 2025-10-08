@@ -1,0 +1,31 @@
+{
+  "id" : "e70817c7-5e68-49c7-b58d-87226dbdeb53",
+  "name" : "api_search_nip_5272962521",
+  "request" : {
+    "urlPath" : "/api/search/nip/5272962521",
+    "method" : "GET",
+    "queryParameters" : {
+      "date" : {
+        "equalTo" : "2025-10-08"
+      }
+    }
+  },
+  "response" : {
+    "status" : 400,
+    "body" : "{\"code\":\"WL-115\",\"message\":\"Nieprawidłowy NIP.\"}",
+    "headers" : {
+      "Strict-Transport-Security" : "max-age=31536000",
+      "Server" : "nginx",
+      "X-CDN" : "Imperva",
+      "X-Iinfo" : "3-116485226-116482884 PNNN RT(1759909772052 277) q(0 0 0 -1) r(0 0) U24",
+      "Access-Control-Allow-Methods" : "GET,OPTIONS",
+      "Set-Cookie" : [ "visid_incap_3092761=1wBFCsO2Tqu3jM6alF+m4IsX5mgAAAAAQUIPAAAAAAAb16ALDFpQN/XwXQpXghCU; expires=Wed, 07 Oct 2026 22:29:54 GMT; HttpOnly; path=/; Domain=.mf.gov.pl; Secure; SameSite=None", "incap_ses_689_3092761=sEL4KKvqtjkmVcNcO9KPCYsX5mgAAAAAUyQmOOQeYV/D0Hspu11cwA==; path=/; Domain=.mf.gov.pl; Secure; SameSite=None" ],
+      "Access-Control-Allow-Headers" : "access-control-allow-origin",
+      "Date" : "Wed, 08 Oct 2025 07:49:32 GMT",
+      "Content-Type" : "application/json;charset=UTF-8"
+    }
+  },
+  "uuid" : "e70817c7-5e68-49c7-b58d-87226dbdeb53",
+  "persistent" : true,
+  "insertionIndex" : 1
+}
