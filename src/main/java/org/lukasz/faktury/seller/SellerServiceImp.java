@@ -1,7 +1,6 @@
 package org.lukasz.faktury.seller;
 
 import jakarta.transaction.Transactional;
-import org.lukasz.faktury.exceptions.NipAlreadyRegisteredException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +17,7 @@ public class SellerServiceImp implements SellerService {
     @Override
     @Transactional
     public Seller save(SellerDto dto) {
-        repository.findByNip(dto.nip()).ifPresent(nip -> {
-            throw new NipAlreadyRegisteredException(String.format("NIP %s już jest zapisany, można mieć tylko jedno konto", dto.nip()));
-        });
+
         Seller entity = mapper.toEntity(dto);
       return   repository.save(entity);
 

@@ -1,5 +1,6 @@
 package org.lukasz.faktury.user;
 
+import org.lukasz.faktury.exceptions.NipAlreadyRegisteredException;
 import org.lukasz.faktury.exceptions.UserException;
 import org.lukasz.faktury.gusapi.ApiConnection;
 import org.lukasz.faktury.gusapi.Subject;
@@ -11,6 +12,8 @@ import org.lukasz.faktury.user.dto.UserRequest;
 import org.lukasz.faktury.user.dto.UserResponse;
 import org.lukasz.faktury.utils.confirmationtoken.activationtoken.ActivationTokenService;
 import org.lukasz.faktury.utils.validation.Validation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final ApiConnection connection;
     private final SellerService sellerService;
     private final ActivationTokenService activationTokenService;
+    private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
 
     public UserServiceImpl(UserRepository repository, UserMapper mapper, Validation validation, ApiConnection connection, SellerService sellerService, ActivationTokenService activationTokenService) {
@@ -39,19 +43,23 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponse register(UserRequest request) {
+        logger.info("Inside registration");
         validation.validation(request);
         findUserByEmail(request.email());
         SellerDto dataByNip = findDataByNip(request.nip());
+        logger.info("Inside registration  sellerDto -> {} ", dataByNip);
         Seller seller = sellerService.save(dataByNip);
 
 
         User entity = mapper.toEntity(request);
+
 
         entity.setActive(false);
         entity.setNip(request.nip());
         entity.setSeller(seller);
         User save = repository.save(entity);
         activationTokenService.createToken(save);
+        logger.info("Inside registration  sellerDto -> {} ", dataByNip);
         return mapper.toResponse(save);
     }
 
@@ -77,6 +85,10 @@ public class UserServiceImpl implements UserService {
     }
 
     private SellerDto findDataByNip(String nip) {
+        repository.findByNip(nip).ifPresent(present -> {
+            throw new NipAlreadyRegisteredException(String.format("NIP %s już jest zapisany, można mieć tylko jedno konto", nip));
+        });
+
         Subject subject = connection.result(nip).result().subject();
         Address address;
         if (subject.workingAddress() != null) {
