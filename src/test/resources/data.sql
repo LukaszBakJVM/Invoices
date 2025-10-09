@@ -1,0 +1,2 @@
+insert into users(  email, password, nip,  active)values ('test2@test.pl','{bcrypt}$2a$10$u8sMRN9zavkP4B0wcpObyeEsO7zYI9BCy9DfqT0PD4RTeGNlkZ4o.'
+                                                            ,'8133209246',true);
