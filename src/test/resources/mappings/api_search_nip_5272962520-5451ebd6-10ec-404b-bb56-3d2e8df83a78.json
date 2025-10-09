@@ -6,7 +6,7 @@
     "method" : "GET",
     "queryParameters" : {
       "date" : {
-        "equalTo" : "2025-10-08"
+        "matches": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
       }
     }
   },
@@ -27,6 +27,5 @@
     }
   },
   "uuid" : "5451ebd6-10ec-404b-bb56-3d2e8df83a78",
-  "persistent" : true,
-  "insertionIndex" : 2
+  "persistent" : true
 }
