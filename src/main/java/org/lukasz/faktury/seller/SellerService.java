@@ -1,7 +1,9 @@
 package org.lukasz.faktury.seller;
 
+import java.util.List;
+
 public interface SellerService {
-    Seller  save (SellerDto dto);
+   List< Seller> save (List<SellerDto> dto);
     SellerDto findByUserEmail();
     Seller findByEmail();
     void addAccountNb(String nb);

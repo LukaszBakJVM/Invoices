@@ -2,8 +2,14 @@ package org.lukasz.faktury.seller;
 
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class SellerMapper {
+    List<Seller>sellers (List<SellerDto>sellerDtos){
+        return sellerDtos.stream().map(this::toEntity).toList();
+    }
+
     public Seller toEntity(SellerDto dto) {
         Seller seller = new Seller();
         seller.setName(dto.name());

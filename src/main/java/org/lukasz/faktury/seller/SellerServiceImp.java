@@ -4,6 +4,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class SellerServiceImp implements SellerService {
     private final SellerRepo repository;
@@ -16,10 +18,10 @@ public class SellerServiceImp implements SellerService {
 
     @Override
 
-    public Seller save(SellerDto dto) {
+    public List<Seller> save(List<SellerDto> dto) {
 
-        Seller entity = mapper.toEntity(dto);
-      return   repository.save(entity);
+        List<Seller> sellers = mapper.sellers(dto);
+        return   repository.saveAll(sellers);
 
     }
 

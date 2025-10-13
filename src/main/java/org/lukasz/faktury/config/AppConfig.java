@@ -23,6 +23,8 @@ public class AppConfig extends VaadinWebSecurity {
 
     @Value("${nipApi}")
     private String baseUrl;
+    @Value("${tokenCeidg}")
+    private String jwtToken;
 
 
     @Override
@@ -36,7 +38,10 @@ public class AppConfig extends VaadinWebSecurity {
     }
     @Bean
     public RestClient restClient() {
-        return RestClient.builder().baseUrl(baseUrl).build();
+        return RestClient.builder()
+                .baseUrl(baseUrl)
+                .defaultHeader("Authorization", "Bearer " + jwtToken)
+                .build();
     }
 
     @Bean
