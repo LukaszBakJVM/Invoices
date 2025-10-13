@@ -1,16 +1,17 @@
-nipApi: https://wl-api.mf.gov.pl
-tokenUrl: localhost:8080
+nipApi: https://dane.biznes.gov.pl
+tokenCeidg: tokenCeidg
+tokenUrl: https://faktury.freeddns.org
 
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/invoices
+    url: jdbc:postgresql://faktury.freeddns.org:5432/invoices
     username: postgres
     password: pass
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+
   mail:
     host: smtp.gmail.com
     port: 587

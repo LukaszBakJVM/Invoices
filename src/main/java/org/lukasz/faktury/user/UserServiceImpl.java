@@ -1,9 +1,8 @@
 package org.lukasz.faktury.user;
 
+import org.lukasz.faktury.ceidgapi.ApiConnection;
 import org.lukasz.faktury.exceptions.NipAlreadyRegisteredException;
 import org.lukasz.faktury.exceptions.UserException;
-import org.lukasz.faktury.gusapi.ApiConnection;
-import org.lukasz.faktury.gusapi.Subject;
 import org.lukasz.faktury.seller.Seller;
 import org.lukasz.faktury.seller.SellerDto;
 import org.lukasz.faktury.seller.SellerService;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.login.LoginException;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -47,9 +45,9 @@ public class UserServiceImpl implements UserService {
         logger.info("Inside registration");
         validation.validation(request);
         findUserByEmail(request.email());
-        SellerDto dataByNip = findDataByNip(request.nip());
+        List<SellerDto> dataByNip = findDataByNip(request.nip());
         logger.info("Inside registration  sellerDto -> {} ", dataByNip);
-        Seller seller = sellerService.save(dataByNip);
+        List<Seller> sellers = sellerService.save(dataByNip);
 
 
         User entity = mapper.toEntity(request);
@@ -57,7 +55,7 @@ public class UserServiceImpl implements UserService {
 
         entity.setActive(false);
         entity.setNip(request.nip());
-        entity.setSeller(seller);
+        entity.getSeller().addAll(sellers);
         User save = repository.save(entity);
         activationTokenService.createToken(save);
         logger.info("Inside registration  sellerDto -> {} ", dataByNip);
@@ -88,33 +86,20 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    private SellerDto findDataByNip(String nip) {
+    private List<SellerDto> findDataByNip(String nip) {
         repository.findByNip(nip).ifPresent(present -> {
             throw new NipAlreadyRegisteredException(String.format("NIP %s już jest zapisany, można mieć tylko jedno konto", nip));
         });
 
-        Subject subject = connection.result(nip).result().subject();
-        Address address;
-        if (subject.workingAddress() != null) {
-            address = address(subject.workingAddress());
-        } else {
-            address = address(subject.residenceAddress());
+        return connection.result(nip).firma().stream().map(r -> new SellerDto(r.nazwa(), r.wlasciciel().nip(), r.wlasciciel().regon(), r.adresDzialalnosci().miasto(), r.adresDzialalnosci().kod(), r.adresDzialalnosci().ulica(), r.adresDzialalnosci().budynek())).toList();
 
-        }
-        return new SellerDto(subject.name(), subject.nip(), subject.regon(), address.city(), address.zipcode(), address.street(), address.houseNumber());
-    }
-
-    private Address address(String workingAddress) {
-        List<String> data = Arrays.stream(workingAddress.split("[ ,]+")).toList();
-
-        return new Address(data.get(2), data.get(3), data.get(0), data.get(1));
 
     }
 
+
 }
 
-record Address(String zipcode, String city, String street, String houseNumber) {
-}
+
 
 
 
