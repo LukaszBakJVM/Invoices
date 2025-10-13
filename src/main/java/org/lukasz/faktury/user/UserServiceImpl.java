@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.security.auth.login.LoginException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -65,19 +66,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Login login(String email) {
-        User emailNotFound = repository.findByEmail(email).orElseThrow(() -> new UserException("Niepoprawny email"));
-        if (!emailNotFound.isActive()) {
+        User login = repository.findByEmail(email).orElseThrow(() -> new UserException("Niepoprawny email"));
+        if (!login.isActive()) {
             throw new UserException("Aktywuj konto");
         }
-        return new Login(emailNotFound.getEmail(), emailNotFound.getPassword());
+        return new Login(login.getEmail(), login.getPassword());
 
 
     }
 
-
     private void findUserByEmail(String email) {
         repository.findByEmail(email).ifPresent(present -> {
-            throw new UserException("Użytkownik już posiada konto");
+            try {
+                throw new LoginException("Użytkownik już posiada konto");
+            } catch (LoginException e) {
+                throw new UserException(e.getMessage());
+            }
         });
 
 

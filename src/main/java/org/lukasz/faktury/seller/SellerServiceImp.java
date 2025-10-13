@@ -1,8 +1,8 @@
 package org.lukasz.faktury.seller;
 
-import jakarta.transaction.Transactional;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SellerServiceImp implements SellerService {
@@ -15,7 +15,7 @@ public class SellerServiceImp implements SellerService {
     }
 
     @Override
-    @Transactional
+
     public Seller save(SellerDto dto) {
 
         Seller entity = mapper.toEntity(dto);
@@ -38,6 +38,7 @@ public class SellerServiceImp implements SellerService {
     }
 
     @Override
+    @Transactional
     public void addAccountNb(String nb) {
         Seller seller = getAuthentication();
         seller.setAccountNb(nb);
