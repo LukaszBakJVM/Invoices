@@ -41,7 +41,6 @@ public class ApiConnectionImpl implements ApiConnection {
 
         }
         CeidgNipApiResponse ceidgNipApiResponse = restClient.get().uri(searchByNipCeidg(nip)).header("Authorization", "Bearer " + jwtToken).accept(MediaType.APPLICATION_JSON).retrieve()
-
                 .body(CeidgNipApiResponse.class);
         if (ceidgNipApiResponse == null ) {
             return mfResult(nip);
@@ -64,9 +63,9 @@ public class ApiConnectionImpl implements ApiConnection {
         Subject subject = restClient.get().uri(searchByNipMf(nip)).accept(MediaType.APPLICATION_JSON).retrieve().body(MfNipApiResponse.class).result().subject();
         Address address;
         if (subject.workingAddress() != null) {
-            address = address(subject.workingAddress());
+            address = splitAddress(subject.workingAddress());
         } else {
-            address = address(subject.residenceAddress());
+            address = splitAddress(subject.residenceAddress());
 
         }
         CeidgResult ceidgResult = new CeidgResult(subject.name(), new AdresDzialalnosci(address.street(), address.houseNumber(), address.zipcode(), address.city()), new Owner(subject.nip(), subject.regon()));
@@ -80,7 +79,7 @@ public class ApiConnectionImpl implements ApiConnection {
     }
 
 
-    private Address address(String workingAddress) {
+    private Address splitAddress(String workingAddress) {
         List<String> data = Arrays.stream(workingAddress.split("[ ,]+")).toList();
 
         return new Address(data.get(2), data.get(3), data.get(0), data.get(1));
