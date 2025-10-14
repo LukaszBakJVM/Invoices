@@ -1,5 +1,5 @@
-nipApi: https://dane.biznes.gov.pl
-tokenCeidg: tokenCeidg
+ceidgApi: https://dane.biznes.gov.pl
+tokenCeidg: token
 tokenUrl: localhost:8080
 
 
