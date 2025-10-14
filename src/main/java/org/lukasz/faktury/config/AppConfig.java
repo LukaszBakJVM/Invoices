@@ -35,9 +35,7 @@ public class AppConfig extends VaadinWebSecurity {
     @Bean
     public RestClient restClient() {
         return RestClient.builder().build();
-               // .baseUrl(baseUrl)
-               // .defaultHeader("Authorization", "Bearer " + jwtToken)
-              //  .build();
+
     }
 
     @Bean
