@@ -21,10 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class AppConfig extends VaadinWebSecurity {
 
 
-    @Value("${nipApi}")
-    private String baseUrl;
-    @Value("${tokenCeidg}")
-    private String jwtToken;
+
 
 
     @Override
@@ -38,10 +35,10 @@ public class AppConfig extends VaadinWebSecurity {
     }
     @Bean
     public RestClient restClient() {
-        return RestClient.builder()
-                .baseUrl(baseUrl)
-                .defaultHeader("Authorization", "Bearer " + jwtToken)
-                .build();
+        return RestClient.builder().build();
+               // .baseUrl(baseUrl)
+               // .defaultHeader("Authorization", "Bearer " + jwtToken)
+              //  .build();
     }
 
     @Bean

@@ -1,6 +1,6 @@
 package org.lukasz.faktury.user;
 
-import org.lukasz.faktury.ceidgapi.ApiConnection;
+import org.lukasz.faktury.nipapi.ApiConnection;
 import org.lukasz.faktury.exceptions.NipAlreadyRegisteredException;
 import org.lukasz.faktury.exceptions.UserException;
 import org.lukasz.faktury.seller.Seller;
