@@ -18,10 +18,10 @@ public class SellerServiceImp implements SellerService {
 
     @Override
 
-    public List<Seller> save(List<SellerDto> dto) {
+    public Seller save(SellerDto dto) {
 
-        List<Seller> sellers = mapper.sellers(dto);
-        return   repository.saveAll(sellers);
+       Seller sellers = mapper.toEntity(dto);
+        return   repository.save(sellers);
 
     }
 
@@ -47,6 +47,12 @@ public class SellerServiceImp implements SellerService {
         repository.save(seller);
 
 
+
+    }
+
+    @Override
+    public SellerDto selectCompany(List<SellerDto> companies,String company) {
+       return   companies.stream().filter(e->e.name().equals(company)).findFirst().get();
 
     }
 

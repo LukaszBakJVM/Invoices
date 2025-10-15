@@ -1,8 +1,7 @@
 package org.lukasz.faktury.user;
 
-import org.lukasz.faktury.nipapi.ApiConnection;
-import org.lukasz.faktury.exceptions.NipAlreadyRegisteredException;
 import org.lukasz.faktury.exceptions.UserException;
+import org.lukasz.faktury.nipapi.ApiConnection;
 import org.lukasz.faktury.seller.Seller;
 import org.lukasz.faktury.seller.SellerDto;
 import org.lukasz.faktury.seller.SellerService;
@@ -41,13 +40,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponse register(UserRequest request) {
+    public UserResponse register(UserRequest request, SellerDto sellerDto) {
         logger.info("Inside registration");
         validation.validation(request);
         findUserByEmail(request.email());
-        List<SellerDto> dataByNip = findDataByNip(request.nip());
-        logger.info("Inside registration  sellerDto -> {} ", dataByNip);
-        List<Seller> sellers = sellerService.save(dataByNip);
+      //  List<SellerDto> dataByNip = findDataByNip(request.nip());
+       // logger.info("Inside registration  sellerDto -> {} ", dataByNip);
+        Seller seller = sellerService.save(sellerDto);
 
 
         User entity = mapper.toEntity(request);
@@ -55,10 +54,10 @@ public class UserServiceImpl implements UserService {
 
         entity.setActive(false);
         entity.setNip(request.nip());
-        entity.getSeller().addAll(sellers);
+        entity.setSeller(seller);
         User save = repository.save(entity);
         activationTokenService.createToken(save);
-        logger.info("Inside registration  sellerDto -> {} ", dataByNip);
+       // logger.info("Inside registration  sellerDto -> {} ", dataByNip);
         return mapper.toResponse(save);
     }
 
@@ -86,10 +85,8 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    private List<SellerDto> findDataByNip(String nip) {
-        repository.findByNip(nip).ifPresent(present -> {
-            throw new NipAlreadyRegisteredException(String.format("NIP %s już jest zapisany, można mieć tylko jedno konto", nip));
-        });
+    @Override
+    public List<SellerDto> findDataByNip(String nip) {
 
         return connection.result(nip).firma().stream().map(r -> new SellerDto(r.nazwa(), r.wlasciciel().nip(), r.wlasciciel().regon(), r.adresDzialalnosci().miasto(), r.adresDzialalnosci().kod(), r.adresDzialalnosci().ulica(), r.adresDzialalnosci().budynek())).toList();
 

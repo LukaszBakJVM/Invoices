@@ -1,6 +1,7 @@
 package org.lukasz.faktury.views.user;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -15,10 +16,13 @@ import org.lukasz.faktury.exceptions.CustomValidationException;
 import org.lukasz.faktury.exceptions.NipAlreadyRegisteredException;
 import org.lukasz.faktury.exceptions.NipNotFoundException;
 import org.lukasz.faktury.exceptions.UserException;
+import org.lukasz.faktury.seller.SellerDto;
 import org.lukasz.faktury.user.UserService;
 import org.lukasz.faktury.user.dto.UserRequest;
 import org.lukasz.faktury.user.dto.UserResponse;
 import org.lukasz.faktury.views.index.IndexView;
+
+import java.util.List;
 
 @Route("register")
 @PageTitle("Rejstracja")
@@ -26,6 +30,7 @@ import org.lukasz.faktury.views.index.IndexView;
 public class RegisterView extends VerticalLayout {
 
     private final UserService userService;
+    private final ComboBox<SellerDto> sellerDtoComboBox = new ComboBox<>("wwybierz firme");
 
     private final EmailField email;
     private final PasswordField password;
@@ -55,14 +60,16 @@ public class RegisterView extends VerticalLayout {
         nip = new TextField("Nip");
         nip.setRequired(true);
         nip.setClearButtonVisible(true);
+        Button searchByNip = new Button("wyszukaj firme po nip", e -> searchByNip());
 
         Button registerButton = new Button("Zarejestruj się", event -> register());
         RouterLink index = new RouterLink("Powrót do strony głównej", IndexView.class);
 
-        add(header, email, password,confirmPassword, nip, registerButton,index);
+        add(header, email, password, confirmPassword, nip, searchByNip, sellerDtoComboBox, registerButton, index);
     }
 
     private void register() {
+
 
         UserRequest request = new UserRequest(email.getValue(), password.getValue(), nip.getValue());
 
@@ -73,7 +80,8 @@ public class RegisterView extends VerticalLayout {
             }
 
 
-            UserResponse response = userService.register(request);
+            UserResponse response = userService.register(request, sellerDtoComboBox.getValue());
+
             Notification.show("Potwierdz email w ciagu 24h", 5000, Notification.Position.MIDDLE);
             Notification.show("Zarejestrowano użytkownika: " + response.email(), 3000, Notification.Position.BOTTOM_CENTER);
             getUI().ifPresent(ui -> ui.getPage().executeJs("setTimeout(function() { window.location.href = $0; }, 5000);", "login"
@@ -84,6 +92,15 @@ public class RegisterView extends VerticalLayout {
             Notification.show(ex.getMessage(), 5000, Notification.Position.MIDDLE);
         }
 
+
+    }
+
+    private void searchByNip() {
+        List<SellerDto> dataByNip = userService.findDataByNip(nip.getValue());
+        sellerDtoComboBox.setItems(dataByNip);
+        sellerDtoComboBox.setLabel("Wybierz firme");
+        sellerDtoComboBox.setPlaceholder("Firma");
+        sellerDtoComboBox.setItemLabelGenerator(SellerDto::name);
 
     }
 
