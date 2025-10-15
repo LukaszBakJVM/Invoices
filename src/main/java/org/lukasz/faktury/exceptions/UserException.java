@@ -1,6 +1,8 @@
 package org.lukasz.faktury.exceptions;
 
-public class UserException extends RuntimeException {
+import org.springframework.security.core.AuthenticationException;
+
+public class UserException extends AuthenticationException {
     public UserException(String message) {
         super(message);
     }

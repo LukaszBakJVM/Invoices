@@ -96,15 +96,21 @@ public class RegisterView extends VerticalLayout {
     }
 
     private void searchByNip() {
-        List<SellerDto> dataByNip = userService.findDataByNip(nip.getValue());
-        sellerDtoComboBox.setItems(dataByNip);
-        sellerDtoComboBox.setLabel("Wybierz firme");
-        sellerDtoComboBox.setPlaceholder("Firma");
-        sellerDtoComboBox.setItemLabelGenerator(SellerDto::name);
+        try {
+
+
+            List<SellerDto> dataByNip = userService.findDataByNip(nip.getValue());
+            sellerDtoComboBox.setItems(dataByNip);
+            sellerDtoComboBox.setLabel("Wybierz firme");
+            sellerDtoComboBox.setPlaceholder("Firma");
+            sellerDtoComboBox.setItemLabelGenerator(SellerDto::name);
+
+        } catch (CustomValidationException | NipNotFoundException | NipAlreadyRegisteredException | UserException ex) {
+            Notification.show(ex.getMessage(), 5000, Notification.Position.MIDDLE);
+        }
+
 
     }
-
-
-}
+    }
 
 

@@ -18,9 +18,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @EnableWebSecurity
 @Import(VaadinAwareSecurityContextHolderStrategyConfiguration.class)
 public class AppConfig extends VaadinWebSecurity {
+    private final CustomAuthFailureHandler failureHandler;
 
-
-
+    public AppConfig(CustomAuthFailureHandler failureHandler) {
+        this.failureHandler = failureHandler;
+    }
 
 
     @Override
@@ -28,7 +30,7 @@ public class AppConfig extends VaadinWebSecurity {
         super.configure(http);
 
         setLoginView(http, LoginView.class);
-        http.formLogin(l->l.loginPage("/login")
+        http.formLogin(l -> l.loginPage("/login").failureHandler(failureHandler)
 
                 .defaultSuccessUrl("/dashbord", true));
     }
