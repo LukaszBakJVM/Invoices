@@ -10,6 +10,7 @@ import org.lukasz.faktury.nipapi.mf.MfNipApiResponse;
 import org.lukasz.faktury.nipapi.mf.Subject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -40,14 +41,13 @@ public class ApiConnectionImpl implements ApiConnection {
             throw new NipNotFoundException("Uzupełnij nip nabywcy");
 
         }
-        CeidgNipApiResponse ceidgNipApiResponse = restClient.get().uri(searchByNipCeidg(nip)).header("Authorization", "Bearer " + jwtToken).accept(MediaType.APPLICATION_JSON).retrieve()
-                .body(CeidgNipApiResponse.class);
-        if (ceidgNipApiResponse == null ) {
+        ResponseEntity<CeidgNipApiResponse> ceidgNipApiResponse = restClient.get().uri(searchByNipCeidg(nip)).header("Authorization", "Bearer " + jwtToken).accept(MediaType.APPLICATION_JSON).retrieve().toEntity(CeidgNipApiResponse.class);
+        if (ceidgNipApiResponse.getStatusCode().value() == 204) {
             return mfResult(nip);
         }
 
 
-        return ceidgNipApiResponse;
+        return ceidgNipApiResponse.getBody();
 
 
     }
