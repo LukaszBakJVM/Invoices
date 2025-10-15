@@ -41,6 +41,8 @@ public class ApiConnectionImpl implements ApiConnection {
             throw new NipNotFoundException("Uzupełnij nip nabywcy");
 
         }
+        //todo
+       // 400 Bad Request: "{"code":"NIEPOPRAWNY_NUMER_NIP","message":"Niepoprawny identyfikator NIP [7151535825]"}"
         ResponseEntity<CeidgNipApiResponse> ceidgNipApiResponse = restClient.get().uri(searchByNipCeidg(nip)).header("Authorization", "Bearer " + jwtToken).accept(MediaType.APPLICATION_JSON).retrieve().toEntity(CeidgNipApiResponse.class);
         if (ceidgNipApiResponse.getStatusCode().value() == 204) {
             return mfResult(nip);
