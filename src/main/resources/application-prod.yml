@@ -1,17 +1,17 @@
-ceidgApi: https://dane.biznes.gov.pl
+nipApi: https://dane.biznes.gov.pl
 tokenCeidg: token
-tokenUrl: localhost:8080
+tokenUrl: https://faktury.freeddns.org
 
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/invoices
+    url: jdbc:postgresql://url:5432/invoices
     username: postgres
     password: pass
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+
   mail:
     host: smtp.gmail.com
     port: 587
