@@ -9,6 +9,7 @@ import org.lukasz.faktury.nipapi.mf.Address;
 import org.lukasz.faktury.nipapi.mf.MfNipApiResponse;
 import org.lukasz.faktury.nipapi.mf.Subject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -41,9 +42,12 @@ public class ApiConnectionImpl implements ApiConnection {
             throw new NipNotFoundException("Uzupełnij nip nabywcy");
 
         }
-        //todo
-       // 400 Bad Request: "{"code":"NIEPOPRAWNY_NUMER_NIP","message":"Niepoprawny identyfikator NIP [7151535825]"}"
-        ResponseEntity<CeidgNipApiResponse> ceidgNipApiResponse = restClient.get().uri(searchByNipCeidg(nip)).header("Authorization", "Bearer " + jwtToken).accept(MediaType.APPLICATION_JSON).retrieve().toEntity(CeidgNipApiResponse.class);
+
+        ResponseEntity<CeidgNipApiResponse> ceidgNipApiResponse = restClient.get().uri(searchByNipCeidg(nip)).header("Authorization", "Bearer " + jwtToken).accept(MediaType.APPLICATION_JSON).retrieve().onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
+            if (response.getStatusCode().value() == 400) {
+                throw new NipNotFoundException(String.format("Niepoprawny identyfikator NIP [%s]", nip));
+            }
+        }).toEntity(CeidgNipApiResponse.class);
         if (ceidgNipApiResponse.getStatusCode().value() == 204) {
             return mfResult(nip);
         }

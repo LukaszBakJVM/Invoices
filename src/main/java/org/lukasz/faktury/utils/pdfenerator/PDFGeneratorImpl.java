@@ -12,7 +12,7 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.UnitValue;
-import org.lukasz.faktury.Buyer.dto.BuyerDto;
+import org.lukasz.faktury.buyer.dto.BuyerDto;
 import org.lukasz.faktury.invoices.dto.InvoicesDto;
 import org.lukasz.faktury.invoices.dto.InvoicesPdf;
 import org.lukasz.faktury.items.dto.InvoiceItemsDto;
