@@ -5,14 +5,8 @@ import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.lukasz.faktury.exceptions.CustomValidationException;
-import org.lukasz.faktury.exceptions.NipAlreadyRegisteredException;
-import org.lukasz.faktury.exceptions.UserException;
-import org.lukasz.faktury.user.dto.UserRequest;
 import org.lukasz.faktury.utils.confirmationtoken.activationtoken.ActivationEmailSenderServiceImpl;
-import org.lukasz.faktury.utils.confirmationtoken.activationtoken.ActivationToken;
 import org.lukasz.faktury.utils.confirmationtoken.activationtoken.ActivationTokenRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,15 +16,7 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-import java.time.LocalDateTime;
-
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
