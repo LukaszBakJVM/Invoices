@@ -1,0 +1,31 @@
+{
+  "id" : "5451ebd6-10ec-404b-bb56-3d2e8df83a78",
+  "name" : "api_search_nip_5272962520",
+  "request" : {
+    "urlPath" : "/api/search/nip/5272962520",
+    "method" : "GET",
+    "queryParameters" : {
+      "date" : {
+        "matches": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+      }
+    }
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"result\":{\"subject\":{\"name\":\"BYTAMIC SOLUTIONS SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ\",\"nip\":\"5272962520\",\"statusVat\":\"Czynny\",\"regon\":\"389300568\",\"pesel\":null,\"krs\":\"0000906988\",\"residenceAddress\":null,\"workingAddress\":\"PROSTA 20, 00-850 WARSZAWA\",\"representatives\":[],\"authorizedClerks\":[],\"partners\":[],\"registrationLegalDate\":\"2021-07-09\",\"registrationDenialBasis\":null,\"registrationDenialDate\":null,\"restorationBasis\":null,\"restorationDate\":null,\"removalBasis\":null,\"removalDate\":null,\"exemptionSmeDate\":null,\"accountNumbers\":[\"49160014621854437130000002\",\"76160014621854437130000001\"],\"hasVirtualAccounts\":false},\"requestId\":\"cWMKj-950c6e5\",\"requestDateTime\":\"08-10-2025 09:46:29\"}}",
+    "headers" : {
+      "Strict-Transport-Security" : "max-age=31536000",
+      "Cache-Control" : "max-age=0",
+      "Server" : "nginx",
+      "X-CDN" : "Imperva",
+      "X-Iinfo" : "3-116464952-116464964 NNNN CT(19 21 0) RT(1759909589018 61) q(0 0 1 0) r(1 1) U24",
+      "Access-Control-Allow-Methods" : "GET,OPTIONS",
+      "Set-Cookie" : [ "visid_incap_3092761=XobV+2CgQnyjMKkz0/byIakW5mgAAAAAQUIPAAAAAACZz26x/BA0dIAPa6q8ERf8; expires=Wed, 07 Oct 2026 22:29:54 GMT; HttpOnly; path=/; Domain=.mf.gov.pl; Secure; SameSite=None", "incap_ses_689_3092761=xc94Auw4+AqpL8JcO9KPCdQW5mgAAAAApuuzR2TfCNBci/kE9l7LsQ==; path=/; Domain=.mf.gov.pl; Secure; SameSite=None" ],
+      "Access-Control-Allow-Headers" : "access-control-allow-origin",
+      "Date" : "Wed, 08 Oct 2025 07:46:29 GMT",
+      "Content-Type" : "application/json;charset=UTF-8"
+    }
+  },
+  "uuid" : "5451ebd6-10ec-404b-bb56-3d2e8df83a78",
+  "persistent" : true
+}

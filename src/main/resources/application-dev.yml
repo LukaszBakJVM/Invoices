@@ -1,4 +1,5 @@
-nipApi: https://wl-api.mf.gov.pl
+nipApi: https://dane.biznes.gov.pl
+tokenCeidg: tokenCeidg
 tokenUrl: localhost:8080
 
 
