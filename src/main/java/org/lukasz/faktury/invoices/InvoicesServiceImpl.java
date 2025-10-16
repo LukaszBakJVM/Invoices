@@ -1,8 +1,8 @@
 package org.lukasz.faktury.invoices;
 
 import jakarta.transaction.Transactional;
-import org.lukasz.faktury.Buyer.BuyerService;
-import org.lukasz.faktury.Buyer.dto.BuyerDto;
+import org.lukasz.faktury.buyer.BuyerService;
+import org.lukasz.faktury.buyer.dto.BuyerDto;
 import org.lukasz.faktury.enums.Payment;
 import org.lukasz.faktury.exceptions.AccountNumberException;
 import org.lukasz.faktury.exceptions.NipConflictException;

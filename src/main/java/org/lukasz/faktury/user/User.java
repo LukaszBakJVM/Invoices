@@ -2,8 +2,8 @@ package org.lukasz.faktury.user;
 
 import jakarta.persistence.*;
 import org.lukasz.faktury.seller.Seller;
-import org.lukasz.faktury.utils.confirmationtoken.resetpasswordtoken.ChangePassword;
 import org.lukasz.faktury.utils.confirmationtoken.activationtoken.ActivationToken;
+import org.lukasz.faktury.utils.confirmationtoken.resetpasswordtoken.ChangePassword;
 
 import java.util.List;
 
@@ -18,11 +18,13 @@ public class User {
     private String password;
     private  String nip;
     private boolean  active;
-    @OneToOne
+    @OneToOne()
     private Seller seller;
     @OneToMany(mappedBy = "user")
+
     private List<ActivationToken> activationTokens;
     @OneToOne
+
     private ChangePassword changePassword;
 
 
@@ -70,6 +72,14 @@ public class User {
 
     public void setSeller(Seller seller) {
         this.seller = seller;
+    }
+
+    public List<ActivationToken> getActivationTokens() {
+        return activationTokens;
+    }
+
+    public void setActivationTokens(List<ActivationToken> activationTokens) {
+        this.activationTokens = activationTokens;
     }
 
     public String getNip() {
