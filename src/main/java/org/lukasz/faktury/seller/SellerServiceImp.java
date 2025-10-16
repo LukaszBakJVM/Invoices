@@ -1,9 +1,8 @@
 package org.lukasz.faktury.seller;
 
-import jakarta.transaction.Transactional;
-import org.lukasz.faktury.exceptions.NipAlreadyRegisteredException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SellerServiceImp implements SellerService {
@@ -16,13 +15,11 @@ public class SellerServiceImp implements SellerService {
     }
 
     @Override
-    @Transactional
+
     public Seller save(SellerDto dto) {
-        repository.findByNip(dto.nip()).ifPresent(nip -> {
-            throw new NipAlreadyRegisteredException(String.format("NIP %s już jest zapisany, można mieć tylko jedno konto", dto.nip()));
-        });
-        Seller entity = mapper.toEntity(dto);
-      return   repository.save(entity);
+
+       Seller sellers = mapper.toEntity(dto);
+        return   repository.save(sellers);
 
     }
 
@@ -41,6 +38,7 @@ public class SellerServiceImp implements SellerService {
     }
 
     @Override
+    @Transactional
     public void addAccountNb(String nb) {
         Seller seller = getAuthentication();
         seller.setAccountNb(nb);
@@ -49,6 +47,7 @@ public class SellerServiceImp implements SellerService {
 
 
     }
+
 
     private Seller getAuthentication (){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();

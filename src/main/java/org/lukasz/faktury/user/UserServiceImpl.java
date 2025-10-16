@@ -1,8 +1,7 @@
 package org.lukasz.faktury.user;
 
 import org.lukasz.faktury.exceptions.UserException;
-import org.lukasz.faktury.gusapi.ApiConnection;
-import org.lukasz.faktury.gusapi.Subject;
+import org.lukasz.faktury.nipapi.ApiConnection;
 import org.lukasz.faktury.seller.Seller;
 import org.lukasz.faktury.seller.SellerDto;
 import org.lukasz.faktury.seller.SellerService;
@@ -11,10 +10,12 @@ import org.lukasz.faktury.user.dto.UserRequest;
 import org.lukasz.faktury.user.dto.UserResponse;
 import org.lukasz.faktury.utils.confirmationtoken.activationtoken.ActivationTokenService;
 import org.lukasz.faktury.utils.validation.Validation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
+import javax.security.auth.login.LoginException;
 import java.util.List;
 
 @Service
@@ -25,6 +26,7 @@ public class UserServiceImpl implements UserService {
     private final ApiConnection connection;
     private final SellerService sellerService;
     private final ActivationTokenService activationTokenService;
+    private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
 
     public UserServiceImpl(UserRepository repository, UserMapper mapper, Validation validation, ApiConnection connection, SellerService sellerService, ActivationTokenService activationTokenService) {
@@ -38,67 +40,63 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponse register(UserRequest request) {
+    public UserResponse register(UserRequest request, SellerDto sellerDto) {
+        logger.info("Inside registration");
         validation.validation(request);
         findUserByEmail(request.email());
-        SellerDto dataByNip = findDataByNip(request.nip());
-        Seller seller = sellerService.save(dataByNip);
+      //  List<SellerDto> dataByNip = findDataByNip(request.nip());
+       // logger.info("Inside registration  sellerDto -> {} ", dataByNip);
+        Seller seller = sellerService.save(sellerDto);
 
 
         User entity = mapper.toEntity(request);
+
 
         entity.setActive(false);
         entity.setNip(request.nip());
         entity.setSeller(seller);
         User save = repository.save(entity);
         activationTokenService.createToken(save);
+       // logger.info("Inside registration  sellerDto -> {} ", dataByNip);
         return mapper.toResponse(save);
     }
 
     @Override
     public Login login(String email) {
-        User emailNotFound = repository.findByEmail(email).orElseThrow(() -> new UserException("Niepoprawny email"));
-        if (!emailNotFound.isActive()) {
+        User login = repository.findByEmail(email).orElseThrow(() -> new UserException("Niepoprawny email"));
+        if (!login.isActive()) {
             throw new UserException("Aktywuj konto");
         }
-        return new Login(emailNotFound.getEmail(), emailNotFound.getPassword());
+        return new Login(login.getEmail(), login.getPassword());
 
 
     }
 
-
     private void findUserByEmail(String email) {
         repository.findByEmail(email).ifPresent(present -> {
-            throw new UserException("Użytkownik już posiada konto");
+            try {
+                throw new LoginException("Użytkownik już posiada konto");
+            } catch (LoginException e) {
+                throw new UserException(e.getMessage());
+            }
         });
 
 
 
     }
 
-    private SellerDto findDataByNip(String nip) {
-        Subject subject = connection.result(nip).result().subject();
-        Address address;
-        if (subject.workingAddress() != null) {
-            address = address(subject.workingAddress());
-        } else {
-            address = address(subject.residenceAddress());
+    @Override
+    public List<SellerDto> findDataByNip(String nip) {
 
-        }
-        return new SellerDto(subject.name(), subject.nip(), subject.regon(), address.city(), address.zipcode(), address.street(), address.houseNumber());
-    }
+        return connection.result(nip).firma().stream().map(r -> new SellerDto(r.nazwa(), r.wlasciciel().nip(), r.wlasciciel().regon(), r.adresDzialalnosci().miasto(), r.adresDzialalnosci().kod(), r.adresDzialalnosci().ulica(), r.adresDzialalnosci().budynek())).toList();
 
-    private Address address(String workingAddress) {
-        List<String> data = Arrays.stream(workingAddress.split("[ ,]+")).toList();
-
-        return new Address(data.get(2), data.get(3), data.get(0), data.get(1));
 
     }
 
+
 }
 
-record Address(String zipcode, String city, String street, String houseNumber) {
-}
+
 
 
 

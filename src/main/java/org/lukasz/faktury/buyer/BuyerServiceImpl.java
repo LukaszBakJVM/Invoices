@@ -1,13 +1,11 @@
-package org.lukasz.faktury.Buyer;
+package org.lukasz.faktury.buyer;
 
-import org.lukasz.faktury.Buyer.dto.BuyerDto;
-import org.lukasz.faktury.gusapi.ApiConnection;
-import org.lukasz.faktury.gusapi.Subject;
+import org.lukasz.faktury.buyer.dto.BuyerDto;
+import org.lukasz.faktury.nipapi.ApiConnection;
+import org.lukasz.faktury.nipapi.ceidgapi.CeidgResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -45,26 +43,11 @@ public class BuyerServiceImpl implements BuyerService {
 
 
     private BuyerDto findDataByNip(String nip) {
-        Subject subject = connection.result(nip).result().subject();
-        Address address;
-        if (subject.workingAddress() != null) {
-            address = address(subject.workingAddress());
-        } else {
-            address = address(subject.residenceAddress());
-
-        }
-        return new BuyerDto(subject.name(), subject.nip(), subject.regon(), address.city(), address.zipcode(), address.street(), address.houseNumber());
+        CeidgResult ceidgResult = connection.result(nip).firma().stream().findFirst().orElseThrow();
+        return new BuyerDto(ceidgResult.nazwa(), ceidgResult.wlasciciel().nip(), ceidgResult.wlasciciel().regon(), ceidgResult.adresDzialalnosci().miasto(), ceidgResult.adresDzialalnosci().kod(), ceidgResult.adresDzialalnosci().ulica(), ceidgResult.adresDzialalnosci().budynek());
     }
 
-    private Address address(String workingAddress) {
-        List<String> data = Arrays.stream(workingAddress.split("[ ,]+")).toList();
-
-        return new Address(data.get(2), data.get(3), data.get(0), data.get(1));
-
-    }
 
 }
 
-record Address(String zipcode, String city, String street, String houseNumber) {
-}
 

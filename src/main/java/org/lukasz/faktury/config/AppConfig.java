@@ -3,7 +3,6 @@ package org.lukasz.faktury.config;
 import com.vaadin.flow.spring.security.VaadinAwareSecurityContextHolderStrategyConfiguration;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import org.lukasz.faktury.views.user.LoginView;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -19,10 +18,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @EnableWebSecurity
 @Import(VaadinAwareSecurityContextHolderStrategyConfiguration.class)
 public class AppConfig extends VaadinWebSecurity {
+    private final CustomAuthFailureHandler failureHandler;
 
-
-    @Value("${nipApi}")
-    private String baseUrl;
+    public AppConfig(CustomAuthFailureHandler failureHandler) {
+        this.failureHandler = failureHandler;
+    }
 
 
     @Override
@@ -30,13 +30,14 @@ public class AppConfig extends VaadinWebSecurity {
         super.configure(http);
 
         setLoginView(http, LoginView.class);
-        http.formLogin(l->l.loginPage("/login")
+        http.formLogin(l -> l.loginPage("/login").failureHandler(failureHandler)
 
                 .defaultSuccessUrl("/dashbord", true));
     }
     @Bean
     public RestClient restClient() {
-        return RestClient.builder().baseUrl(baseUrl).build();
+        return RestClient.builder().build();
+
     }
 
     @Bean
