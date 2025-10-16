@@ -1,4 +1,4 @@
-package org.lukasz.faktury.Buyer;
+package org.lukasz.faktury.buyer;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

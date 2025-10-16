@@ -1,6 +1,6 @@
 package org.lukasz.faktury.invoices;
 
-import org.lukasz.faktury.Buyer.dto.BuyerDto;
+import org.lukasz.faktury.buyer.dto.BuyerDto;
 import org.lukasz.faktury.invoices.dto.InvoicesDto;
 import org.lukasz.faktury.items.dto.InvoiceItemsDto;
 

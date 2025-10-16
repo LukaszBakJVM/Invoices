@@ -1,2 +1,1 @@
-Program do faktur 
-https://faktury.freeddns.org/
+https://faktury.freeddns.org

@@ -4,10 +4,17 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.login.LoginForm;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.*;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.lukasz.faktury.views.index.IndexView;
+
+import java.util.List;
+import java.util.Map;
 
 @Route("login")
 
@@ -41,10 +48,13 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-        if (beforeEnterEvent.getLocation().getQueryParameters().getParameters().containsKey("error")) {
+        Map<String, List<String>> parameters = beforeEnterEvent.getLocation().getQueryParameters().getParameters();
+        if (parameters.containsKey("error")) {
             login.setError(true);
 
-
+            Notification.show(parameters.get("error").getFirst(), 5000, Notification.Position.MIDDLE);
         }
     }
+
+
 }
