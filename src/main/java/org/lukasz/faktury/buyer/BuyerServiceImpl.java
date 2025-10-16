@@ -1,6 +1,6 @@
-package org.lukasz.faktury.Buyer;
+package org.lukasz.faktury.buyer;
 
-import org.lukasz.faktury.Buyer.dto.BuyerDto;
+import org.lukasz.faktury.buyer.dto.BuyerDto;
 import org.lukasz.faktury.nipapi.ApiConnection;
 import org.lukasz.faktury.nipapi.ceidgapi.CeidgResult;
 import org.springframework.stereotype.Service;

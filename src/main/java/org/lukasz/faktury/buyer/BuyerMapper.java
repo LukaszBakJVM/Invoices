@@ -1,6 +1,6 @@
-package org.lukasz.faktury.Buyer;
+package org.lukasz.faktury.buyer;
 
-import org.lukasz.faktury.Buyer.dto.BuyerDto;
+import org.lukasz.faktury.buyer.dto.BuyerDto;
 import org.springframework.stereotype.Component;
 
 @Component
