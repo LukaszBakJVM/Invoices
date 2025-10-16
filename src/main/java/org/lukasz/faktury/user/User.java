@@ -5,6 +5,7 @@ import org.lukasz.faktury.seller.Seller;
 import org.lukasz.faktury.utils.confirmationtoken.resetpasswordtoken.ChangePassword;
 import org.lukasz.faktury.utils.confirmationtoken.activationtoken.ActivationToken;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,8 +19,8 @@ public class User {
     private String password;
     private  String nip;
     private boolean  active;
-    @OneToOne
-    private Seller seller;
+    @OneToMany(mappedBy = "user")
+    private List<Seller> seller =new ArrayList<>();
     @OneToMany(mappedBy = "user")
     private List<ActivationToken> activationTokens;
     @OneToOne
@@ -64,12 +65,20 @@ public class User {
         this.active = active;
     }
 
-    public Seller getSeller() {
+    public List<Seller> getSeller() {
         return seller;
     }
 
-    public void setSeller(Seller seller) {
+    public void setSeller(List<Seller> seller) {
         this.seller = seller;
+    }
+
+    public List<ActivationToken> getActivationTokens() {
+        return activationTokens;
+    }
+
+    public void setActivationTokens(List<ActivationToken> activationTokens) {
+        this.activationTokens = activationTokens;
     }
 
     public String getNip() {

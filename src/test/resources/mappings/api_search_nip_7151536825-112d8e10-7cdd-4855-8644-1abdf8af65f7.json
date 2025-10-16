@@ -1,0 +1,32 @@
+{
+  "id" : "112d8e10-7cdd-4855-8644-1abdf8af65f7",
+  "name" : "api_search_nip_7151536825",
+  "request" : {
+    "urlPath" : "/api/search/nip/7151536825",
+    "method" : "GET",
+    "queryParameters" : {
+      "date" : {
+        "matches": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+      }
+    }
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"result\":{\"subject\":{\"name\":\"MARTA BĄK\",\"nip\":\"7151536825\",\"statusVat\":\"Czynny\",\"regon\":\"060293389\",\"pesel\":null,\"krs\":null,\"residenceAddress\":\"RYNEK 5, 23-250 URZĘDÓW\",\"workingAddress\":null,\"representatives\":[],\"authorizedClerks\":[],\"partners\":[],\"registrationLegalDate\":\"2017-09-22\",\"registrationDenialBasis\":null,\"registrationDenialDate\":null,\"restorationBasis\":null,\"restorationDate\":null,\"removalBasis\":null,\"removalDate\":null,\"exemptionSmeDate\":null,\"accountNumbers\":[],\"hasVirtualAccounts\":false},\"requestId\":\"SqO7I-950c6ca\",\"requestDateTime\":\"08-10-2025 09:45:46\"}}",
+    "headers" : {
+      "Strict-Transport-Security" : "max-age=31536000",
+      "Cache-Control" : "max-age=0",
+      "Server" : "nginx",
+      "X-CDN" : "Imperva",
+      "X-Iinfo" : "3-116459715-116459488 PNNN RT(1759909545758 454) q(0 0 0 0) r(0 0) U24",
+      "Access-Control-Allow-Methods" : "GET,OPTIONS",
+      "Set-Cookie" : [ "visid_incap_3092761=XobV+2CgQnyjMKkz0/byIakW5mgAAAAAQUIPAAAAAACZz26x/BA0dIAPa6q8ERf8; expires=Wed, 07 Oct 2026 22:29:54 GMT; HttpOnly; path=/; Domain=.mf.gov.pl; Secure; SameSite=None", "incap_ses_689_3092761=Y1QtBA/ymw6pL8JcO9KPCakW5mgAAAAAXfUe7b5e/LR1BFe9KjbTJA==; path=/; Domain=.mf.gov.pl; Secure; SameSite=None" ],
+      "Access-Control-Allow-Headers" : "access-control-allow-origin",
+      "Date" : "Wed, 08 Oct 2025 07:45:46 GMT",
+      "Content-Type" : "application/json;charset=UTF-8"
+    }
+  },
+  "uuid" : "112d8e10-7cdd-4855-8644-1abdf8af65f7",
+  "persistent" : true
+
+}

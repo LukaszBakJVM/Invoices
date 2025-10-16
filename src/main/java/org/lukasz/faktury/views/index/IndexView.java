@@ -12,7 +12,7 @@ import org.lukasz.faktury.views.user.LoginView;
 import org.lukasz.faktury.views.user.RegisterView;
 
 @Route("")
-@PageTitle("Strona Główna")
+@PageTitle("Faktury XL")
 @AnonymousAllowed
 
 

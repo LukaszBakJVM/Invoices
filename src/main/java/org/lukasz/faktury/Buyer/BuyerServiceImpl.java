@@ -1,13 +1,11 @@
 package org.lukasz.faktury.Buyer;
 
 import org.lukasz.faktury.Buyer.dto.BuyerDto;
-import org.lukasz.faktury.gusapi.ApiConnection;
-import org.lukasz.faktury.gusapi.Subject;
+import org.lukasz.faktury.ceidgapi.ApiConnection;
+import org.lukasz.faktury.ceidgapi.Result;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -45,26 +43,11 @@ public class BuyerServiceImpl implements BuyerService {
 
 
     private BuyerDto findDataByNip(String nip) {
-        Subject subject = connection.result(nip).result().subject();
-        Address address;
-        if (subject.workingAddress() != null) {
-            address = address(subject.workingAddress());
-        } else {
-            address = address(subject.residenceAddress());
-
-        }
-        return new BuyerDto(subject.name(), subject.nip(), subject.regon(), address.city(), address.zipcode(), address.street(), address.houseNumber());
+        Result result = connection.result(nip).firma().stream().findFirst().orElseThrow();
+        return new BuyerDto(result.nazwa(), result.wlasciciel().nip(), result.wlasciciel().regon(), result.adresDzialalnosci().miasto(), result.adresDzialalnosci().kod(), result.adresDzialalnosci().ulica(), result.adresDzialalnosci().budynek());
     }
 
-    private Address address(String workingAddress) {
-        List<String> data = Arrays.stream(workingAddress.split("[ ,]+")).toList();
-
-        return new Address(data.get(2), data.get(3), data.get(0), data.get(1));
-
-    }
 
 }
 
-record Address(String zipcode, String city, String street, String houseNumber) {
-}
 
