@@ -3,6 +3,7 @@ package org.lukasz.faktury.utils.confirmationtoken.activationtoken;
 import jakarta.transaction.Transactional;
 import org.lukasz.faktury.exceptions.TokenException;
 import org.lukasz.faktury.user.User;
+import org.lukasz.faktury.user.UserRepository;
 import org.lukasz.faktury.utils.confirmationtoken.EmailSenderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,14 +20,16 @@ import java.util.UUID;
 public class ActivationTokenServiceImpl implements ActivationTokenService {
     private final ActivationTokenRepo tokenRepository;
     private final EmailSenderService emailSenderService;
+    private final UserRepository userRepository;
     private final Logger logger = LoggerFactory.getLogger(ActivationTokenServiceImpl.class);
     @Value("${tokenUrl}")
     private String tokenUrl;
 
-    public ActivationTokenServiceImpl(ActivationTokenRepo repo,@Qualifier("accountActivation") EmailSenderService emailSenderService) {
+    public ActivationTokenServiceImpl(ActivationTokenRepo repo, @Qualifier("accountActivation") EmailSenderService emailSenderService, UserRepository userRepository) {
         this.tokenRepository = repo;
 
         this.emailSenderService = emailSenderService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -65,6 +68,8 @@ public class ActivationTokenServiceImpl implements ActivationTokenService {
         activationToken.setUsed(true);
         User user = activationToken.getUser();
         user.setActive(true);
+        userRepository.save(user);
+
         tokenRepository.save(activationToken);
         logger.info("Inside findToken  -> end" );
 

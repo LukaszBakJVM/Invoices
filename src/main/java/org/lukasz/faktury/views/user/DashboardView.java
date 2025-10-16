@@ -30,7 +30,7 @@ public class DashboardView extends VerticalLayout {
         SellerDto byUserEmail = sellerService.findByUserEmail();
 
         Div sellerInfo = new Div();
-        sellerInfo.add(new Paragraph("NIP: " + byUserEmail.nip()), new Paragraph("REGON: " + byUserEmail.regon()), new Paragraph("Adres: " + byUserEmail.street() + " " + byUserEmail.houseNumber() + ", " + byUserEmail.zipCode() + " " + byUserEmail.city()));
+        sellerInfo.add(new Paragraph("Firma "+byUserEmail.name()),new Paragraph("NIP: " + byUserEmail.nip()), new Paragraph("REGON: " + byUserEmail.regon()), new Paragraph("Adres: " + byUserEmail.street() + " " + byUserEmail.houseNumber() + ", " + byUserEmail.zipCode() + " " + byUserEmail.city()));
 
 
         RouterLink newInvoice = new RouterLink("➕ Wystaw fakturę", NewInvoiceView.class);
