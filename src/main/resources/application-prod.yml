@@ -1,11 +1,11 @@
 nipApi: https://dane.biznes.gov.pl
-tokenCeidg: tokenCeidg
+tokenCeidg: token
 tokenUrl: https://faktury.freeddns.org
 
 
 spring:
   datasource:
-    url: jdbc:postgresql://faktury.freeddns.org:5432/invoices
+    url: jdbc:postgresql://url:5432/invoices
     username: postgres
     password: pass
   jpa:

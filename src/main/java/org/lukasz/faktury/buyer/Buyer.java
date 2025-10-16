@@ -1,4 +1,4 @@
-package org.lukasz.faktury.Buyer;
+package org.lukasz.faktury.buyer;
 
 import jakarta.persistence.*;
 import org.lukasz.faktury.invoices.Invoices;

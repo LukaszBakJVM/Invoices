@@ -24,7 +24,7 @@ public class Seller {
     public Seller() {
     }
 
-    @ManyToOne()
+    @OneToOne(mappedBy ="seller" )
     private User user;
 
     @OneToMany(mappedBy = "seller")
