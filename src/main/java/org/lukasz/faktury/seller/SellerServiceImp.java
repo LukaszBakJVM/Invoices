@@ -4,8 +4,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 public class SellerServiceImp implements SellerService {
     private final SellerRepo repository;
@@ -18,10 +16,10 @@ public class SellerServiceImp implements SellerService {
 
     @Override
 
-    public List<Seller> save(List<SellerDto> dto) {
+    public Seller save(SellerDto dto) {
 
-        List<Seller> sellers = mapper.sellers(dto);
-        return   repository.saveAll(sellers);
+       Seller sellers = mapper.toEntity(dto);
+        return   repository.save(sellers);
 
     }
 
@@ -49,6 +47,7 @@ public class SellerServiceImp implements SellerService {
 
 
     }
+
 
     private Seller getAuthentication (){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();

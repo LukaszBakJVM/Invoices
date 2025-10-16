@@ -1,7 +1,7 @@
 package org.lukasz.faktury.invoices;
 
 import jakarta.persistence.*;
-import org.lukasz.faktury.Buyer.Buyer;
+import org.lukasz.faktury.buyer.Buyer;
 import org.lukasz.faktury.items.InvoiceItems;
 import org.lukasz.faktury.seller.Seller;
 
