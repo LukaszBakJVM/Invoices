@@ -1,12 +1,13 @@
 package org.lukasz.faktury.buyer;
 
 import org.lukasz.faktury.buyer.dto.BuyerDto;
+import org.lukasz.faktury.exceptions.BuyerNotFoundException;
 import org.lukasz.faktury.nipapi.ApiConnection;
 import org.lukasz.faktury.nipapi.ceidgapi.CeidgResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class BuyerServiceImpl implements BuyerService {
@@ -23,21 +24,35 @@ public class BuyerServiceImpl implements BuyerService {
     @Override
     @Transactional
     public BuyerDto findByNipAndSave(String nip) {
-        Optional<Buyer> byNip = buyerRepo.findByNip(nip);
-        if (byNip.isPresent()) {
-            Buyer buyer = byNip.get();
-
+        List<Buyer> byNip = buyerRepo.findByNip(nip);
+        if (!byNip.isEmpty()) {
+            Buyer buyer = byNip.getLast();
             return buyerMapper.entityToDto(buyer);
         }
         BuyerDto dataByNip = findDataByNip(nip);
+
         Buyer entity = buyerMapper.toEntity(dataByNip);
         Buyer save = buyerRepo.save(entity);
         return buyerMapper.entityToDto(save);
     }
 
     @Override
-    public Buyer findBuyer(String nip) {
-        return buyerRepo.findByNip(nip).orElseThrow();
+    public Buyer findBuyer(BuyerDto buyerDto) {
+        return buyerRepo.findByNipAndName(buyerDto.nip(), buyerDto.name()).orElseThrow();
+
+    }
+
+    @Override
+    public void findByNipAndNameAndSave(BuyerDto buyerDto) {
+        buyerRepo.findByNipAndName(buyerDto.nip(), buyerDto.name()).ifPresentOrElse(buyer -> {},
+                () -> buyerRepo.save(buyerMapper.toEntity(buyerDto)));
+    }
+
+    @Override
+    public BuyerDto findByNipAndName(String nip, String companyName) {
+        Buyer buyer = buyerRepo.findByNipAndName(nip, companyName).orElseThrow(() -> new BuyerNotFoundException("Błąd Firmy , Zapisz ponownie firmę "));
+
+        return buyerMapper.entityToDto(buyer);
 
     }
 

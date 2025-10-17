@@ -33,7 +33,6 @@ import org.lukasz.faktury.seller.SellerDto;
 import org.lukasz.faktury.seller.SellerService;
 import org.lukasz.faktury.utils.pdfenerator.PDFGenerator;
 import org.lukasz.faktury.views.user.DashboardView;
-import org.springframework.web.client.RestClientResponseException;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -62,13 +61,17 @@ public class NewInvoiceView extends VerticalLayout {
     private final ComboBox<String> tax;
     private final ComboBox<String> unit;
     // dane faktury
-    TextField numberField = new TextField("Numer faktury");
-    DatePicker dateOfIssueField = new DatePicker("Data wystawienia");
-    TextField placeField = new TextField("Miejsce wystawienia");
-    DatePicker dateOfSaleField = new DatePicker("Data sprzedaży");
-    IntegerField postponementField = new IntegerField("Odroczenie (dni)");
-    DatePicker paymentDateField = new DatePicker("Termin płatności");
-    ComboBox<String> paymentTypeField = new ComboBox<>("Forma płatności");
+    private final TextField numberField = new TextField("Numer faktury");
+    private final DatePicker dateOfIssueField = new DatePicker("Data wystawienia");
+    private final TextField placeField = new TextField("Miejsce wystawienia");
+    private final DatePicker dateOfSaleField = new DatePicker("Data sprzedaży");
+    private final IntegerField postponementField = new IntegerField("Odroczenie (dni)");
+    private final DatePicker paymentDateField = new DatePicker("Termin płatności");
+    private final ComboBox<String> paymentTypeField = new ComboBox<>("Forma płatności");
+
+    //Buyer
+
+    private TextField companyNameField;
 
 
 
@@ -289,7 +292,7 @@ public class NewInvoiceView extends VerticalLayout {
                     , postponementField.getValue(), paymentDateField.getValue(), paymentTypeField.getValue());
 
 
-            BuyerDto buyer = buyerService.findByNipAndSave(nipField.getValue());
+            BuyerDto buyer = buyerService.findByNipAndName(nipField.getValue(), companyNameField.getValue());
 
             invoicesService.createInvoices(invoicesDto, buyer, items);
             TotalValues totalValues = new TotalValues(sumNettoField.getValue(),sumTaxField.getValue(),sumBruttoField.getValue());
@@ -306,7 +309,7 @@ public class NewInvoiceView extends VerticalLayout {
             clearInvoicesFields();
 
         } catch (IOException | CustomValidationException | AccountNumberException | NipConflictException |
-                 NipNotFoundException ex) {
+                 NipNotFoundException | BuyerNotFoundException ex) {
             Notification.show(ex.getMessage(),4000, Notification.Position.MIDDLE);
         }
 
@@ -331,20 +334,45 @@ public class NewInvoiceView extends VerticalLayout {
         buyerDataLayout.removeAll();
         try {
             BuyerDto buyer = buyerService.findByNipAndSave(nipField.getValue());
-            Span buyerName = new Span("Firma: " + buyer.name());
-            Span buyerNip = new Span("NIP: " + buyer.nip());
-            Span buyerRegon = new Span("REGON: " + buyer.regon());
-            Span buyerAddress = new Span("Adres: " + buyer.street() + " " + buyer.houseNumber() + ", " + buyer.zipCode() + " " + buyer.city());
+            companyNameField = new TextField("Firma");
+            TextField nipFieldForm = new TextField("NIP");
+            TextField regonField = new TextField("REGON");
+            TextField streetField = new TextField("Ulica");
+            TextField houseNumberField = new TextField("Nr domu/mieszkania");
+            TextField zipCodeField = new TextField("Kod pocztowy");
+            TextField cityField = new TextField("Miasto");
 
-            buyerDataLayout.add(buyerName, buyerNip, buyerRegon, buyerAddress);
+            // Znaleziony buyer po   nip
 
-        } catch (NipNotFoundException | CustomValidationException | RestClientResponseException ex) {
-            Notification.show("Nieprawidłowy Nip ", 5000, Notification.Position.MIDDLE);
+            companyNameField.setValue(buyer.name());
+            nipFieldForm.setValue(buyer.nip());
+            regonField.setValue(buyer.regon());
+            streetField.setValue(buyer.street());
+            houseNumberField.setValue(buyer.houseNumber());
+            zipCodeField.setValue(buyer.zipCode());
+            cityField.setValue(buyer.city());
 
+
+
+            Button saveButton = new Button("Zapisz", e -> {
+                BuyerDto dto = new BuyerDto(companyNameField.getValue(), nipFieldForm.getValue(), regonField.getValue(), streetField.getValue(), houseNumberField.getValue(), zipCodeField.getValue(), cityField.getValue());
+                try {
+                    buyerService.findByNipAndNameAndSave(dto);
+                    Notification.show("Dane zapisane.");
+                } catch (Exception ex) {
+                    Notification.show("Błąd przy zapisie: " + ex.getMessage());
+                }
+            });
+
+            buyerDataLayout.add(companyNameField, nipFieldForm, regonField, streetField, houseNumberField, zipCodeField, cityField, saveButton);
+
+        } catch (Exception e) {
+            Notification.show("Błąd podczas wyszukiwania: " + e.getMessage());
         }
     }
 
-       private void addItem(){
+
+    private void addItem() {
 
 
            try {
