@@ -1,10 +1,7 @@
 package org.lukasz.faktury.nipapi;
 
 import org.lukasz.faktury.exceptions.NipNotFoundException;
-import org.lukasz.faktury.nipapi.ceidgapi.AdresDzialalnosci;
-import org.lukasz.faktury.nipapi.ceidgapi.CeidgNipApiResponse;
-import org.lukasz.faktury.nipapi.ceidgapi.CeidgResult;
-import org.lukasz.faktury.nipapi.ceidgapi.Owner;
+import org.lukasz.faktury.nipapi.ceidgapi.*;
 import org.lukasz.faktury.nipapi.mf.Address;
 import org.lukasz.faktury.nipapi.mf.MfNipApiResponse;
 import org.lukasz.faktury.nipapi.mf.Subject;
@@ -50,12 +47,26 @@ public class ApiConnectionImpl implements ApiConnection {
         }).toEntity(CeidgNipApiResponse.class);
         if (ceidgNipApiResponse.getStatusCode().value() == 204) {
             return mfResult(nip);
+
         }
 
+        return checkAddress(ceidgNipApiResponse.getBody());
 
-        return ceidgNipApiResponse.getBody();
 
+    }
 
+    private CeidgNipApiResponse checkAddress(CeidgNipApiResponse response) {
+        List<CeidgResult> updatedCompany = response.firma().stream().filter(f -> !f.status().equals("WYKRESLONY")).map(firma -> {
+            if (firma.adresDzialalnosci().miasto() == null && firma.adresKorespondencyjny().miasto() != null) {
+                CorrespondenceAddress ca = firma.adresKorespondencyjny();
+                BusinessAddress businessAddress = new BusinessAddress(ca.ulica(), ca.budynek(), ca.kod(), ca.miasto());
+                return new CeidgResult(firma.nazwa(), businessAddress, firma.wlasciciel(), firma.status(), firma.adresKorespondencyjny());
+            } else {
+                return firma;
+            }
+        }).toList();
+
+        return new CeidgNipApiResponse(updatedCompany);
     }
 
 
@@ -64,7 +75,7 @@ public class ApiConnectionImpl implements ApiConnection {
 
     }
 
-    //todo  private
+
     private CeidgNipApiResponse mfResult(String nip) {
         Subject subject = restClient.get().uri(searchByNipMf(nip)).accept(MediaType.APPLICATION_JSON).retrieve().body(MfNipApiResponse.class).result().subject();
         Address address;
@@ -74,7 +85,7 @@ public class ApiConnectionImpl implements ApiConnection {
             address = splitAddress(subject.residenceAddress());
 
         }
-        CeidgResult ceidgResult = new CeidgResult(subject.name(), new AdresDzialalnosci(address.street(), address.houseNumber(), address.zipcode(), address.city()), new Owner(subject.nip(), subject.regon()));
+        CeidgResult ceidgResult = new CeidgResult(subject.name(), new BusinessAddress(address.street(), address.houseNumber(), address.zipcode(), address.city()), new Owner(subject.nip(), subject.regon()), "mf", new CorrespondenceAddress(address.street(), address.houseNumber(), address.zipcode(), address.city()));
         return new CeidgNipApiResponse(List.of(ceidgResult));
     }
 

@@ -6,7 +6,7 @@ import org.lukasz.faktury.nipapi.ceidgapi.CeidgResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class BuyerServiceImpl implements BuyerService {
@@ -23,27 +23,33 @@ public class BuyerServiceImpl implements BuyerService {
     @Override
     @Transactional
     public BuyerDto findByNipAndSave(String nip) {
-        Optional<Buyer> byNip = buyerRepo.findByNip(nip);
-        if (byNip.isPresent()) {
-            Buyer buyer = byNip.get();
-
+        List<Buyer> byNip = buyerRepo.findByNip(nip);
+        if (!byNip.isEmpty()) {
+            Buyer buyer = byNip.getLast();
             return buyerMapper.entityToDto(buyer);
         }
         BuyerDto dataByNip = findDataByNip(nip);
+
         Buyer entity = buyerMapper.toEntity(dataByNip);
         Buyer save = buyerRepo.save(entity);
         return buyerMapper.entityToDto(save);
     }
 
     @Override
-    public Buyer findBuyer(String nip) {
-        return buyerRepo.findByNip(nip).orElseThrow();
+    public Buyer findBuyer(BuyerDto buyerDto) {
+        return buyerRepo.findByNipAndName(buyerDto.nip(), buyerDto.name()).orElseThrow();
 
+    }
+
+    @Override
+    public void findByNipAndName(BuyerDto buyerDto) {
+        buyerRepo.findByNipAndName(buyerDto.nip(), buyerDto.name()).ifPresentOrElse(buyer -> {},
+                () -> buyerRepo.save(buyerMapper.toEntity(buyerDto)));
     }
 
 
     private BuyerDto findDataByNip(String nip) {
-        CeidgResult ceidgResult = connection.result(nip).firma().stream().findFirst().orElseThrow();
+        CeidgResult ceidgResult = connection.result(nip).firma().stream().reduce((first, last) -> first).orElseThrow();
         return new BuyerDto(ceidgResult.nazwa(), ceidgResult.wlasciciel().nip(), ceidgResult.wlasciciel().regon(), ceidgResult.adresDzialalnosci().miasto(), ceidgResult.adresDzialalnosci().kod(), ceidgResult.adresDzialalnosci().ulica(), ceidgResult.adresDzialalnosci().budynek());
     }
 
