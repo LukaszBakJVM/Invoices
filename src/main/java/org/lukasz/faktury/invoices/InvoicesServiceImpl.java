@@ -69,7 +69,7 @@ public class InvoicesServiceImpl implements InvoicesService{
         }
 
 
-        invoices.setBuyer(buyerService.findBuyer(buyerDto.nip()));
+        invoices.setBuyer(buyerService.findBuyer(buyerDto));
         invoices.setSeller(seller);
 
 

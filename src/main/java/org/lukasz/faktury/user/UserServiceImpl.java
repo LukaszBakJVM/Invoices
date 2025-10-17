@@ -44,12 +44,13 @@ public class UserServiceImpl implements UserService {
         logger.info("Inside registration");
         validation.validation(request);
         findUserByEmail(request.email());
-      //  List<SellerDto> dataByNip = findDataByNip(request.nip());
-       // logger.info("Inside registration  sellerDto -> {} ", dataByNip);
+
         Seller seller = sellerService.save(sellerDto);
+        logger.info("Inside registration  seller -> {} ", seller);
 
 
         User entity = mapper.toEntity(request);
+        logger.info("Inside registration  user -> {} ", entity);
 
 
         entity.setActive(false);
@@ -57,7 +58,7 @@ public class UserServiceImpl implements UserService {
         entity.setSeller(seller);
         User save = repository.save(entity);
         activationTokenService.createToken(save);
-       // logger.info("Inside registration  sellerDto -> {} ", dataByNip);
+
         return mapper.toResponse(save);
     }
 
@@ -87,7 +88,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<SellerDto> findDataByNip(String nip) {
-
         return connection.result(nip).firma().stream().map(r -> new SellerDto(r.nazwa(), r.wlasciciel().nip(), r.wlasciciel().regon(), r.adresDzialalnosci().miasto(), r.adresDzialalnosci().kod(), r.adresDzialalnosci().ulica(), r.adresDzialalnosci().budynek())).toList();
 
 
