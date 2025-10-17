@@ -61,13 +61,17 @@ public class NewInvoiceView extends VerticalLayout {
     private final ComboBox<String> tax;
     private final ComboBox<String> unit;
     // dane faktury
-    TextField numberField = new TextField("Numer faktury");
-    DatePicker dateOfIssueField = new DatePicker("Data wystawienia");
-    TextField placeField = new TextField("Miejsce wystawienia");
-    DatePicker dateOfSaleField = new DatePicker("Data sprzedaży");
-    IntegerField postponementField = new IntegerField("Odroczenie (dni)");
-    DatePicker paymentDateField = new DatePicker("Termin płatności");
-    ComboBox<String> paymentTypeField = new ComboBox<>("Forma płatności");
+    private final TextField numberField = new TextField("Numer faktury");
+    private final DatePicker dateOfIssueField = new DatePicker("Data wystawienia");
+    private final TextField placeField = new TextField("Miejsce wystawienia");
+    private final DatePicker dateOfSaleField = new DatePicker("Data sprzedaży");
+    private final IntegerField postponementField = new IntegerField("Odroczenie (dni)");
+    private final DatePicker paymentDateField = new DatePicker("Termin płatności");
+    private final ComboBox<String> paymentTypeField = new ComboBox<>("Forma płatności");
+
+    //Buyer
+
+    private TextField companyNameField;
 
 
 
@@ -287,8 +291,8 @@ public class NewInvoiceView extends VerticalLayout {
             InvoicesDto invoicesDto = new InvoicesDto(numberField.getValue(), dateOfIssueField.getValue(), placeField.getValue(), dateOfSaleField.getValue()
                     , postponementField.getValue(), paymentDateField.getValue(), paymentTypeField.getValue());
 
-//todo zmienic na dto mozliwe 2 firmy
-            BuyerDto buyer = buyerService.findByNipAndSave(nipField.getValue());
+
+            BuyerDto buyer = buyerService.findByNipAndName(nipField.getValue(), companyNameField.getValue());
 
             invoicesService.createInvoices(invoicesDto, buyer, items);
             TotalValues totalValues = new TotalValues(sumNettoField.getValue(),sumTaxField.getValue(),sumBruttoField.getValue());
@@ -305,7 +309,7 @@ public class NewInvoiceView extends VerticalLayout {
             clearInvoicesFields();
 
         } catch (IOException | CustomValidationException | AccountNumberException | NipConflictException |
-                 NipNotFoundException ex) {
+                 NipNotFoundException | BuyerNotFoundException ex) {
             Notification.show(ex.getMessage(),4000, Notification.Position.MIDDLE);
         }
 
@@ -330,7 +334,7 @@ public class NewInvoiceView extends VerticalLayout {
         buyerDataLayout.removeAll();
         try {
             BuyerDto buyer = buyerService.findByNipAndSave(nipField.getValue());
-            TextField nameField = new TextField("Firma");
+            companyNameField = new TextField("Firma");
             TextField nipFieldForm = new TextField("NIP");
             TextField regonField = new TextField("REGON");
             TextField streetField = new TextField("Ulica");
@@ -340,7 +344,7 @@ public class NewInvoiceView extends VerticalLayout {
 
             // Znaleziony buyer po   nip
 
-            nameField.setValue(buyer.name());
+            companyNameField.setValue(buyer.name());
             nipFieldForm.setValue(buyer.nip());
             regonField.setValue(buyer.regon());
             streetField.setValue(buyer.street());
@@ -351,16 +355,16 @@ public class NewInvoiceView extends VerticalLayout {
 
 
             Button saveButton = new Button("Zapisz", e -> {
-                BuyerDto dto = new BuyerDto(nameField.getValue(), nipFieldForm.getValue(), regonField.getValue(), streetField.getValue(), houseNumberField.getValue(), zipCodeField.getValue(), cityField.getValue());
+                BuyerDto dto = new BuyerDto(companyNameField.getValue(), nipFieldForm.getValue(), regonField.getValue(), streetField.getValue(), houseNumberField.getValue(), zipCodeField.getValue(), cityField.getValue());
                 try {
-                    buyerService.findByNipAndName(dto);
+                    buyerService.findByNipAndNameAndSave(dto);
                     Notification.show("Dane zapisane.");
                 } catch (Exception ex) {
                     Notification.show("Błąd przy zapisie: " + ex.getMessage());
                 }
             });
 
-            buyerDataLayout.add(nameField, nipFieldForm, regonField, streetField, houseNumberField, zipCodeField, cityField, saveButton);
+            buyerDataLayout.add(companyNameField, nipFieldForm, regonField, streetField, houseNumberField, zipCodeField, cityField, saveButton);
 
         } catch (Exception e) {
             Notification.show("Błąd podczas wyszukiwania: " + e.getMessage());

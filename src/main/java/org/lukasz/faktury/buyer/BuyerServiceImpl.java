@@ -1,6 +1,7 @@
 package org.lukasz.faktury.buyer;
 
 import org.lukasz.faktury.buyer.dto.BuyerDto;
+import org.lukasz.faktury.exceptions.BuyerNotFoundException;
 import org.lukasz.faktury.nipapi.ApiConnection;
 import org.lukasz.faktury.nipapi.ceidgapi.CeidgResult;
 import org.springframework.stereotype.Service;
@@ -42,14 +43,22 @@ public class BuyerServiceImpl implements BuyerService {
     }
 
     @Override
-    public void findByNipAndName(BuyerDto buyerDto) {
+    public void findByNipAndNameAndSave(BuyerDto buyerDto) {
         buyerRepo.findByNipAndName(buyerDto.nip(), buyerDto.name()).ifPresentOrElse(buyer -> {},
                 () -> buyerRepo.save(buyerMapper.toEntity(buyerDto)));
     }
 
+    @Override
+    public BuyerDto findByNipAndName(String nip, String companyName) {
+        Buyer buyer = buyerRepo.findByNipAndName(nip, companyName).orElseThrow(() -> new BuyerNotFoundException("Błąd Firmy , Zapisz ponownie firmę "));
+
+        return buyerMapper.entityToDto(buyer);
+
+    }
+
 
     private BuyerDto findDataByNip(String nip) {
-        CeidgResult ceidgResult = connection.result(nip).firma().stream().reduce((first, last) -> first).orElseThrow();
+        CeidgResult ceidgResult = connection.result(nip).firma().stream().findFirst().orElseThrow();
         return new BuyerDto(ceidgResult.nazwa(), ceidgResult.wlasciciel().nip(), ceidgResult.wlasciciel().regon(), ceidgResult.adresDzialalnosci().miasto(), ceidgResult.adresDzialalnosci().kod(), ceidgResult.adresDzialalnosci().ulica(), ceidgResult.adresDzialalnosci().budynek());
     }
 
