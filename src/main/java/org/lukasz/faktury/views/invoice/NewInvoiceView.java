@@ -33,7 +33,6 @@ import org.lukasz.faktury.seller.SellerDto;
 import org.lukasz.faktury.seller.SellerService;
 import org.lukasz.faktury.utils.pdfenerator.PDFGenerator;
 import org.lukasz.faktury.views.user.DashboardView;
-import org.springframework.web.client.RestClientResponseException;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -288,7 +287,7 @@ public class NewInvoiceView extends VerticalLayout {
             InvoicesDto invoicesDto = new InvoicesDto(numberField.getValue(), dateOfIssueField.getValue(), placeField.getValue(), dateOfSaleField.getValue()
                     , postponementField.getValue(), paymentDateField.getValue(), paymentTypeField.getValue());
 
-
+//todo zmienic na dto mozliwe 2 firmy
             BuyerDto buyer = buyerService.findByNipAndSave(nipField.getValue());
 
             invoicesService.createInvoices(invoicesDto, buyer, items);
@@ -331,20 +330,45 @@ public class NewInvoiceView extends VerticalLayout {
         buyerDataLayout.removeAll();
         try {
             BuyerDto buyer = buyerService.findByNipAndSave(nipField.getValue());
-            Span buyerName = new Span("Firma: " + buyer.name());
-            Span buyerNip = new Span("NIP: " + buyer.nip());
-            Span buyerRegon = new Span("REGON: " + buyer.regon());
-            Span buyerAddress = new Span("Adres: " + buyer.street() + " " + buyer.houseNumber() + ", " + buyer.zipCode() + " " + buyer.city());
+            TextField nameField = new TextField("Firma");
+            TextField nipFieldForm = new TextField("NIP");
+            TextField regonField = new TextField("REGON");
+            TextField streetField = new TextField("Ulica");
+            TextField houseNumberField = new TextField("Nr domu/mieszkania");
+            TextField zipCodeField = new TextField("Kod pocztowy");
+            TextField cityField = new TextField("Miasto");
 
-            buyerDataLayout.add(buyerName, buyerNip, buyerRegon, buyerAddress);
+            // Znaleziony buyer po   nip
 
-        } catch (NipNotFoundException | CustomValidationException | RestClientResponseException ex) {
-            Notification.show("Nieprawidłowy Nip ", 5000, Notification.Position.MIDDLE);
+            nameField.setValue(buyer.name());
+            nipFieldForm.setValue(buyer.nip());
+            regonField.setValue(buyer.regon());
+            streetField.setValue(buyer.street());
+            houseNumberField.setValue(buyer.houseNumber());
+            zipCodeField.setValue(buyer.zipCode());
+            cityField.setValue(buyer.city());
 
+
+
+            Button saveButton = new Button("Zapisz", e -> {
+                BuyerDto dto = new BuyerDto(nameField.getValue(), nipFieldForm.getValue(), regonField.getValue(), streetField.getValue(), houseNumberField.getValue(), zipCodeField.getValue(), cityField.getValue());
+                try {
+                    buyerService.findByNipAndName(dto);
+                    Notification.show("Dane zapisane.");
+                } catch (Exception ex) {
+                    Notification.show("Błąd przy zapisie: " + ex.getMessage());
+                }
+            });
+
+            buyerDataLayout.add(nameField, nipFieldForm, regonField, streetField, houseNumberField, zipCodeField, cityField, saveButton);
+
+        } catch (Exception e) {
+            Notification.show("Błąd podczas wyszukiwania: " + e.getMessage());
         }
     }
 
-       private void addItem(){
+
+    private void addItem() {
 
 
            try {
