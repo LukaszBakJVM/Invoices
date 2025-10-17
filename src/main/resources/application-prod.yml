@@ -1,0 +1,38 @@
+nipApi: https://dane.biznes.gov.pl
+tokenCeidg: token
+tokenUrl: https://faktury.freeddns.org
+
+
+spring:
+  datasource:
+    url: jdbc:postgresql://url:5432/invoices
+    username: postgres
+    password: pass
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: email
+    password: pass
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+
+
+
+
+
+
+
+
+
+
+
+
