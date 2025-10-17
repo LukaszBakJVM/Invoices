@@ -10,10 +10,11 @@ import org.lukasz.faktury.utils.confirmationtoken.activationtoken.ActivationEmai
 import org.lukasz.faktury.utils.confirmationtoken.activationtoken.ActivationTokenRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
@@ -27,7 +28,7 @@ public class UserServiceTest {
     private UserRepository userRepository;
     @Autowired
     private ActivationTokenRepo tokenRepository;
-    @MockitoBean
+    @MockBean
     private ActivationEmailSenderServiceImpl activationEmailSenderService;
 
 
