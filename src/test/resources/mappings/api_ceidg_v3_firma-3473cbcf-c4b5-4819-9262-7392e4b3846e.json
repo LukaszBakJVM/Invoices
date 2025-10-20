@@ -1,0 +1,36 @@
+{
+  "id": "3473cbcf-c4b5-4819-9262-7392e4b3846e",
+  "name": "api_ceidg_v3_firma",
+  "request": {
+    "urlPath": "/api/ceidg/v3/firma",
+    "method": "GET",
+    "queryParameters": {
+      "nip": {
+        "equalTo": "5272962520"
+      }
+    }
+  },
+  "response": {
+    "status": 204,
+    "headers": {
+      "Strict-Transport-Security": "max-age=15552000",
+      "Cache-Control": "max-age=0, no-cache, no-store",
+      "X-Correlation-ID": "ffde9741-c174-4964-8a84-e7621f63c13b",
+      "X-Rate-Limit-Remaining": "997",
+      "Server-Timing": [
+        "edge; dur=1",
+        "origin; dur=14",
+        "cdn-cache; desc=MISS",
+        "ak_p; desc=\"1760984736946_1600473248_637118221_1473_4286_18_19_-\";dur=1"
+      ],
+      "X-Rate-Limit-Limit": "1000",
+      "X-Rate-Limit-Reset": "1760988304975",
+      "X-Gravitee-Transaction-Id": "67d0c26f-b6c2-4e60-90c2-6fb6c22e60d4",
+      "Pragma": "no-cache",
+      "Expires": "Mon, 20 Oct 2025 18:25:36 GMT",
+      "Date": "Mon, 20 Oct 2025 18:25:36 GMT"
+    }
+  },
+  "uuid": "3473cbcf-c4b5-4819-9262-7392e4b3846e",
+  "persistent": true
+}

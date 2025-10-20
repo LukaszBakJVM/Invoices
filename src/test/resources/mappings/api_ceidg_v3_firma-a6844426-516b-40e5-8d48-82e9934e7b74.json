@@ -1,0 +1,39 @@
+{
+  "id": "a6844426-516b-40e5-8d48-82e9934e7b74",
+  "name": "api_ceidg_v3_firma",
+  "request": {
+    "urlPath": "/api/ceidg/v3/firma",
+    "method": "GET",
+    "queryParameters": {
+      "nip": {
+        "equalTo": "8133209246"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": "{\"firma\":[{\"id\":\"6D0CE811-2ADD-4C74-977F-2096DCC41E17\",\"nazwa\":\"ŁUKASZ BĄK  MarStyle\",\"adresDzialalnosci\":{\"ulica\":\"ul. Południowa\",\"budynek\":\"4\",\"miasto\":\"Urzędów\",\"wojewodztwo\":\"LUBELSKIE\",\"powiat\":\"kraśnicki\",\"gmina\":\"Urzędów\",\"kraj\":\"PL\",\"kod\":\"23-259\",\"terc\":\"0607084\",\"simc\":\"0392684\",\"ulic\":\"17070\"},\"adresKorespondencyjny\":{\"ulica\":\"ul. Południowa\",\"budynek\":\"4\",\"miasto\":\"Urzędów\",\"wojewodztwo\":\"LUBELSKIE\",\"powiat\":\"kraśnicki\",\"gmina\":\"Urzędów\",\"kraj\":\"PL\",\"kod\":\"23-259\",\"adresat\":\"Łukasz Bąk\",\"terc\":\"0607084\",\"simc\":\"0392684\",\"ulic\":\"17070\"},\"wlasciciel\":{\"imie\":\"ŁUKASZ\",\"nazwisko\":\"BĄK\",\"nip\":\"8133209246\",\"regon\":\"060557919\"},\"obywatelstwa\":[{\"symbol\":\"PL\",\"kraj\":\"Polska\"}],\"rokPkd\":\"2007\",\"pkd\":[{\"kod\":\"4791Z\",\"nazwa\":\"Sprzedaż detaliczna prowadzona przez domy sprzedaży wysyłkowej lub Internet\"}],\"pkdGlowny\":{\"kod\":\"4791Z\",\"nazwa\":\"Sprzedaż detaliczna prowadzona przez domy sprzedaży wysyłkowej lub Internet\"},\"dataRozpoczecia\":\"2020-07-07\",\"dataZakonczenia\":\"2021-04-22\",\"dataWykreslenia\":\"2021-04-23\",\"status\":\"WYKRESLONY\",\"numerStatusu\":2,\"wspolnoscMajatkowa\":1,\"link\":\"https://dane.biznes.gov.pl/api/ceidg/v3/firma/6D0CE811-2ADD-4C74-977F-2096DCC41E17\"},{\"id\":\"362E22BE-D38F-4A92-B380-CE1AD489665E\",\"nazwa\":\"Software Soluzioni Łukasz Bąk\",\"adresDzialalnosci\":{},\"adresKorespondencyjny\":{\"ulica\":\"ul. Południowa\",\"budynek\":\"4\",\"miasto\":\"Urzędów\",\"wojewodztwo\":\"LUBELSKIE\",\"powiat\":\"kraśnicki\",\"gmina\":\"Urzędów\",\"kraj\":\"PL\",\"kod\":\"23-250\",\"adresat\":\"Łukasz Bąk\",\"terc\":\"0607084\",\"simc\":\"0392684\",\"ulic\":\"17070\"},\"wlasciciel\":{\"imie\":\"Łukasz\",\"nazwisko\":\"Bąk\",\"nip\":\"8133209246\",\"regon\":\"060557919\"},\"obywatelstwa\":[{\"symbol\":\"PL\",\"kraj\":\"Polska\"}],\"rokPkd\":\"2025\",\"pkd\":[{\"kod\":\"6210B\",\"nazwa\":\"Pozostała działalność w zakresie programowania\"},{\"kod\":\"5829Z\",\"nazwa\":\"Działalność wydawnicza w zakresie pozostałego oprogramowania\"}],\"pkdGlowny\":{\"kod\":\"6210B\",\"nazwa\":\"Pozostała działalność w zakresie programowania\"},\"dataRozpoczecia\":\"2025-02-03\",\"dataZawieszenia\":\"2025-04-30\",\"status\":\"ZAWIESZONY\",\"numerStatusu\":3,\"adresDoreczenElektronicznych\":\"AE:PL-56675-73045-FVJUV-25\",\"wspolnoscMajatkowa\":1,\"link\":\"https://dane.biznes.gov.pl/api/ceidg/v3/firma/362E22BE-D38F-4A92-B380-CE1AD489665E\"},{\"id\":\"B6B49CA0-8F4D-4AC3-9CE0-D830C0EDC864\",\"nazwa\":\"BĄK ŁUKASZ \\\"MAŁY BAR\\\"\",\"adresDzialalnosci\":{\"ulica\":\"RYNEK\",\"budynek\":\"9\",\"miasto\":\"Urzędów\",\"wojewodztwo\":\"LUBELSKIE\",\"powiat\":\"kraśnicki\",\"gmina\":\"Urzędów\",\"kraj\":\"PL\",\"kod\":\"23-250\",\"terc\":\"0607082\",\"simc\":\"0392684\",\"ulic\":\"19253\"},\"adresKorespondencyjny\":{\"ulica\":\"RYNEK\",\"budynek\":\"9\",\"miasto\":\"Urzędów\",\"wojewodztwo\":\"LUBELSKIE\",\"powiat\":\"kraśnicki\",\"gmina\":\"Urzędów\",\"kraj\":\"PL\",\"kod\":\"23-250\",\"terc\":\"0607082\",\"simc\":\"0392684\",\"ulic\":\"19253\"},\"wlasciciel\":{\"imie\":\"ŁUKASZ\",\"nazwisko\":\"BĄK\",\"nip\":\"8133209246\",\"regon\":\"060557919\"},\"obywatelstwa\":[{\"symbol\":\"PL\",\"kraj\":\"Polska\"}],\"rokPkd\":\"2007\",\"pkd\":[{\"kod\":\"5610A\",\"nazwa\":\"Restauracje i inne stałe placówki gastronomiczne\"},{\"kod\":\"4711Z\",\"nazwa\":\"Sprzedaż detaliczna prowadzona w niewyspecjalizowanych sklepach z przewagą żywności, napojów i wyrobów tytoniowych\"},{\"kod\":\"5630Z\",\"nazwa\":\"Przygotowywanie i podawanie napojów\"}],\"pkdGlowny\":{\"kod\":\"5610A\",\"nazwa\":\"Restauracje i inne stałe placówki gastronomiczne\"},\"dataRozpoczecia\":\"2009-12-02\",\"dataZakonczenia\":\"2012-04-30\",\"dataWykreslenia\":\"2012-05-04\",\"status\":\"WYKRESLONY\",\"numerStatusu\":2,\"wspolnoscMajatkowa\":1,\"link\":\"https://dane.biznes.gov.pl/api/ceidg/v3/firma/B6B49CA0-8F4D-4AC3-9CE0-D830C0EDC864\"}],\"properties\":{\"dc:title\":\"firma\",\"dc:description\":\"Zwraca szczegółowe dane firmy\",\"dc:language\":\"pl-PL\",\"schema:provider\":\"Ministerstwo Rozwoju i Technologii\",\"schema:datePublished\":\"2025-10-20 08:26:03\"}}",
+    "headers": {
+      "X-Correlation-ID": "65becfc2-c70f-4c05-8291-a09811c9c456",
+      "Server-Timing": [
+        "edge; dur=1",
+        "origin; dur=141",
+        "cdn-cache; desc=MISS",
+        "ak_p; desc=\"1760984763528_1600473229_288356268_14270_4504_17_14_-\";dur=1"
+      ],
+      "X-Gravitee-Transaction-Id": "8e74c2f8-0ce2-4c9e-b4c2-f80ce21c9ea5",
+      "Pragma": "no-cache",
+      "Date": "Mon, 20 Oct 2025 18:26:03 GMT",
+      "Strict-Transport-Security": "max-age=15552000",
+      "Cache-Control": "max-age=0, no-cache, no-store",
+      "X-Rate-Limit-Remaining": "996",
+      "X-Rate-Limit-Limit": "1000",
+      "X-Rate-Limit-Reset": "1760988304975",
+      "Vary": "Accept-Encoding",
+      "Expires": "Mon, 20 Oct 2025 18:26:03 GMT",
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  },
+  "uuid": "a6844426-516b-40e5-8d48-82e9934e7b74",
+  "persistent": true
+}
