@@ -89,7 +89,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void shouldRegisterUser_AndSendActivationEmai_lWithValidToken() {
+    void shouldRegisterUser_AndSendActivationEmail_lWithValidToken() {
         UserRequest request = new UserRequest("test@test.pl", "pass", "7151536825");
         SellerDto sellerDto = mock(SellerDto.class);
 
