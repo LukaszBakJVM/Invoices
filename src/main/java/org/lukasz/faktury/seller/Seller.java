@@ -126,4 +126,21 @@ public class Seller {
     public void setAccountNb(String accountNb) {
         this.accountNb = accountNb;
     }
+
+    @Override
+    public String toString() {
+        return "Seller{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", nip='" + nip + '\'' +
+                ", regon='" + regon + '\'' +
+                ", city='" + city + '\'' +
+                ", zipCode='" + zipCode + '\'' +
+                ", street='" + street + '\'' +
+                ", houseNumber='" + houseNumber + '\'' +
+                ", accountNb='" + accountNb + '\'' +
+                ", user=" + user +
+                ", invoices=" + invoices +
+                '}';
+    }
 }

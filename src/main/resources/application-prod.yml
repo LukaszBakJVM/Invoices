@@ -1,6 +1,7 @@
-nipApi: https://dane.biznes.gov.pl
-tokenCeidg: token
-tokenUrl: https://faktury.freeddns.org
+ceidgApi: https://dane.biznes.gov.pl
+tokenCeidg: tokenCeidg
+mfApi: https://wl-api.mf.gov.pl
+tokenUrl: localhost:8080
 
 
 spring:

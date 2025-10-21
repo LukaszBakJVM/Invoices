@@ -1,0 +1,39 @@
+{
+  "id": "d0acf4fc-9569-4f2c-b0fc-37e437c73986",
+  "name": "api_ceidg_v3_firma",
+  "request": {
+    "urlPath": "/api/ceidg/v3/firma",
+    "method": "GET",
+    "queryParameters": {
+      "nip": {
+        "equalTo": "7151536825"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": "{\"firma\":[{\"id\":\"2AB2236E-D0B8-419E-B3C7-5DEE85D6AD6A\",\"nazwa\":\"Dolce Vita MARTA BĄK\",\"adresDzialalnosci\":{\"ulica\":\"ul. Rynek\",\"budynek\":\"5\",\"miasto\":\"Urzędów\",\"wojewodztwo\":\"LUBELSKIE\",\"powiat\":\"kraśnicki\",\"gmina\":\"Urzędów\",\"kraj\":\"PL\",\"kod\":\"23-250\",\"terc\":\"0607084\",\"simc\":\"0392684\",\"ulic\":\"19253\"},\"adresKorespondencyjny\":{\"ulica\":\"ul. Południowa\",\"budynek\":\"4\",\"miasto\":\"Urzędów\",\"wojewodztwo\":\"LUBELSKIE\",\"powiat\":\"kraśnicki\",\"gmina\":\"Urzędów\",\"kraj\":\"PL\",\"kod\":\"23-250\",\"terc\":\"0607084\",\"simc\":\"0392684\",\"ulic\":\"17070\"},\"wlasciciel\":{\"imie\":\"MARTA\",\"nazwisko\":\"BĄK\",\"nip\":\"7151536825\",\"regon\":\"060293389\"},\"obywatelstwa\":[{\"symbol\":\"PL\",\"kraj\":\"Polska\"}],\"rokPkd\":\"2025\",\"pkd\":[{\"kod\":\"5622Z\",\"nazwa\":\"Regularne przygotowywanie i dostarczanie żywności dla odbiorców zewnętrznych (katering regularny) i pozostała gastronomiczna działalność usługowa\"},{\"kod\":\"1072Z\",\"nazwa\":\"Produkcja sucharów, herbatników, konserwowanych wyrobów ciastkarskich i ciastek\"},{\"kod\":\"1052Z\",\"nazwa\":\"Produkcja lodów śmietankowych i pozostałych lodów jadalnych\"},{\"kod\":\"4712Z\",\"nazwa\":\"Pozostała sprzedaż detaliczna niewyspecjalizowana\"},{\"kod\":\"5630Z\",\"nazwa\":\"Podawanie napojów\"},{\"kod\":\"4711Z\",\"nazwa\":\"Sprzedaż detaliczna niewyspecjalizowana z przewagą żywności, napojów lub wyrobów tytoniowych\"}],\"pkdGlowny\":{\"kod\":\"5622Z\",\"nazwa\":\"Regularne przygotowywanie i dostarczanie żywności dla odbiorców zewnętrznych (katering regularny) i pozostała gastronomiczna działalność usługowa\"},\"dataRozpoczecia\":\"2017-09-11\",\"dataZawieszenia\":\"2025-09-30\",\"status\":\"ZAWIESZONY\",\"numerStatusu\":3,\"wspolnoscMajatkowa\":1,\"link\":\"https://dane.biznes.gov.pl/api/ceidg/v3/firma/2AB2236E-D0B8-419E-B3C7-5DEE85D6AD6A\"}],\"properties\":{\"dc:title\":\"firma\",\"dc:description\":\"Zwraca szczegółowe dane firmy\",\"dc:language\":\"pl-PL\",\"schema:provider\":\"Ministerstwo Rozwoju i Technologii\",\"schema:datePublished\":\"2025-10-20 08:25:17\"}}",
+    "headers": {
+      "X-Correlation-ID": "7e694d28-202f-4779-894b-16342a14cc96",
+      "Server-Timing": [
+        "edge; dur=1",
+        "origin; dur=77",
+        "cdn-cache; desc=MISS",
+        "ak_p; desc=\"1760984717028_1600473248_637095431_7775_4483_17_14_-\";dur=1"
+      ],
+      "X-Gravitee-Transaction-Id": "bd446e82-7eb4-4af0-846e-827eb49af04d",
+      "Pragma": "no-cache",
+      "Date": "Mon, 20 Oct 2025 18:25:17 GMT",
+      "Strict-Transport-Security": "max-age=15552000",
+      "Cache-Control": "max-age=0, no-cache, no-store",
+      "X-Rate-Limit-Remaining": "998",
+      "X-Rate-Limit-Limit": "1000",
+      "X-Rate-Limit-Reset": "1760988304975",
+      "Vary": "Accept-Encoding",
+      "Expires": "Mon, 20 Oct 2025 18:25:17 GMT",
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  },
+  "uuid": "d0acf4fc-9569-4f2c-b0fc-37e437c73986",
+  "persistent": true
+}

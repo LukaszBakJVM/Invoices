@@ -50,13 +50,14 @@ public class UserServiceImpl implements UserService {
 
 
         User entity = mapper.toEntity(request);
-        logger.info("Inside registration  user -> {} ", entity);
+
 
 
         entity.setActive(false);
         entity.setNip(request.nip());
         entity.setSeller(seller);
         User save = repository.save(entity);
+        logger.info("Inside registration  user -> {} ", entity);
         activationTokenService.createToken(save);
 
         return mapper.toResponse(save);

@@ -30,7 +30,7 @@ import java.util.List;
 public class RegisterView extends VerticalLayout {
 
     private final UserService userService;
-    private final ComboBox<SellerDto> sellerDtoComboBox = new ComboBox<>("wwybierz firme");
+    private final ComboBox<SellerDto> sellerDtoComboBox = new ComboBox<>();
 
     private final EmailField email;
     private final PasswordField password;

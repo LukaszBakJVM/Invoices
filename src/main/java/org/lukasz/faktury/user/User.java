@@ -105,4 +105,11 @@ public class User {
     public void setChangePassword(ChangePassword changePassword) {
         this.changePassword = changePassword;
     }
+
+    @Override
+    public String toString() {
+        return "User{" + "id=" + id + ", email='" + email + '\'' +
+
+                ", nip='" + nip + '\'' + ", active=" + active + ", seller=" + seller + ", activationTokens=" + activationTokens + ", changePassword=" + changePassword + '}';
+    }
 }
