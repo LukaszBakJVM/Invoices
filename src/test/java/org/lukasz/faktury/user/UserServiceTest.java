@@ -91,7 +91,9 @@ public class UserServiceTest {
     @Test
     void shouldRegisterUser_AndSendActivationEmail_lWithValidToken() {
         UserRequest request = new UserRequest("test@test.pl", "pass", "7151536825");
-        SellerDto sellerDto = mock(SellerDto.class);
+
+        SellerDto sellerDto = new SellerDto("Dolce Vita MARTA BĄK", "7151536825", "060293389", "Urzędów", "23-250", "ul. Rynek", "5");
+
 
         userService.register(request, sellerDto);
 
