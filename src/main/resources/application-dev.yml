@@ -1,5 +1,6 @@
 ceidgApi: https://dane.biznes.gov.pl
-tokenCeidg: token
+tokenCeidg: tokenCeidg
+mfApi: https://wl-api.mf.gov.pl
 tokenUrl: localhost:8080
 
 
