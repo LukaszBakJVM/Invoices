@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 public class BuyerMapper {
   public   Buyer toEntity(BuyerDto dto){
         Buyer buyer = new Buyer();
-
         buyer.setName(dto.name());
         buyer.setNip(dto.nip());
         buyer.setRegon(dto.regon());
