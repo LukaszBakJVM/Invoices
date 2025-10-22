@@ -187,10 +187,18 @@ public class UserServiceTest {
 
 
     @Test
-    void shouldFindCompany_WhenSearchByNip(){
+    void shouldFindCompany_WhenSearchByNipCdeig(){
         List<SellerDto> dataByNip = userService.findDataByNip("8133209246");
         assertThat(dataByNip).hasSize(1);
     }
+
+    @Test
+    void shouldFindCompany_WhenSearchByNipMf(){
+        List<SellerDto> dataByNip = userService.findDataByNip("5272962520");
+        assertThat(dataByNip).hasSize(1);
+    }
+
+
 
 
     @Test
