@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.lukasz.faktury.exceptions.CustomValidationException;
 import org.lukasz.faktury.exceptions.NipAlreadyRegisteredException;
+import org.lukasz.faktury.exceptions.NipNotFoundException;
 import org.lukasz.faktury.exceptions.UserException;
 import org.lukasz.faktury.seller.Seller;
 import org.lukasz.faktury.seller.SellerDto;
@@ -25,22 +26,22 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@Testcontainers
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-public class UserServiceTeste2e {
+public class E2eUserServiceTest {
     @Autowired
     private UserServiceImpl userService;
     @Autowired
@@ -192,6 +193,19 @@ public class UserServiceTeste2e {
     void shouldFindCompany_WhenSearchByNipCdeig(){
         List<SellerDto> dataByNip = userService.findDataByNip("8133209246");
         assertThat(dataByNip).hasSize(1);
+    }
+
+    @Test
+    void shouldThrowException_WhenNipIsEmpty() {
+        NipNotFoundException ex = assertThrows(NipNotFoundException.class, () -> userService.findDataByNip(""));
+        assertEquals("Uzupełnij nip nabywcy", ex.getMessage());
+    }
+
+    @Test
+    void shouldThrowException_WhenNipIsFault() {
+        NipNotFoundException ex = assertThrows(NipNotFoundException.class, () -> userService.findDataByNip("1231234567"));
+        assertEquals("Niepoprawny identyfikator NIP [1231234567]", ex.getMessage());
+
     }
 
     @Test
