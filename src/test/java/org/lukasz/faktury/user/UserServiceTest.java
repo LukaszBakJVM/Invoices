@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.lukasz.faktury.exceptions.UserException;
-import org.lukasz.faktury.nipapi.ApiConnection;
 import org.lukasz.faktury.seller.Seller;
 import org.lukasz.faktury.seller.SellerDto;
 import org.lukasz.faktury.seller.SellerService;
@@ -29,8 +28,7 @@ public class UserServiceTest {
     private UserMapper mapper;
     @Mock
     private Validation validation;
-    @Mock
-    private ApiConnection connection;
+
     @Mock
     private SellerService sellerService;
     @Mock
