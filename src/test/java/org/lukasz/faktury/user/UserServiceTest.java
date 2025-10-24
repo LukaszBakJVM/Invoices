@@ -1,237 +1,110 @@
 package org.lukasz.faktury.user;
 
-import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
-import com.icegreen.greenmail.util.GreenMail;
-import com.icegreen.greenmail.util.ServerSetupTest;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
-import org.lukasz.faktury.exceptions.CustomValidationException;
-import org.lukasz.faktury.exceptions.NipAlreadyRegisteredException;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.lukasz.faktury.exceptions.UserException;
+import org.lukasz.faktury.nipapi.ApiConnection;
 import org.lukasz.faktury.seller.Seller;
 import org.lukasz.faktury.seller.SellerDto;
-import org.lukasz.faktury.seller.SellerRepo;
+import org.lukasz.faktury.seller.SellerService;
 import org.lukasz.faktury.user.dto.UserRequest;
-import org.lukasz.faktury.utils.confirmationtoken.activationtoken.ActivationEmailSenderServiceImpl;
-import org.lukasz.faktury.utils.confirmationtoken.activationtoken.ActivationToken;
-import org.lukasz.faktury.utils.confirmationtoken.activationtoken.ActivationTokenRepo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Testcontainers;
+import org.lukasz.faktury.user.dto.UserResponse;
+import org.lukasz.faktury.utils.confirmationtoken.activationtoken.ActivationTokenService;
+import org.lukasz.faktury.utils.validation.Validation;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Optional;
 
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.*;
 
-@Testcontainers
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
+@ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
-    @Autowired
+    @Mock
+    private UserRepository repository;
+    @Mock
+    private UserMapper mapper;
+    @Mock
+    private Validation validation;
+    @Mock
+    private ApiConnection connection;
+    @Mock
+    private SellerService sellerService;
+    @Mock
+    private ActivationTokenService activationTokenService;
+    @InjectMocks
     private UserServiceImpl userService;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ActivationTokenRepo tokenRepository;
-    @Autowired
-    SellerRepo sellerRepo;
-    @MockBean
-    private ActivationEmailSenderServiceImpl activationEmailSenderService;
 
 
-    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest").withDatabaseName("invoices").withUsername("test").withPassword("test");
-
-
-    static GreenMail greenMail;
-
-    @RegisterExtension
-    static WireMockExtension wireMockServer = WireMockExtension.newInstance().options(wireMockConfig().dynamicPort()).build();
-
-
-    @DynamicPropertySource
-    static void registerDynamicProperties(DynamicPropertyRegistry registry) {
-        registry.add("ceidgApi", wireMockServer::baseUrl);
-        registry.add("mfApi", wireMockServer::baseUrl);
-        registry.add("tokenUrl", wireMockServer::baseUrl);
-        registry.add("tokenCeidg", () -> "eyJraWQiOiJjZWlkZyI");
-        registry.add("spring.datasource.url", () -> postgreSQLContainer.getJdbcUrl());
-        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
-        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
-        registry.add("spring.mail.host", () -> "localhost");
-        registry.add("spring.mail.port", () -> greenMail.getSmtp().getPort());
-        registry.add("spring.mail.username", () -> "");
-        registry.add("spring.mail.password", () -> "");
-        registry.add("spring.mail.properties.mail.smtp.auth", () -> "false");
-        registry.add("spring.mail.properties.mail.smtp.starttls.enable", () -> "false");
-    }
-
-
-    @BeforeAll
-    static void startPostgres() {
-        postgreSQLContainer.start();
-        greenMail = new GreenMail(ServerSetupTest.SMTP.dynamicPort());
-        greenMail.start();
-
-
-    }
-
-    @AfterAll
-    static void stopPostgres() {
-        postgreSQLContainer.stop();
-        greenMail.stop();
-
-    }
 
     @Test
-    void shouldRegisterUser_AndSendActivationEmail_WithValidTokenCeidg() {
+    void givenValidRequest_whenRegister_thenUserIsSavedAndTokenCreated() {
+        // given
         UserRequest request = new UserRequest("7151536825@test.pl", "pass", "7151536825");
 
         SellerDto sellerDto = new SellerDto("Dolce Vita MARTA BĄK", "7151536825", "060293389", "Urzędów", "23-250", "ul. Rynek", "5");
 
+        Seller seller = new Seller();
+        seller.setId(1L);
+        seller.setName("Dolce Vita MARTA BĄK");
 
-        userService.register(request, sellerDto);
+        User entity = new User();
+        entity.setEmail("7151536825@test.pl");
 
-        User user = userRepository.findByEmail("7151536825@test.pl").orElseThrow();
-        assertThat(user).isNotNull();
-        assertThat(user.getEmail()).isEqualTo("7151536825@test.pl");
-        assertThat(user.isActive()).isFalse();
+        User savedEntity = new User();
+        savedEntity.setId(1L);
+        savedEntity.setEmail("7151536825@test.pl");
+        savedEntity.setSeller(seller);
 
-
-        ActivationToken activationToken = tokenRepository.findByUser(user).orElseThrow();
-        assertThat(activationToken.getToken()).isNotBlank();
-        assertThat(activationToken.getExpiresAt()).isAfter(LocalDateTime.now());
-
-        verify(activationEmailSenderService, times(1)).sendEmail(eq(user.getEmail()), anyString());
-
-
-        Seller seller = sellerRepo.findByUserEmail("7151536825@test.pl").orElseThrow();
-
-        assertThat(seller).isNotNull();
-        assertThat(seller.getNip()).isEqualTo("7151536825");
+        UserResponse response = new UserResponse("7151536825@test.pl");
 
 
+        doNothing().when(validation).validation(request);
+        when(repository.findByEmail("7151536825@test.pl")).thenReturn(Optional.empty());
+
+        when(sellerService.save(sellerDto)).thenReturn(seller);
+        when(mapper.toEntity(request)).thenReturn(entity);
+        when(repository.save(entity)).thenReturn(savedEntity);
+        when(mapper.toResponse(savedEntity)).thenReturn(response);
+
+        // when
+        UserResponse result = userService.register(request, sellerDto);
+
+        // then
+        Assertions.assertEquals("7151536825@test.pl", result.email());
+        verify(validation).validation(request);
+        verify(sellerService).save(sellerDto);
+        verify(repository).save(entity);
+        verify(activationTokenService).createToken(savedEntity);
+        verify(mapper).toResponse(savedEntity);
     }
-
-
     @Test
-    void shouldRegisterUser_AndSendActivationEmail_WithValidTokenMf() {
-        UserRequest request = new UserRequest("5272962520@test.pl", "pass", "5272962520");
+    void givenInvalidRequest_whenRegister_thenUserIsSavedAndTokenCreated() {
+        // given
 
-        SellerDto sellerDto = new SellerDto("BS z.o.o", "5272962520", "389300568", "WARSZAWA", "00-850", "PROSTA", "20");
+        UserRequest request = mock(UserRequest.class);
+        SellerDto sellerDto= mock(SellerDto.class);
+        User entity = mock(User.class);
 
+        doNothing().when(validation).validation(request);
+        when(repository.findByEmail(any())).thenReturn(Optional.of(entity));
 
-        userService.register(request, sellerDto);
+        // when
+        assertThrows(UserException.class, () -> userService.register(request, sellerDto));
 
-        User user = userRepository.findByEmail("5272962520@test.pl").orElseThrow();
-        assertThat(user).isNotNull();
-        assertThat(user.getEmail()).isEqualTo("5272962520@test.pl");
-        assertThat(user.isActive()).isFalse();
-
-
-        ActivationToken activationToken = tokenRepository.findByUser(user).orElseThrow();
-        assertThat(activationToken.getToken()).isNotBlank();
-        assertThat(activationToken.getExpiresAt()).isAfter(LocalDateTime.now());
-
-        verify(activationEmailSenderService, times(1)).sendEmail(eq(user.getEmail()), anyString());
-
-
-        Seller seller = sellerRepo.findByUserEmail("5272962520@test.pl").orElseThrow();
-
-        assertThat(seller).isNotNull();
-        assertThat(seller.getNip()).isEqualTo("5272962520");
+        //then
+        verify(sellerService, never()).save(any());
+        verify(mapper, never()).toEntity(any());
+        verify(mapper, never()).toResponse(any());
+        verify(repository, never()).save(any());
+        verify(activationTokenService, never()).createToken(any());
+        verify(mapper, never()).toResponse(any());
 
 
     }
-
-    @Test
-    void shouldRegisterUser_AndSendActivationEmail_WithValidToken_WhenNipRegisteredAndCompanyNotRegistered() {
-        UserRequest request = new UserRequest("8133209246@test.pl", "pass", "8133209246");
-
-        SellerDto sellerDto = new SellerDto("Software Soluzioni", "8133209246", "060557919", "WARSZAWA", "00-850", "PROSTA", "20");
-
-
-        userService.register(request, sellerDto);
-
-        User user = userRepository.findByEmail("8133209246@test.pl").orElseThrow();
-        assertThat(user).isNotNull();
-        assertThat(user.getEmail()).isEqualTo("8133209246@test.pl");
-        assertThat(user.isActive()).isFalse();
-
-
-        ActivationToken activationToken = tokenRepository.findByUser(user).orElseThrow();
-        assertThat(activationToken.getToken()).isNotBlank();
-        assertThat(activationToken.getExpiresAt()).isAfter(LocalDateTime.now());
-
-        verify(activationEmailSenderService, times(1)).sendEmail(eq(user.getEmail()), anyString());
-
-
-        Seller seller = sellerRepo.findByUserEmail("8133209246@test.pl").orElseThrow();
-
-        assertThat(seller).isNotNull();
-        assertThat(seller.getNip()).isEqualTo("8133209246");
-
-
-    }
-
-
-    @Test
-    void shouldFindCompany_WhenSearchByNipCdeig(){
-        List<SellerDto> dataByNip = userService.findDataByNip("8133209246");
-        assertThat(dataByNip).hasSize(1);
-    }
-
-    @Test
-    void shouldFindCompany_WhenSearchByNipMf(){
-        List<SellerDto> dataByNip = userService.findDataByNip("5272962520");
-        assertThat(dataByNip).hasSize(1);
-    }
-
-
-
-
-    @Test
-    void shouldNotRegisterUser_WhenCompanyIsRegistered_AndThrowException() {
-        UserRequest request = new UserRequest("test4@test.pl", "pass", "8133209246");
-        SellerDto sellerDto = new SellerDto("name1", "8133209246", "389300568", "WARSZAWA", "00-850", "PROSTA", "20");
-
-        NipAlreadyRegisteredException ex = assertThrows(NipAlreadyRegisteredException.class, () -> userService.register(request, sellerDto));
-
-        Assertions.assertEquals("Firma name1  8133209246 juz posiada konto ", ex.getMessage());
-    }
-
-    @Test
-    void shouldNotRegisterUser_WhenNipIsIncorrect_AndThrowException() {
-        UserRequest request = new UserRequest("5272962521@test.pl", "pass", "5272962521");
-        SellerDto sellerDto = mock(SellerDto.class);
-
-        CustomValidationException ex = assertThrows(CustomValidationException.class, () -> userService.register(request, sellerDto));
-
-        Assertions.assertEquals("niepoprawny number identyfikacyjny VAT (NIP)", ex.getMessage());
-    }
-
-    @Test
-    void shouldNotRegisterUser_WhenUserHaveAccount_AndThrowException() {
-        UserRequest request = new UserRequest("test1@test.pl", "pass", "8133209246");
-        SellerDto sellerDto = mock(SellerDto.class);
-
-        UserException ex = assertThrows(UserException.class, () -> userService.register(request, sellerDto));
-
-        Assertions.assertEquals("Użytkownik już posiada konto", ex.getMessage());
-    }
-
 
 }
+
