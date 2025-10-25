@@ -13,6 +13,10 @@ insert into users(email, password, nip, active,seller_id)values ('test3@test.pl'
                                                        '8733134855', false,3);
 
 
+insert into buyer(name,nip,regon,city,zip_code,street,house_number)values ('test1buyer','1231234562','0947464','warszawa','00-000'
+                        ,'street','7');
+
+
 
 
 

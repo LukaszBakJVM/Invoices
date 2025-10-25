@@ -1,0 +1,26 @@
+{
+  "firma": [
+    {
+      "id": "6D0CE811-2ADD-4C74-977F-2096DCC41E17",
+      "nazwa": "Test1 test",
+      "status": "CZYNNY",
+      "adresDzialalnosci": {
+        "ulica": "ul. Południowa",
+        "budynek": "4",
+        "miasto": "Urzędów",
+        "wojewodztwo": "LUBELSKIE",
+        "powiat": "kraśnicki",
+        "gmina": "Urzędów",
+        "kraj": "PL",
+        "kod": "23-259",
+        "terc": "0607084",
+        "simc": "0392684",
+        "ulic": "17070"
+      },
+      "wlasciciel": {
+        "nip": "1231234569",
+        "regon": "565665656"
+      }
+    }
+  ]
+}

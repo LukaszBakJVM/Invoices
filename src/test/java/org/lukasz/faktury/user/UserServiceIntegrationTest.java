@@ -1,8 +1,6 @@
 package org.lukasz.faktury.user;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
-import com.icegreen.greenmail.util.GreenMail;
-import com.icegreen.greenmail.util.ServerSetupTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -39,9 +37,9 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest()
 @ActiveProfiles("test")
-public class E2eUserServiceTest {
+public class UserServiceIntegrationTest {
     @Autowired
     private UserServiceImpl userService;
     @Autowired
@@ -49,15 +47,13 @@ public class E2eUserServiceTest {
     @Autowired
     private ActivationTokenRepo tokenRepository;
     @Autowired
-    SellerRepo sellerRepo;
+    private SellerRepo sellerRepo;
     @MockBean
     private ActivationEmailSenderServiceImpl activationEmailSenderService;
 
 
     static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest").withDatabaseName("invoices").withUsername("test").withPassword("test");
 
-
-    static GreenMail greenMail;
 
     @RegisterExtension
     static WireMockExtension wireMockServer = WireMockExtension.newInstance().options(wireMockConfig().dynamicPort()).build();
@@ -67,25 +63,15 @@ public class E2eUserServiceTest {
     static void registerDynamicProperties(DynamicPropertyRegistry registry) {
         registry.add("ceidgApi", wireMockServer::baseUrl);
         registry.add("mfApi", wireMockServer::baseUrl);
-        registry.add("tokenUrl", wireMockServer::baseUrl);
-        registry.add("tokenCeidg", () -> "eyJraWQiOiJjZWlkZyI");
         registry.add("spring.datasource.url", () -> postgreSQLContainer.getJdbcUrl());
-        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
-        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
-        registry.add("spring.mail.host", () -> "localhost");
-        registry.add("spring.mail.port", () -> greenMail.getSmtp().getPort());
-        registry.add("spring.mail.username", () -> "");
-        registry.add("spring.mail.password", () -> "");
-        registry.add("spring.mail.properties.mail.smtp.auth", () -> "false");
-        registry.add("spring.mail.properties.mail.smtp.starttls.enable", () -> "false");
+
+
     }
 
 
     @BeforeAll
     static void startPostgres() {
         postgreSQLContainer.start();
-        greenMail = new GreenMail(ServerSetupTest.SMTP.dynamicPort());
-        greenMail.start();
 
 
     }
@@ -93,7 +79,7 @@ public class E2eUserServiceTest {
     @AfterAll
     static void stopPostgres() {
         postgreSQLContainer.stop();
-        greenMail.stop();
+
 
     }
 
