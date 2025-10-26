@@ -15,10 +15,11 @@ import com.itextpdf.layout.properties.UnitValue;
 import org.lukasz.faktury.buyer.dto.BuyerDto;
 import org.lukasz.faktury.invoices.dto.InvoicesDto;
 import org.lukasz.faktury.invoices.dto.InvoicesPdf;
+import org.lukasz.faktury.invoices.dto.TotalValues;
 import org.lukasz.faktury.items.dto.InvoiceItemsDto;
 import org.lukasz.faktury.seller.Seller;
 import org.lukasz.faktury.seller.SellerService;
-import org.lukasz.faktury.views.invoice.TotalValues;
+
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;

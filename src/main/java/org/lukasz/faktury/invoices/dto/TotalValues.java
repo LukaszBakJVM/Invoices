@@ -1,4 +1,4 @@
-package org.lukasz.faktury.views.invoice;
+package org.lukasz.faktury.invoices.dto;
 
 import java.math.BigDecimal;
 

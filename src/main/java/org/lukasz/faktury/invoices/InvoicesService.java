@@ -1,17 +1,19 @@
 package org.lukasz.faktury.invoices;
 
-import org.lukasz.faktury.buyer.dto.BuyerDto;
-import org.lukasz.faktury.invoices.dto.InvoicesDto;
-import org.lukasz.faktury.items.dto.InvoiceItemsDto;
+import org.lukasz.faktury.invoices.dto.CalculatePaymentDate;
+import org.lukasz.faktury.invoices.dto.InvoicesDtoRequest;
+import org.lukasz.faktury.invoices.dto.InvoicesNumber;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public interface InvoicesService {
-    void createInvoices(InvoicesDto request, BuyerDto buyerDto, List<InvoiceItemsDto> invoiceItemsDtos);
+    void createInvoices(InvoicesDtoRequest request);
     List<String> paymentsMethod();
-    String invoicesNumber();
-    LocalDate calculatePaymentDate(LocalDate dateOfIssue,int postponement );
+
+    InvoicesNumber invoicesNumber(String email);
+
+    CalculatePaymentDate calculatePaymentDate(LocalDate dateOfIssue, int postponement);
 
 
 }

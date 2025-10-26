@@ -1,38 +1,32 @@
 package org.lukasz.faktury.config;
 
-import com.vaadin.flow.spring.security.VaadinAwareSecurityContextHolderStrategyConfiguration;
-import com.vaadin.flow.spring.security.VaadinWebSecurity;
-import org.lukasz.faktury.views.user.LoginView;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.client.RestClient;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Configuration
 @EnableWebSecurity
-@Import(VaadinAwareSecurityContextHolderStrategyConfiguration.class)
-public class AppConfig extends VaadinWebSecurity {
-    private final CustomAuthFailureHandler failureHandler;
 
-    public AppConfig(CustomAuthFailureHandler failureHandler) {
-        this.failureHandler = failureHandler;
-    }
+public class AppConfig {
 
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        // http.formLogin(AbstractAuthenticationFilterConfigurer::permitAll);
+        http.authorizeHttpRequests(requests -> requests.requestMatchers("/client/register").permitAll().anyRequest().authenticated()).httpBasic(Customizer.withDefaults());
 
-        setLoginView(http, LoginView.class);
-        http.formLogin(l -> l.loginPage("/login").failureHandler(failureHandler)
+        // http.csrf(AbstractHttpConfigurer::disable);
+        return http.build();
 
-                .defaultSuccessUrl("/dashbord", true));
+
     }
     @Bean
     public RestClient restClient() {
