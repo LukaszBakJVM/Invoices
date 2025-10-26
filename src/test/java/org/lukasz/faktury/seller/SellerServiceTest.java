@@ -3,6 +3,7 @@ package org.lukasz.faktury.seller;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.lukasz.faktury.exceptions.NipAlreadyRegisteredException;
+import org.lukasz.faktury.seller.dto.SellerDto;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;

@@ -1,5 +1,6 @@
 package org.lukasz.faktury.seller;
 
+import org.lukasz.faktury.seller.dto.SellerDto;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

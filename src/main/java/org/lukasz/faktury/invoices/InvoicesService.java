@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface InvoicesService {
-    void createInvoices(InvoicesDtoRequest request);
+    void createInvoices(InvoicesDtoRequest request,String email);
     List<String> paymentsMethod();
 
     InvoicesNumber invoicesNumber(String email);

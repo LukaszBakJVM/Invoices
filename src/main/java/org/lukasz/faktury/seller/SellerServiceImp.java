@@ -1,7 +1,8 @@
 package org.lukasz.faktury.seller;
 
 import org.lukasz.faktury.exceptions.NipAlreadyRegisteredException;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.lukasz.faktury.seller.dto.AccountNumber;
+import org.lukasz.faktury.seller.dto.SellerDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,24 +28,24 @@ public class SellerServiceImp implements SellerService {
     }
 
     @Override
-    public SellerDto findByUserEmail() {
-        Seller seller = getAuthentication();
+    public SellerDto findByUserEmail(String email) {
+        Seller seller = getAuthentication(email);
         return mapper.entityToDto(seller);
 
     }
 
     @Override
-    public Seller findByEmail() {
-        return  getAuthentication();
+    public Seller findByEmail(String email) {
+        return getAuthentication(email);
 
 
     }
 
     @Override
     @Transactional
-    public void addAccountNb(String nb) {
-        Seller seller = getAuthentication();
-        seller.setAccountNb(nb);
+    public void addAccountNb(AccountNumber nb, String email) {
+        Seller seller = getAuthentication(email);
+        seller.setAccountNb(nb.number());
         repository.save(seller);
 
 
@@ -52,8 +53,7 @@ public class SellerServiceImp implements SellerService {
     }
 
 
-    private Seller getAuthentication (){
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+    private Seller getAuthentication(String email) {
         return repository.findByUserEmail(email).orElseThrow();
     }
 

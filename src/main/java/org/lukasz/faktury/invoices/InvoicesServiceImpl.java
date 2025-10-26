@@ -51,9 +51,9 @@ public class InvoicesServiceImpl implements InvoicesService{
 
     @Override
     @Transactional
-    public void createInvoices(InvoicesDtoRequest request) {
+    public void createInvoices(InvoicesDtoRequest request,String email) {
         LocalDateTime now = LocalDateTime.now();
-        Seller seller = sellerService.findByEmail();
+        Seller seller = sellerService.findByEmail(email);
         if (seller.getNip().equals(request.buyerDto().nip())) {
             throw new NipConflictException("Podano ten sam NIP dla sprzedawcy i nabywcy");
         }

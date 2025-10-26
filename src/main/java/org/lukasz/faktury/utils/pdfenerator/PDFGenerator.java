@@ -6,5 +6,5 @@ import java.io.IOException;
 
 public interface PDFGenerator {
 
-     byte[] generatePDF(InvoicesPdf invoice) throws IOException;
+     byte[] generatePDF(InvoicesPdf invoice,String email) throws IOException;
 }

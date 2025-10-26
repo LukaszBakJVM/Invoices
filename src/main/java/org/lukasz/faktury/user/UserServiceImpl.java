@@ -3,10 +3,10 @@ package org.lukasz.faktury.user;
 import org.lukasz.faktury.exceptions.UserException;
 import org.lukasz.faktury.nipapi.ApiConnection;
 import org.lukasz.faktury.seller.Seller;
-import org.lukasz.faktury.seller.SellerDto;
 import org.lukasz.faktury.seller.SellerService;
+import org.lukasz.faktury.seller.dto.SellerDto;
 import org.lukasz.faktury.user.dto.Login;
-import org.lukasz.faktury.user.dto.UserRequest;
+import org.lukasz.faktury.user.dto.RegisterDto;
 import org.lukasz.faktury.user.dto.UserResponse;
 import org.lukasz.faktury.utils.confirmationtoken.activationtoken.ActivationTokenService;
 import org.lukasz.faktury.utils.validation.Validation;
@@ -40,21 +40,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponse register(UserRequest request, SellerDto sellerDto) {
+    public UserResponse register(RegisterDto register) {
         logger.info("Inside registration");
-        validation.validation(request);
-        findUserByEmail(request.email());
+        validation.validation(register.request());
+        findUserByEmail(register.request().email());
 
-        Seller seller = sellerService.save(sellerDto);
+        Seller seller = sellerService.save(register.sellerDto());
         logger.info("Inside registration  seller -> {} ", seller);
 
 
-        User entity = mapper.toEntity(request);
+        User entity = mapper.toEntity(register.request());
 
 
 
         entity.setActive(false);
-        entity.setNip(request.nip());
+        entity.setNip(register.request().nip());
         entity.setSeller(seller);
         User save = repository.save(entity);
         logger.info("Inside registration  user -> {} ", entity);

@@ -39,14 +39,14 @@ public class PDFGeneratorImpl implements PDFGenerator {
 
 
     @Override
-    public byte[] generatePDF(InvoicesPdf invoice) throws IOException {
+    public byte[] generatePDF(InvoicesPdf invoice,String email) throws IOException {
         PdfFont font = PdfFontFactory.createFont("fonts/DejaVuSans.ttf", PdfEncodings.IDENTITY_H);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         try (PdfWriter writer = new PdfWriter(outputStream); PdfDocument pdfDocument = new PdfDocument(writer); Document document = new Document(pdfDocument)) {
             document.setFont(font);
 
-            Seller seller = sellerService.findByEmail();
+            Seller seller = sellerService.findByEmail(email);
             addInvoiceHeader(document, invoice.invoicesDto());
             addSellerBuyer(document, seller, invoice.buyerDto(), invoice.invoicesDto().typOfPayment());
             addInvoiceItems(document, invoice.invoiceItemsDto());
