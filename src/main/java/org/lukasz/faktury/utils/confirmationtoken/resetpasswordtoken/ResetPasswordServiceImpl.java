@@ -6,6 +6,8 @@ import org.lukasz.faktury.exceptions.UserException;
 import org.lukasz.faktury.user.User;
 import org.lukasz.faktury.user.UserRepository;
 import org.lukasz.faktury.utils.confirmationtoken.EmailSenderService;
+import org.lukasz.faktury.utils.confirmationtoken.resetpasswordtoken.dto.ConfirmPassword;
+import org.lukasz.faktury.utils.confirmationtoken.resetpasswordtoken.dto.ResetPasswordDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -64,7 +66,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
             ChangePassword entity = resetPasswordMapper.toEntity(resetPasswordDto);
             entity.setUsed(false);
             changePasswordRepo.save(entity);
-//todo
+
             emailSenderService.sendEmail(user.getEmail(), link);
 
 
@@ -74,25 +76,24 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     }
 
     @Override
-    public void findToken(String token) {
-        changePasswordRepo.findByToken(token).orElseThrow(() -> new TokenException("Token nie istnieje"));
-
+    public void findToken(String token,String email) {
+        changePasswordRepo.findByTokenAndUserEmail(token,email).orElseThrow(() -> new TokenException("Token nie istnieje"));
 
     }
 
     @Override
-    public void newPassword(String token,String newPassword, String confirmPassword) {
-        ChangePassword findToken = changePasswordRepo.findByToken(token).orElseThrow(() -> new TokenException("Token nie istnieje"));
+    public void newPassword(ConfirmPassword confirmPassword,String email) {
+        ChangePassword findToken = changePasswordRepo.findByTokenAndUserEmail(confirmPassword.token(),email).orElseThrow(() -> new TokenException("Token nie istnieje"));
         LocalDateTime expiresAt = findToken.getDuration();
         if (expiresAt.isBefore(LocalDateTime.now())) {
             throw new TokenException("Token wygasł");
-             } else if (!newPassword.equals(confirmPassword)) {
+             } else if (!confirmPassword.newPassword().equals(confirmPassword.confirmPassword())) {
               throw new TokenException("Hasła nie są jednakowe");
         } else if (findToken.isUsed()) {
             throw new TokenException("Token juz zostal wykorzystany");
              } else {
                 User user = userRepository.findByEmail(findToken.getUser().getEmail()).orElseThrow();
-               user.setPassword(passwordEncoder.encode(newPassword));
+               user.setPassword(passwordEncoder.encode(confirmPassword.newPassword()));
                userRepository.save(user);
               findToken.setUsed(true);
               changePasswordRepo.save(findToken);

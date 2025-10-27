@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface ChangePasswordRepo extends CrudRepository<ChangePassword, Long> {
     Optional<ChangePassword>findByUserEmail(String email);
-    Optional<ChangePassword>findByToken(String token);
+    Optional<ChangePassword>findByTokenAndUserEmail(String token,String email);
 }

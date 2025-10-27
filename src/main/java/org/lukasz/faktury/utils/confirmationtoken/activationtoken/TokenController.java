@@ -1,25 +1,42 @@
 package org.lukasz.faktury.utils.confirmationtoken.activationtoken;
 
+import org.lukasz.faktury.utils.confirmationtoken.resetpasswordtoken.ResetPasswordService;
+import org.lukasz.faktury.utils.confirmationtoken.resetpasswordtoken.dto.ConfirmPassword;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/token")
 public class TokenController {
     private final ActivationTokenService activationToken;
+    private final ResetPasswordService resetPasswordService;
 
-    public TokenController(ActivationTokenService activationToken) {
+    public TokenController(ActivationTokenService activationToken, ResetPasswordService resetPasswordService) {
         this.activationToken = activationToken;
+        this.resetPasswordService = resetPasswordService;
     }
-    @GetMapping("/{token}")
+    @GetMapping("registration/{token}")
     ResponseEntity<Void>findToken(@PathVariable String token){
         activationToken.findToken(token);
         return ResponseEntity.ok().build();
 
     }
+    @PostMapping("/resetPassword")
+    ResponseEntity<Void>createToken(@AuthenticationPrincipal UserDetails user){
+       resetPasswordService.createToken(user.getUsername());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+
+    }
+    @PostMapping("/newPassword")
+    ResponseEntity<Void>newPassword(@RequestBody ConfirmPassword confirmPassword,@AuthenticationPrincipal UserDetails userDetails){
+        resetPasswordService.newPassword(confirmPassword, userDetails.getUsername());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+
 }
 
 

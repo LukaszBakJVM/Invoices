@@ -1,5 +1,6 @@
 package org.lukasz.faktury.utils.confirmationtoken.resetpasswordtoken;
 
+import org.lukasz.faktury.utils.confirmationtoken.resetpasswordtoken.dto.ResetPasswordDto;
 import org.springframework.stereotype.Component;
 
 @Component

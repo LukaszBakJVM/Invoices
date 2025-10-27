@@ -1,4 +1,4 @@
-package org.lukasz.faktury.utils.confirmationtoken.resetpasswordtoken;
+package org.lukasz.faktury.utils.confirmationtoken.resetpasswordtoken.dto;
 
 import org.lukasz.faktury.user.User;
 
