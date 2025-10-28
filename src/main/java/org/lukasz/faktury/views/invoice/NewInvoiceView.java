@@ -21,8 +21,8 @@ import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
-import org.lukasz.faktury.buyer.BuyerService;
 import org.lukasz.faktury.buyer.dto.BuyerDto;
+import org.lukasz.faktury.config.RestClientFactory;
 import org.lukasz.faktury.exceptions.*;
 import org.lukasz.faktury.invoices.InvoicesService;
 import org.lukasz.faktury.invoices.dto.InvoicesDto;
@@ -32,6 +32,7 @@ import org.lukasz.faktury.items.dto.InvoiceItemsDto;
 import org.lukasz.faktury.seller.SellerDto;
 import org.lukasz.faktury.seller.SellerService;
 import org.lukasz.faktury.utils.pdfenerator.PDFGenerator;
+import org.lukasz.faktury.views.invoice.dto.Nip;
 import org.lukasz.faktury.views.user.DashboardView;
 
 import java.io.IOException;
@@ -48,8 +49,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class NewInvoiceView extends VerticalLayout {
 
+    private final RestClientFactory restClient;
 
-    private final BuyerService buyerService;
+
     private final List<InvoiceItemsDto> items = new ArrayList<>();
     private final PDFGenerator pdfGenerator;
 
@@ -93,8 +95,10 @@ public class NewInvoiceView extends VerticalLayout {
 
     private final VerticalLayout buyerDataLayout;
 
-    public NewInvoiceView(BuyerService buyerService, SellerService sellerService, PDFGenerator pdfGenerator, InvoiceItemsService invoiceItemsService, InvoicesService invoicesService, AtomicBoolean updating) {
-        this.buyerService = buyerService;
+    public NewInvoiceView(SellerService sellerService, RestClientFactory restClient, PDFGenerator pdfGenerator, InvoiceItemsService invoiceItemsService, InvoicesService invoicesService, AtomicBoolean updating) {
+
+        this.restClient = restClient;
+
         this.pdfGenerator = pdfGenerator;
         this.invoiceItemsService = invoiceItemsService;
         this.invoicesService = invoicesService;
@@ -292,7 +296,10 @@ public class NewInvoiceView extends VerticalLayout {
                     , postponementField.getValue(), paymentDateField.getValue(), paymentTypeField.getValue());
 
 
-            BuyerDto buyer = buyerService.findByNipAndName(nipField.getValue(), companyNameField.getValue());
+            BuyerDto buyer = restClient.forCurrentUser().get().uri(uriBuilder -> uriBuilder.path("/buyer").queryParam("param1", "value1").queryParam("param2", "value2").build()).retrieve().body(BuyerDto.class);
+
+
+            //BuyerDto buyer = buyerService.findByNipAndName(nipField.getValue(), companyNameField.getValue());
 
             invoicesService.createInvoices(invoicesDto, buyer, items);
             TotalValues totalValues = new TotalValues(sumNettoField.getValue(),sumTaxField.getValue(),sumBruttoField.getValue());
@@ -331,9 +338,18 @@ public class NewInvoiceView extends VerticalLayout {
 // znajdz po nipie
 
     private void findByNip() {
+
+        System.out.println("nipppppppppp");
         buyerDataLayout.removeAll();
         try {
-            BuyerDto buyer = buyerService.findByNipAndSave(nipField.getValue());
+
+
+            Nip nip = new Nip(nipField.getValue());
+
+
+            BuyerDto buyer = restClient.forCurrentUser().post().uri("/buyer").body(nip).retrieve().body(BuyerDto.class);
+
+            // BuyerDto buyer = buyerService.findByNipAndSave(nipField.getValue());
             companyNameField = new TextField("Firma");
             TextField nipFieldForm = new TextField("NIP");
             TextField regonField = new TextField("REGON");
@@ -357,7 +373,13 @@ public class NewInvoiceView extends VerticalLayout {
             Button saveButton = new Button("Zapisz", e -> {
                 BuyerDto dto = new BuyerDto(companyNameField.getValue(), nipFieldForm.getValue(), regonField.getValue(), streetField.getValue(), houseNumberField.getValue(), zipCodeField.getValue(), cityField.getValue());
                 try {
-                    buyerService.findByNipAndNameAndSave(dto);
+
+                    restClient.forCurrentUser().post().uri("/buyer/nip").body(dto).retrieve().body(Void.class);
+
+
+                    //  buyerService.findByNipAndNameAndSave(dto);
+
+
                     Notification.show("Dane zapisane.");
                 } catch (Exception ex) {
                     Notification.show("Błąd przy zapisie: " + ex.getMessage());
