@@ -6,47 +6,55 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.lukasz.faktury.views.index.IndexView;
 
+import java.util.List;
+import java.util.Map;
+
 @Route("login")
+
 @PageTitle("Logowanie")
 @AnonymousAllowed
-public class LoginView extends VerticalLayout {
+
+public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
     private final LoginForm login = new LoginForm();
+    Button homeButton = new Button("← Wróć do strony głównej", e -> UI.getCurrent().navigate(IndexView.class));
 
     public LoginView() {
-        H1 header = new H1("📝 Strona Logowania");
-        Button homeButton = new Button("← Wróć do strony głównej", e -> UI.getCurrent().navigate(IndexView.class));
+        H1 header = new H1("📝 Strona  Logowania");
+
 
         addClassName("login-view");
         setSizeFull();
+
         setJustifyContentMode(JustifyContentMode.CENTER);
         setAlignItems(Alignment.CENTER);
 
-        // nie wysyłaj POST do /login, robimy ręczne logowanie
         login.setAction("login");
 
-        login.addLoginListener(e -> {
-            String email = e.getUsername();
-            String password = e.getPassword();
+        login.setForgotPasswordButtonVisible(true);
+        login.addForgotPasswordListener(e -> getUI().ifPresent(ui -> ui.navigate(ResetPasswordView.class)));
 
 
-            VaadinSession.getCurrent().setAttribute("email", email);
-            VaadinSession.getCurrent().setAttribute("pass", password);
+        add(header, login,homeButton);
 
-            UI.getCurrent().navigate(IndexView.class);
-
-            login.setError(true);
-            Notification.show("Niepoprawny login lub hasło", 3000, Notification.Position.MIDDLE);
-
-        });
-
-        add(header, login, homeButton);
     }
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
+        Map<String, List<String>> parameters = beforeEnterEvent.getLocation().getQueryParameters().getParameters();
+        if (parameters.containsKey("error")) {
+            login.setError(true);
+
+            Notification.show(parameters.get("error").getFirst(), 5000, Notification.Position.MIDDLE);
+        }
+    }
+
 
 }
