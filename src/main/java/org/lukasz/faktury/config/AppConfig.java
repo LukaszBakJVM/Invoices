@@ -3,6 +3,7 @@ package org.lukasz.faktury.config;
 import com.vaadin.flow.spring.security.VaadinAwareSecurityContextHolderStrategyConfiguration;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import org.lukasz.faktury.views.user.LoginView;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -18,6 +19,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @EnableWebSecurity
 @Import(VaadinAwareSecurityContextHolderStrategyConfiguration.class)
 public class AppConfig extends VaadinWebSecurity {
+
+    @Value("${apiinvoice}")
+    private String apiInvoice;
     private final CustomAuthFailureHandler failureHandler;
 
     public AppConfig(CustomAuthFailureHandler failureHandler) {
@@ -37,7 +41,6 @@ public class AppConfig extends VaadinWebSecurity {
     @Bean
     public RestClient restClient() {
         return RestClient.builder().build();
-
     }
 
     @Bean
