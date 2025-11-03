@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Invoices.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">faktury</a> &gt; <a href="index.source.html" class="el_package">org.lukasz.faktury.invoices</a> &gt; <span class="el_source">Invoices.java</span></div><h1>Invoices.java</h1><pre class="source lang-java linenums">package org.lukasz.faktury.invoices;
+
+import jakarta.persistence.*;
+import org.lukasz.faktury.buyer.Buyer;
+import org.lukasz.faktury.items.InvoiceItems;
+import org.lukasz.faktury.seller.Seller;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Entity
+public class Invoices {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String number;
+    private LocalDate dateOfIssue;
+    private String place;
+    private LocalDate dateOfSale;
+    private long postponement;
+    private LocalDate paymentDate;
+    private String typOfPayment;
+    private LocalDateTime generatedDateOfIssue;
+    @ManyToOne()
+    private Seller seller;
+    @ManyToOne()
+
+    private Buyer buyer;
+
+
+<span class="fc" id="L32">    public Invoices() {</span>
+<span class="fc" id="L33">    }</span>
+
+    @OneToMany(mappedBy = &quot;invoices&quot;)
+    List&lt;InvoiceItems&gt; items;
+
+
+    public Long getId() {
+<span class="nc" id="L40">        return id;</span>
+    }
+
+    public void setId(Long id) {
+<span class="nc" id="L44">        this.id = id;</span>
+<span class="nc" id="L45">    }</span>
+
+    public String getNumber() {
+<span class="nc" id="L48">        return number;</span>
+    }
+
+    public void setNumber(String number) {
+<span class="nc" id="L52">        this.number = number;</span>
+<span class="nc" id="L53">    }</span>
+
+    public LocalDate getDateOfIssue() {
+<span class="nc" id="L56">        return dateOfIssue;</span>
+    }
+
+    public void setDateOfIssue(LocalDate dateOfIssue) {
+<span class="nc" id="L60">        this.dateOfIssue = dateOfIssue;</span>
+<span class="nc" id="L61">    }</span>
+
+    public String getPlace() {
+<span class="nc" id="L64">        return place;</span>
+    }
+
+    public void setPlace(String place) {
+<span class="nc" id="L68">        this.place = place;</span>
+<span class="nc" id="L69">    }</span>
+
+    public LocalDate getDateOfSale() {
+<span class="nc" id="L72">        return dateOfSale;</span>
+    }
+
+    public void setDateOfSale(LocalDate dateOfSale) {
+<span class="nc" id="L76">        this.dateOfSale = dateOfSale;</span>
+<span class="nc" id="L77">    }</span>
+
+    public long getPostponement() {
+<span class="nc" id="L80">        return postponement;</span>
+    }
+
+    public void setPostponement(long postponement) {
+<span class="nc" id="L84">        this.postponement = postponement;</span>
+<span class="nc" id="L85">    }</span>
+
+    public LocalDate getPaymentDate() {
+<span class="nc" id="L88">        return paymentDate;</span>
+    }
+
+    public void setPaymentDate(LocalDate paymentDate) {
+<span class="nc" id="L92">        this.paymentDate = paymentDate;</span>
+<span class="nc" id="L93">    }</span>
+
+    public List&lt;InvoiceItems&gt; getItems() {
+<span class="nc" id="L96">        return items;</span>
+    }
+
+    public void setItems(List&lt;InvoiceItems&gt; items) {
+<span class="nc" id="L100">        this.items = items;</span>
+<span class="nc" id="L101">    }</span>
+
+    public Seller getSeller() {
+<span class="nc" id="L104">        return seller;</span>
+    }
+
+    public void setSeller(Seller seller) {
+<span class="nc" id="L108">        this.seller = seller;</span>
+<span class="nc" id="L109">    }</span>
+
+    public Buyer getBuyer() {
+<span class="nc" id="L112">        return buyer;</span>
+    }
+
+    public void setBuyer(Buyer buyer) {
+<span class="nc" id="L116">        this.buyer = buyer;</span>
+<span class="nc" id="L117">    }</span>
+
+    public String getTypOfPayment() {
+<span class="nc" id="L120">        return typOfPayment;</span>
+    }
+
+    public void setTypOfPayment(String typOfPayment) {
+<span class="nc" id="L124">        this.typOfPayment = typOfPayment;</span>
+<span class="nc" id="L125">    }</span>
+
+    public LocalDateTime getGeneratedDateOfIssue() {
+<span class="nc" id="L128">        return generatedDateOfIssue;</span>
+    }
+
+    public void setGeneratedDateOfIssue(LocalDateTime generatedDateOfIssue) {
+<span class="nc" id="L132">        this.generatedDateOfIssue = generatedDateOfIssue;</span>
+<span class="nc" id="L133">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,38 @@
+{
+  "id": "abf33d43-1065-4cdd-b8a8-5a1977fd025e",
+  "name": "api_ceidg_v3_firma",
+  "request": {
+    "urlPath": "/api/ceidg/v3/firma",
+    "method": "GET",
+    "queryParameters": {
+      "nip": {
+        "equalTo": "1231234567"
+      }
+    }
+  },
+  "response": {
+    "status": 400,
+    "body": "{\"code\":\"NIEPOPRAWNY_NUMER_NIP\",\"message\":\"Niepoprawny identyfikator NIP [1231234567]\"}",
+    "headers": {
+      "X-Correlation-ID": "63beba5e-258a-4c18-8fa4-907dd50f2731",
+      "Server-Timing": [
+        "edge; dur=1",
+        "origin; dur=10",
+        "cdn-cache; desc=MISS",
+        "ak_p; desc=\"1761307258690_1600473248_931378747_1275_4511_9_14_-\";dur=1"
+      ],
+      "X-Gravitee-Transaction-Id": "0dc4e935-6791-4b9a-84e9-3567914b9a1b",
+      "Pragma": "no-cache",
+      "Date": "Fri, 24 Oct 2025 12:00:58 GMT",
+      "Strict-Transport-Security": "max-age=15552000",
+      "Cache-Control": "max-age=0, no-cache, no-store",
+      "X-Rate-Limit-Remaining": "998",
+      "X-Rate-Limit-Limit": "1000",
+      "X-Rate-Limit-Reset": "1761310336606",
+      "Expires": "Fri, 24 Oct 2025 12:00:58 GMT",
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  },
+  "uuid": "abf33d43-1065-4cdd-b8a8-5a1977fd025e",
+  "persistent": true
+}

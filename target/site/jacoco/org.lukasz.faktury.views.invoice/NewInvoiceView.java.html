@@ -1,0 +1,546 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NewInvoiceView.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">faktury</a> &gt; <a href="index.source.html" class="el_package">org.lukasz.faktury.views.invoice</a> &gt; <span class="el_source">NewInvoiceView.java</span></div><h1>NewInvoiceView.java</h1><pre class="source lang-java linenums">package org.lukasz.faktury.views.invoice;
+
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.dataview.GridListDataView;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.BigDecimalField;
+import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.router.Route;
+import jakarta.annotation.security.PermitAll;
+import org.lukasz.faktury.buyer.BuyerService;
+import org.lukasz.faktury.buyer.dto.BuyerDto;
+import org.lukasz.faktury.exceptions.*;
+import org.lukasz.faktury.invoices.InvoicesService;
+import org.lukasz.faktury.invoices.dto.InvoicesDto;
+import org.lukasz.faktury.invoices.dto.InvoicesPdf;
+import org.lukasz.faktury.items.InvoiceItemsService;
+import org.lukasz.faktury.items.dto.InvoiceItemsDto;
+import org.lukasz.faktury.seller.SellerDto;
+import org.lukasz.faktury.seller.SellerService;
+import org.lukasz.faktury.utils.pdfenerator.PDFGenerator;
+import org.lukasz.faktury.views.user.DashboardView;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+
+@Route(&quot;newinvoice&quot;)
+@PermitAll
+
+public class NewInvoiceView extends VerticalLayout {
+
+
+    private final BuyerService buyerService;
+<span class="nc" id="L53">    private final List&lt;InvoiceItemsDto&gt; items = new ArrayList&lt;&gt;();</span>
+    private final PDFGenerator pdfGenerator;
+
+    private final InvoiceItemsService invoiceItemsService;
+    private final InvoicesService invoicesService;
+    private final AtomicBoolean updating;
+
+    private final TextField nipField;
+    private final ComboBox&lt;String&gt; tax;
+    private final ComboBox&lt;String&gt; unit;
+    // dane faktury
+<span class="nc" id="L64">    private final TextField numberField = new TextField(&quot;Numer faktury&quot;);</span>
+<span class="nc" id="L65">    private final DatePicker dateOfIssueField = new DatePicker(&quot;Data wystawienia&quot;);</span>
+<span class="nc" id="L66">    private final TextField placeField = new TextField(&quot;Miejsce wystawienia&quot;);</span>
+<span class="nc" id="L67">    private final DatePicker dateOfSaleField = new DatePicker(&quot;Data sprzedaży&quot;);</span>
+<span class="nc" id="L68">    private final IntegerField postponementField = new IntegerField(&quot;Odroczenie (dni)&quot;);</span>
+<span class="nc" id="L69">    private final DatePicker paymentDateField = new DatePicker(&quot;Termin płatności&quot;);</span>
+<span class="nc" id="L70">    private final ComboBox&lt;String&gt; paymentTypeField = new ComboBox&lt;&gt;(&quot;Forma płatności&quot;);</span>
+
+    //Buyer
+
+    private TextField companyNameField;
+
+
+
+    //items
+    private final Grid&lt;InvoiceItemsDto&gt; invoiceItemsGrid;
+    private final GridListDataView&lt;InvoiceItemsDto&gt; dataView;
+
+<span class="nc" id="L82">    private final TextField descriptionField = new TextField(&quot;Nazwa&quot;);</span>
+<span class="nc" id="L83">    private final IntegerField quantityField = new IntegerField(&quot;Ilość&quot;);</span>
+<span class="nc" id="L84">    private final BigDecimalField nettoField = new BigDecimalField(&quot;Cena Netto&quot;);</span>
+<span class="nc" id="L85">    private final BigDecimalField bruttoField = new BigDecimalField(&quot;Cena Brutto&quot;);</span>
+<span class="nc" id="L86">    private final BigDecimalField totalValue = new BigDecimalField(&quot;Wartość&quot;);</span>
+
+<span class="nc" id="L88">    Button homeButton = new Button(&quot;← Powrót na poprzednia stronę&quot;, e -&gt; UI.getCurrent().navigate(DashboardView.class));</span>
+<span class="nc" id="L89">    private final BigDecimalField sumNettoField = new BigDecimalField(&quot;Suma netto&quot;);</span>
+<span class="nc" id="L90">    private final BigDecimalField sumTaxField = new BigDecimalField(&quot;Podatek&quot;);</span>
+<span class="nc" id="L91">    private final BigDecimalField sumBruttoField = new BigDecimalField(&quot;Suma brutto&quot;);</span>
+
+
+    private final VerticalLayout buyerDataLayout;
+
+<span class="nc" id="L96">    public NewInvoiceView(BuyerService buyerService, SellerService sellerService, PDFGenerator pdfGenerator, InvoiceItemsService invoiceItemsService, InvoicesService invoicesService, AtomicBoolean updating) {</span>
+<span class="nc" id="L97">        this.buyerService = buyerService;</span>
+<span class="nc" id="L98">        this.pdfGenerator = pdfGenerator;</span>
+<span class="nc" id="L99">        this.invoiceItemsService = invoiceItemsService;</span>
+<span class="nc" id="L100">        this.invoicesService = invoicesService;</span>
+<span class="nc" id="L101">        this.updating = updating;</span>
+
+
+<span class="nc" id="L104">        setSizeFull();</span>
+<span class="nc" id="L105">        setPadding(true);</span>
+<span class="nc" id="L106">        setSpacing(true);</span>
+
+<span class="nc" id="L108">        H1 header = new H1(&quot;📝 Wystaw fakturę&quot;);</span>
+<span class="nc" id="L109">        header.getStyle().set(&quot;text-align&quot;, &quot;center&quot;);</span>
+<span class="nc" id="L110">        add(header);</span>
+<span class="nc" id="L111">        setHorizontalComponentAlignment(Alignment.CENTER, header);</span>
+
+<span class="nc" id="L113">        HorizontalLayout centerLayout = new HorizontalLayout();</span>
+<span class="nc" id="L114">        centerLayout.setWidthFull();</span>
+<span class="nc" id="L115">        centerLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);</span>
+
+
+<span class="nc" id="L118">        FormLayout invoiceHeaderLayout = new FormLayout();</span>
+<span class="nc" id="L119">        invoiceHeaderLayout.setWidth(&quot;650px&quot;);</span>
+<span class="nc" id="L120">        invoiceHeaderLayout.setResponsiveSteps(new FormLayout.ResponsiveStep(&quot;0&quot;, 7));</span>
+<span class="nc" id="L121">        invoiceHeaderLayout.setWidthFull();</span>
+
+
+        //nr faktury
+<span class="nc" id="L125">        numberField.setValue(invoicesService.invoicesNumber());</span>
+
+        //data platnosci
+
+<span class="nc" id="L129">        dateOfIssueField.addValueChangeListener(e -&gt; calculatePaymentDate());</span>
+<span class="nc" id="L130">        postponementField.addValueChangeListener(e -&gt; calculatePaymentDate());</span>
+
+
+        //  typ płatności pobierany z serwisu
+
+
+
+<span class="nc" id="L137">        paymentTypeField.setItems(invoicesService.paymentsMethod());</span>
+
+<span class="nc" id="L139">        invoiceHeaderLayout.add(numberField, dateOfIssueField, placeField, dateOfSaleField, postponementField, paymentDateField, paymentTypeField);</span>
+
+<span class="nc" id="L141">        add(invoiceHeaderLayout);</span>
+
+
+<span class="nc" id="L144">        VerticalLayout leftLayout = new VerticalLayout();</span>
+<span class="nc" id="L145">        leftLayout.setWidth(&quot;300px&quot;);</span>
+<span class="nc" id="L146">        leftLayout.setPadding(true);</span>
+//sprzedawca lewa strona
+<span class="nc" id="L148">        Span sellerTitle = new Span(&quot;Sprzedawca&quot;);</span>
+<span class="nc" id="L149">        sellerTitle.getStyle().set(&quot;font-weight&quot;, &quot;bold&quot;);</span>
+
+<span class="nc" id="L151">        SellerDto seller = sellerService.findByUserEmail();</span>
+<span class="nc" id="L152">        Span name = new Span(&quot;Firma: &quot; + seller.name());</span>
+<span class="nc" id="L153">        Span nip = new Span(&quot;NIP: &quot; + seller.nip());</span>
+<span class="nc" id="L154">        Span regon = new Span(&quot;REGON: &quot; + seller.regon());</span>
+<span class="nc" id="L155">        Span address = new Span(&quot;Adres: &quot; + seller.street() + &quot; &quot; + seller.houseNumber() + &quot;, &quot; + seller.zipCode() + &quot; &quot; + seller.city());</span>
+
+<span class="nc" id="L157">        leftLayout.add(sellerTitle, name, nip, regon, address);</span>
+
+        // Nabynca prawa strona
+<span class="nc" id="L160">        VerticalLayout rightLayout = new VerticalLayout();</span>
+<span class="nc" id="L161">        rightLayout.setWidth(&quot;300px&quot;);</span>
+<span class="nc" id="L162">        rightLayout.setPadding(true);</span>
+
+<span class="nc" id="L164">        Span buyerTitle = new Span(&quot;Nabywca&quot;);</span>
+<span class="nc" id="L165">        buyerTitle.getStyle().set(&quot;font-weight&quot;, &quot;bold&quot;);</span>
+
+<span class="nc" id="L167">        nipField = new TextField(&quot;NIP kontrahenta&quot;);</span>
+<span class="nc" id="L168">        Button loadButton = new Button(&quot;Wczytaj&quot;, event -&gt; findByNip());</span>
+
+<span class="nc" id="L170">        buyerDataLayout = new VerticalLayout(); // dane nabywcy</span>
+<span class="nc" id="L171">        buyerDataLayout.setSpacing(false);</span>
+<span class="nc" id="L172">        buyerDataLayout.setPadding(false);</span>
+
+<span class="nc" id="L174">        VerticalLayout centerInvoice = new VerticalLayout();</span>
+
+// faktura
+
+
+<span class="nc" id="L179">        invoiceItemsGrid = new Grid&lt;&gt;(InvoiceItemsDto.class, false);</span>
+<span class="nc" id="L180">        dataView = invoiceItemsGrid.setItems(items);</span>
+
+
+<span class="nc" id="L183">        invoiceItemsGrid.addColumn(item -&gt; {</span>
+<span class="nc" id="L184">            int index = new ArrayList&lt;&gt;(dataView.getItems().toList()).indexOf(item) + 1;</span>
+<span class="nc" id="L185">            return String.valueOf(index);</span>
+<span class="nc" id="L186">        }).setHeader(&quot;Lp&quot;);</span>
+
+
+
+
+
+<span class="nc" id="L192">        invoiceItemsGrid.addColumn(InvoiceItemsDto::description).setHeader(&quot;Nazwa&quot;);</span>
+
+<span class="nc" id="L194">        invoiceItemsGrid.addColumn(InvoiceItemsDto::quantity).setHeader(&quot;iość&quot;);</span>
+<span class="nc" id="L195">        invoiceItemsGrid.addColumn(InvoiceItemsDto::unit).setHeader(&quot;Jednostka&quot;);</span>
+<span class="nc" id="L196">        invoiceItemsGrid.addColumn(InvoiceItemsDto::priceNetto).setHeader(&quot;Cena Netto&quot;);</span>
+
+<span class="nc" id="L198">        invoiceItemsGrid.addColumn(InvoiceItemsDto::tax).setHeader(&quot;Vat&quot;);</span>
+<span class="nc" id="L199">        invoiceItemsGrid.addColumn(InvoiceItemsDto::priceBrutto).setHeader(&quot;Cena Brutto&quot;);</span>
+
+<span class="nc" id="L201">        invoiceItemsGrid.addColumn(InvoiceItemsDto::totalValue).setHeader(&quot;Wartośc&quot;);</span>
+
+<span class="nc" id="L203">        invoiceItemsGrid.addComponentColumn(this::deleteButton);</span>
+
+
+<span class="nc" id="L206">        centerInvoice.setWidthFull();</span>
+
+
+
+<span class="nc" id="L210">        descriptionField.setWidth(&quot;150px&quot;);</span>
+
+
+<span class="nc" id="L213">        quantityField.setWidth(&quot;150px&quot;);</span>
+<span class="nc" id="L214">        quantityField.addValueChangeListener(event-&gt;calculateTotalValue());</span>
+
+<span class="nc" id="L216">        unit = new ComboBox&lt;&gt;(&quot;Jednostka&quot;);</span>
+<span class="nc" id="L217">        unit.setItems(invoiceItemsService.unit());</span>
+<span class="nc" id="L218">        unit.setWidth(&quot;150px&quot;);</span>
+<span class="nc" id="L219">        unit.setPlaceholder(&quot;Jednostka&quot;);</span>
+
+
+<span class="nc" id="L222">        nettoField.setWidth(&quot;150px&quot;);</span>
+
+
+<span class="nc" id="L225">        nettoField.addValueChangeListener(event -&gt; nettoToBrutto());</span>
+
+
+
+
+<span class="nc" id="L230">        tax = new ComboBox&lt;&gt;(&quot;Vat&quot;);</span>
+<span class="nc" id="L231">        tax.setItems(invoiceItemsService.tax());</span>
+<span class="nc" id="L232">        tax.setWidth(&quot;105px&quot;);</span>
+<span class="nc" id="L233">        tax.setPlaceholder(&quot;Vat&quot;);</span>
+<span class="nc" id="L234">        tax.setValue(&quot;VAT23&quot;);</span>
+
+
+<span class="nc" id="L237">        bruttoField.setWidth(&quot;105px&quot;);</span>
+<span class="nc" id="L238">        bruttoField.addValueChangeListener(event -&gt; bruttoToNetto());</span>
+<span class="nc" id="L239">        bruttoField.addValueChangeListener(event-&gt;calculateTotalValue());</span>
+
+
+<span class="nc" id="L242">        totalValue.setWidth(&quot;105px&quot;);</span>
+
+
+<span class="nc" id="L245">        Button addItemButton = new Button(&quot;Dodaj pozycję&quot;,p-&gt;addItem());</span>
+
+
+<span class="nc" id="L248">        HorizontalLayout fields = new HorizontalLayout();</span>
+<span class="nc" id="L249">        fields.add(descriptionField, quantityField, unit, nettoField, tax, bruttoField,totalValue);</span>
+
+<span class="nc" id="L251">        centerInvoice.add(invoiceItemsGrid, fields, addItemButton);</span>
+//pobierz
+<span class="nc" id="L253">        Button saveAndDownloads = new Button(&quot;Zapisz i pobierz&quot;, new Icon(VaadinIcon.DOWNLOAD));</span>
+<span class="nc" id="L254">        saveAndDownloads.addClickListener(event -&gt; saveAndDownloads());</span>
+
+
+<span class="nc" id="L257">        HorizontalLayout downLayout = new HorizontalLayout(saveAndDownloads, sumNettoField, sumTaxField, sumBruttoField);</span>
+<span class="nc" id="L258">        Div spacer = new Div();</span>
+<span class="nc" id="L259">        downLayout.add(spacer, sumNettoField, sumTaxField, sumBruttoField);</span>
+<span class="nc" id="L260">        downLayout.expand(spacer);</span>
+<span class="nc" id="L261">        downLayout.setJustifyContentMode(JustifyContentMode.CENTER);</span>
+
+<span class="nc" id="L263">        centerInvoice.add(invoiceItemsGrid, downLayout, homeButton);</span>
+
+
+<span class="nc" id="L266">        rightLayout.add(buyerTitle, nipField, loadButton, buyerDataLayout);</span>
+
+
+
+<span class="nc" id="L270">        centerLayout.add(leftLayout, centerInvoice, rightLayout);</span>
+<span class="nc" id="L271">        add(centerLayout);</span>
+<span class="nc" id="L272">    }</span>
+
+    private void calculatePaymentDate() {
+<span class="nc bnc" id="L275" title="All 4 branches missed.">        if (dateOfIssueField.isEmpty() || postponementField.isEmpty()) {</span>
+<span class="nc" id="L276">            return;</span>
+        }
+<span class="nc" id="L278">        LocalDate dateOfIssue = dateOfIssueField.getValue();</span>
+<span class="nc" id="L279">        Integer postponement = postponementField.getValue();</span>
+<span class="nc" id="L280">        LocalDate paymentDate = invoicesService.calculatePaymentDate(dateOfIssue, postponement);</span>
+<span class="nc" id="L281">        paymentDateField.setValue(paymentDate);</span>
+
+
+<span class="nc" id="L284">    }</span>
+
+    private void saveAndDownloads() {
+        try {
+<span class="nc" id="L288">            invoicesCheck();</span>
+
+
+<span class="nc" id="L291">            InvoicesDto invoicesDto = new InvoicesDto(numberField.getValue(), dateOfIssueField.getValue(), placeField.getValue(), dateOfSaleField.getValue()</span>
+<span class="nc" id="L292">                    , postponementField.getValue(), paymentDateField.getValue(), paymentTypeField.getValue());</span>
+
+
+<span class="nc" id="L295">            BuyerDto buyer = buyerService.findByNipAndName(nipField.getValue(), companyNameField.getValue());</span>
+
+<span class="nc" id="L297">            invoicesService.createInvoices(invoicesDto, buyer, items);</span>
+<span class="nc" id="L298">            TotalValues totalValues = new TotalValues(sumNettoField.getValue(),sumTaxField.getValue(),sumBruttoField.getValue());</span>
+
+<span class="nc" id="L300">            byte[] pdfBytes = pdfGenerator.generatePDF(new InvoicesPdf(invoicesDto, buyer, items,totalValues));</span>
+
+<span class="nc" id="L302">            String number = String.format(&quot;%s.pdf&quot;, invoicesDto.number());</span>
+
+<span class="nc" id="L304">            getUI().ifPresent(ui -&gt; ui.getPage().executeJs(&quot;var link = document.createElement('a');&quot; + &quot;link.href = 'data:application/pdf;base64,' + $0;&quot; + &quot;link.download = $1;&quot; + &quot;link.click();&quot;, Base64.getEncoder().encodeToString(pdfBytes), number));</span>
+
+
+<span class="nc" id="L307">            items.clear();</span>
+<span class="nc" id="L308">            dataView.refreshAll();</span>
+<span class="nc" id="L309">            clearInvoicesFields();</span>
+
+<span class="nc" id="L311">        } catch (IOException | CustomValidationException | AccountNumberException | NipConflictException |</span>
+                 NipNotFoundException | BuyerNotFoundException ex) {
+<span class="nc" id="L313">            Notification.show(ex.getMessage(),4000, Notification.Position.MIDDLE);</span>
+<span class="nc" id="L314">        }</span>
+
+<span class="nc" id="L316">    }</span>
+
+
+    private void clearInvoicesFields() {
+<span class="nc" id="L320">        numberField.setValue(invoicesService.invoicesNumber());</span>
+<span class="nc" id="L321">        dateOfIssueField.clear();</span>
+<span class="nc" id="L322">        placeField.clear();</span>
+<span class="nc" id="L323">        dateOfSaleField.clear();</span>
+<span class="nc" id="L324">        postponementField.clear();</span>
+<span class="nc" id="L325">        paymentDateField.clear();</span>
+<span class="nc" id="L326">        paymentTypeField.clear();</span>
+
+<span class="nc" id="L328">    }</span>
+
+
+// znajdz po nipie
+
+    private void findByNip() {
+<span class="nc" id="L334">        buyerDataLayout.removeAll();</span>
+        try {
+<span class="nc" id="L336">            BuyerDto buyer = buyerService.findByNipAndSave(nipField.getValue());</span>
+<span class="nc" id="L337">            companyNameField = new TextField(&quot;Firma&quot;);</span>
+<span class="nc" id="L338">            TextField nipFieldForm = new TextField(&quot;NIP&quot;);</span>
+<span class="nc" id="L339">            TextField regonField = new TextField(&quot;REGON&quot;);</span>
+<span class="nc" id="L340">            TextField streetField = new TextField(&quot;Ulica&quot;);</span>
+<span class="nc" id="L341">            TextField houseNumberField = new TextField(&quot;Nr domu/mieszkania&quot;);</span>
+<span class="nc" id="L342">            TextField zipCodeField = new TextField(&quot;Kod pocztowy&quot;);</span>
+<span class="nc" id="L343">            TextField cityField = new TextField(&quot;Miasto&quot;);</span>
+
+            // Znaleziony buyer po   nip
+
+<span class="nc" id="L347">            companyNameField.setValue(buyer.name());</span>
+<span class="nc" id="L348">            nipFieldForm.setValue(buyer.nip());</span>
+<span class="nc" id="L349">            regonField.setValue(buyer.regon());</span>
+<span class="nc" id="L350">            streetField.setValue(buyer.street());</span>
+<span class="nc" id="L351">            houseNumberField.setValue(buyer.houseNumber());</span>
+<span class="nc" id="L352">            zipCodeField.setValue(buyer.zipCode());</span>
+<span class="nc" id="L353">            cityField.setValue(buyer.city());</span>
+
+
+
+<span class="nc" id="L357">            Button saveButton = new Button(&quot;Zapisz&quot;, e -&gt; {</span>
+<span class="nc" id="L358">                BuyerDto dto = new BuyerDto(companyNameField.getValue(), nipFieldForm.getValue(), regonField.getValue(), streetField.getValue(), houseNumberField.getValue(), zipCodeField.getValue(), cityField.getValue());</span>
+                try {
+<span class="nc" id="L360">                    buyerService.findByNipAndNameAndSave(dto);</span>
+<span class="nc" id="L361">                    Notification.show(&quot;Dane zapisane.&quot;);</span>
+<span class="nc" id="L362">                } catch (Exception ex) {</span>
+<span class="nc" id="L363">                    Notification.show(&quot;Błąd przy zapisie: &quot; + ex.getMessage());</span>
+<span class="nc" id="L364">                }</span>
+<span class="nc" id="L365">            });</span>
+
+<span class="nc" id="L367">            buyerDataLayout.add(companyNameField, nipFieldForm, regonField, streetField, houseNumberField, zipCodeField, cityField, saveButton);</span>
+
+<span class="nc" id="L369">        } catch (Exception e) {</span>
+<span class="nc" id="L370">            Notification.show(&quot;Błąd podczas wyszukiwania: &quot; + e.getMessage());</span>
+<span class="nc" id="L371">        }</span>
+<span class="nc" id="L372">    }</span>
+
+
+    private void addItem() {
+
+
+           try {
+
+
+<span class="nc" id="L381">               InvoiceItemsDto invoiceItemsDto = getInvoiceItemsDto();</span>
+<span class="nc bnc" id="L382" title="All 2 branches missed.">               if (items.contains(invoiceItemsDto)) {</span>
+<span class="nc" id="L383">                   throw new ItemExistException((&quot;Pozycja  już jest na fakturze&quot;));</span>
+               }
+
+
+<span class="nc" id="L387">               items.add(invoiceItemsDto);</span>
+<span class="nc" id="L388">               invoiceItemsGrid.setItems(items);</span>
+
+
+<span class="nc" id="L391">               valueUpdate();</span>
+<span class="nc" id="L392">            clearFields();</span>
+
+
+<span class="nc" id="L395">           } catch (CustomValidationException | ItemExistException ex) {</span>
+<span class="nc" id="L396">            Notification.show(ex.getMessage(),3000, Notification.Position.MIDDLE);</span>
+<span class="nc" id="L397">        }</span>
+
+
+<span class="nc" id="L400">       }</span>
+    private Button deleteButton(InvoiceItemsDto item) {
+<span class="nc" id="L402">        Button deleteButton = new Button(new Icon(VaadinIcon.TRASH));</span>
+
+
+<span class="nc" id="L405">            deleteButton.addClickListener(e-&gt;{</span>
+<span class="nc" id="L406">                items.remove(item);</span>
+<span class="nc" id="L407">                reduceTotalValues(item.quantity(),item.priceNetto(),item.tax(),item.totalValue());</span>
+<span class="nc" id="L408">                dataView.refreshAll();</span>
+<span class="nc" id="L409">            });</span>
+
+
+
+
+<span class="nc" id="L414">        deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_ICON);</span>
+<span class="nc" id="L415">        return deleteButton;</span>
+    }
+
+    private void reduceTotalValues(int quantity, BigDecimal priceNetto,BigDecimal tax,BigDecimal totalValue){
+<span class="nc" id="L419">        BigDecimal netto = sumNettoField.getValue().subtract(invoiceItemsService.reduceTotalValues(priceNetto, quantity));</span>
+<span class="nc" id="L420">        sumNettoField.setValue(netto);</span>
+
+<span class="nc" id="L422">        BigDecimal vat = sumTaxField.getValue().subtract(invoiceItemsService.reduceTotalValues(tax, quantity));</span>
+<span class="nc" id="L423">        sumTaxField.setValue(vat);</span>
+
+<span class="nc" id="L425">        BigDecimal brutto = sumBruttoField.getValue().subtract(totalValue);</span>
+<span class="nc" id="L426">        sumBruttoField.setValue(brutto);</span>
+
+
+<span class="nc" id="L429">    }</span>
+
+    private InvoiceItemsDto getInvoiceItemsDto() {
+
+<span class="nc bnc" id="L433" title="All 12 branches missed.">        if (descriptionField.getValue() == null || quantityField.getValue() == null || unit.getValue() == null || nettoField.getValue() == null || tax == null || bruttoField.getValue() == null) {</span>
+<span class="nc" id="L434">            throw new CustomValidationException(&quot;Uzupełnij wszystkie pola&quot;);</span>
+
+        }
+
+<span class="nc" id="L438">        BigDecimal tax = bruttoField.getValue().subtract(nettoField.getValue());</span>
+
+
+<span class="nc" id="L441">        return new InvoiceItemsDto(descriptionField.getValue(), quantityField.getValue(), unit.getValue(), nettoField.getValue(), tax, bruttoField.getValue(), totalValue.getValue());</span>
+
+    }
+//wylicz netto -&gt;brutto
+
+    private void nettoToBrutto() {
+<span class="nc bnc" id="L447" title="All 2 branches missed.">        if ( updating.get()){</span>
+<span class="nc" id="L448">            return;</span>
+        }
+<span class="nc" id="L450">        updating.set(true);</span>
+
+<span class="nc" id="L452">        BigDecimal brutto = invoiceItemsService.nettoToBrutto(nettoField.getValue(), tax.getValue());</span>
+
+<span class="nc" id="L454">        bruttoField.setValue(brutto);</span>
+<span class="nc" id="L455">        updating.set(false);</span>
+
+
+<span class="nc" id="L458">    }</span>
+//wylicz brutto -&gt; netto
+    private void bruttoToNetto() {
+<span class="nc bnc" id="L461" title="All 2 branches missed.">        if (updating.get()){</span>
+<span class="nc" id="L462">            return;</span>
+        }
+<span class="nc" id="L464">        updating.set(true);</span>
+
+<span class="nc" id="L466">        BigDecimal netto = invoiceItemsService.bruttoToNetto(bruttoField.getValue(), tax.getValue());</span>
+
+<span class="nc" id="L468">        nettoField.setValue(netto);</span>
+<span class="nc" id="L469">        updating.set(false);</span>
+
+
+<span class="nc" id="L472">    }</span>
+//wyczysc pola
+    private void clearFields() {
+<span class="nc" id="L475">        updating.set(true);</span>
+<span class="nc" id="L476">        descriptionField.clear();</span>
+<span class="nc" id="L477">        quantityField.clear();</span>
+<span class="nc" id="L478">        nettoField.clear();</span>
+<span class="nc" id="L479">        bruttoField.clear();</span>
+<span class="nc" id="L480">        totalValue.clear();</span>
+<span class="nc" id="L481">        updating.set(false);</span>
+<span class="nc" id="L482">    }</span>
+//calkowita wartosc
+    private void valueUpdate() {
+
+<span class="nc" id="L486">        List&lt;BigDecimal&gt; prices = totalPrice(nettoField.getValue(), bruttoField.getValue(), quantityField.getValue());</span>
+
+<span class="nc" id="L488">        calculateTotalTax();</span>
+
+<span class="nc" id="L490">        sumNettoField.setValue(prices.get(0));</span>
+<span class="nc" id="L491">        sumBruttoField.setValue(prices.get(1));</span>
+
+
+
+<span class="nc" id="L495">    }</span>
+
+
+    private BigDecimal checkEmpty(BigDecimalField value) {
+<span class="nc bnc" id="L499" title="All 2 branches missed.">        if (value.isEmpty()) {</span>
+<span class="nc" id="L500">            return BigDecimal.ZERO;</span>
+        }
+<span class="nc" id="L502">        return value.getValue();</span>
+    }
+    private void calculateTotalValue() {
+
+<span class="nc bnc" id="L506" title="All 4 branches missed.">            if (bruttoField.getValue() == null || quantityField.getValue() == null) {</span>
+<span class="nc" id="L507">                return;</span>
+            }
+<span class="nc" id="L509">        BigDecimal total = invoiceItemsService.calculateTotalValue(bruttoField.getValue(), quantityField.getValue());</span>
+<span class="nc" id="L510">        totalValue.setValue(total);</span>
+
+<span class="nc" id="L512">    }</span>
+    private void calculateTotalTax(){
+<span class="nc" id="L514">        sumTaxField.setValue(checkEmpty(sumTaxField));</span>
+<span class="nc" id="L515">        BigDecimal value = sumTaxField.getValue();</span>
+<span class="nc" id="L516">        BigDecimal calculateTax = bruttoField.getValue().subtract(nettoField.getValue());</span>
+<span class="nc" id="L517">        BigDecimal totalTax = calculateTax.multiply(BigDecimal.valueOf(quantityField.getValue())).add(value);</span>
+<span class="nc" id="L518">        sumTaxField.setValue(totalTax);</span>
+
+<span class="nc" id="L520">    }</span>
+    private List&lt;BigDecimal&gt; totalPrice(BigDecimal priceNetto ,BigDecimal priceBrutto,int quantity){
+<span class="nc" id="L522">        sumNettoField.setValue(checkEmpty(sumNettoField));</span>
+<span class="nc" id="L523">        sumBruttoField.setValue(checkEmpty(sumBruttoField));</span>
+
+<span class="nc" id="L525">        BigDecimal calculateNetto= invoiceItemsService.calculateTotalValue(priceNetto, quantity);</span>
+<span class="nc" id="L526">        BigDecimal totalNetto = sumNettoField.getValue().add(calculateNetto);</span>
+
+<span class="nc" id="L528">        BigDecimal calculateBrutto = invoiceItemsService.calculateTotalValue(priceBrutto, quantity);</span>
+<span class="nc" id="L529">        BigDecimal totalBrutto = sumBruttoField.getValue().add(calculateBrutto);</span>
+
+<span class="nc" id="L531">        return List.of(totalNetto,totalBrutto);</span>
+
+    }
+
+    private void invoicesCheck() {
+<span class="nc bnc" id="L536" title="All 14 branches missed.">        if (numberField.isEmpty() || dateOfIssueField.isEmpty() || placeField.isEmpty() || dateOfSaleField.isEmpty() || postponementField.isEmpty() || paymentDateField.isEmpty() || paymentTypeField.isEmpty()) {</span>
+<span class="nc" id="L537">            throw new CustomValidationException(&quot;Uzupełnij wszystkie pola&quot;);</span>
+        }
+<span class="nc" id="L539">    }</span>
+
+
+}
+
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

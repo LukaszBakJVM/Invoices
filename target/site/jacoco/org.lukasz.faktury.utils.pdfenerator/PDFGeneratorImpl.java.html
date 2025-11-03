@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PDFGeneratorImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">faktury</a> &gt; <a href="index.source.html" class="el_package">org.lukasz.faktury.utils.pdfenerator</a> &gt; <span class="el_source">PDFGeneratorImpl.java</span></div><h1>PDFGeneratorImpl.java</h1><pre class="source lang-java linenums">package org.lukasz.faktury.utils.pdfenerator;
+
+import com.itextpdf.io.font.PdfEncodings;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.properties.HorizontalAlignment;
+import com.itextpdf.layout.properties.UnitValue;
+import org.lukasz.faktury.buyer.dto.BuyerDto;
+import org.lukasz.faktury.invoices.dto.InvoicesDto;
+import org.lukasz.faktury.invoices.dto.InvoicesPdf;
+import org.lukasz.faktury.items.dto.InvoiceItemsDto;
+import org.lukasz.faktury.seller.Seller;
+import org.lukasz.faktury.seller.SellerService;
+import org.lukasz.faktury.views.invoice.TotalValues;
+import org.springframework.stereotype.Component;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.IntStream;
+
+@Component
+public class PDFGeneratorImpl implements PDFGenerator {
+    private final SellerService sellerService;
+
+
+<span class="fc" id="L34">    public PDFGeneratorImpl(SellerService sellerService) {</span>
+<span class="fc" id="L35">        this.sellerService = sellerService;</span>
+
+<span class="fc" id="L37">    }</span>
+
+
+    @Override
+    public byte[] generatePDF(InvoicesPdf invoice) throws IOException {
+<span class="nc" id="L42">        PdfFont font = PdfFontFactory.createFont(&quot;fonts/DejaVuSans.ttf&quot;, PdfEncodings.IDENTITY_H);</span>
+<span class="nc" id="L43">        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();</span>
+
+<span class="nc" id="L45">        try (PdfWriter writer = new PdfWriter(outputStream); PdfDocument pdfDocument = new PdfDocument(writer); Document document = new Document(pdfDocument)) {</span>
+<span class="nc" id="L46">            document.setFont(font);</span>
+
+<span class="nc" id="L48">            Seller seller = sellerService.findByEmail();</span>
+<span class="nc" id="L49">            addInvoiceHeader(document, invoice.invoicesDto());</span>
+<span class="nc" id="L50">            addSellerBuyer(document, seller, invoice.buyerDto(), invoice.invoicesDto().typOfPayment());</span>
+<span class="nc" id="L51">            addInvoiceItems(document, invoice.invoiceItemsDto());</span>
+<span class="nc" id="L52">            addInvoiceSummary(document, invoice.totalValues());</span>
+        }
+<span class="nc" id="L54">        return outputStream.toByteArray();</span>
+    }
+
+
+    private void addInvoiceHeader(Document document, InvoicesDto invoicesDto) {
+
+<span class="nc" id="L60">        Paragraph invoiceNumber = new Paragraph(String.format(&quot;Faktura numer: %s &quot;, invoicesDto.number())).setFontSize(14).setBold();</span>
+<span class="nc" id="L61">        document.add(invoiceNumber);</span>
+
+        // Daty i płatność
+<span class="nc" id="L64">        Paragraph dates = new Paragraph().add(String.format(&quot;Data wystawienia:  %s%s Data sprzedaży: %s%s Termin płatności: %s%s Płatność: %s   &quot;, invoicesDto.dateOfIssue(), &quot;\n&quot;, invoicesDto.dateOfSale(), &quot;\n&quot;, invoicesDto.paymentDate(), &quot;\n&quot;, invoicesDto.typOfPayment()));</span>
+<span class="nc" id="L65">        document.add(dates);</span>
+
+<span class="nc" id="L67">        document.add(new Paragraph(&quot;\n&quot;));</span>
+<span class="nc" id="L68">    }</span>
+
+    private void addSellerBuyer(Document document, Seller seller, BuyerDto buyerDto, String typeOfPayment) {
+<span class="nc" id="L71">        Table table = new Table(2);</span>
+<span class="nc" id="L72">        table.setWidth(UnitValue.createPercentValue(100));</span>
+
+        // Sprzedawca
+<span class="nc" id="L75">        Cell sellerCell = new Cell().add(new Paragraph(String.format(&quot;Sprzedawca %s %s %s %s %s %s %s %s %s NIP %s %s&quot;, &quot;\n&quot;, seller.getName(), &quot;\n&quot;, seller.getStreet(), seller.getHouseNumber(), &quot;\n&quot;, seller.getZipCode(), seller.getCity(), &quot;\n&quot;, seller.getNip(),&quot;\n&quot;)).setBorder(Border.NO_BORDER));</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">        if (!typeOfPayment.equals(&quot;Gotówka&quot;)) {</span>
+<span class="nc" id="L77">            sellerCell.add(new Paragraph(String.format(&quot;Nr konta %s &quot;, seller.getAccountNb())));</span>
+        }
+<span class="nc" id="L79">        table.addCell(sellerCell);</span>
+
+        // Nabywca
+<span class="nc" id="L82">        Cell buyerCell = new Cell().add(new Paragraph(String.format(&quot;Nabywca %s %s %s %s %s %s %s %s %s NIP %s &quot;, &quot;\n&quot;, buyerDto.name(), &quot;\n&quot;, buyerDto.street(), buyerDto.houseNumber(), &quot;\n&quot;, buyerDto.zipCode(), buyerDto.city(), &quot;\n&quot;, buyerDto.nip())).setBorder(Border.NO_BORDER));</span>
+<span class="nc" id="L83">        table.addCell(buyerCell);</span>
+
+<span class="nc" id="L85">        document.add(table);</span>
+<span class="nc" id="L86">        document.add(new Paragraph(&quot;\n&quot;));</span>
+<span class="nc" id="L87">    }</span>
+
+    private void addInvoiceItems(Document document, List&lt;InvoiceItemsDto&gt; items) {
+<span class="nc" id="L90">        Table table = new Table(new float[]{1, 8, 2, 2, 2, 2, 2, 2});</span>
+<span class="nc" id="L91">        table.setWidth(UnitValue.createPercentValue(100));</span>
+
+<span class="nc" id="L93">        table.addHeaderCell(&quot;Lp&quot;);</span>
+<span class="nc" id="L94">        table.addHeaderCell(&quot;Nazwa&quot;);</span>
+<span class="nc" id="L95">        table.addHeaderCell(&quot;Ilość&quot;);</span>
+<span class="nc" id="L96">        table.addHeaderCell(&quot;Jednostka&quot;);</span>
+
+<span class="nc" id="L98">        table.addHeaderCell(&quot;Cena netto&quot;);</span>
+<span class="nc" id="L99">        table.addHeaderCell(&quot;VAT&quot;);</span>
+<span class="nc" id="L100">        table.addHeaderCell(&quot;Cena Brutto&quot;);</span>
+<span class="nc" id="L101">        table.addHeaderCell(&quot;Wartość brutto&quot;);</span>
+
+<span class="nc" id="L103">        IntStream.range(0, items.size()).forEach(i -&gt; {</span>
+<span class="nc" id="L104">            InvoiceItemsDto item = items.get(i);</span>
+<span class="nc" id="L105">            table.addCell(String.valueOf(i + 1));</span>
+<span class="nc" id="L106">            table.addCell(item.description());</span>
+<span class="nc" id="L107">            table.addCell(String.valueOf(item.quantity()));</span>
+<span class="nc" id="L108">            table.addCell(item.unit());</span>
+<span class="nc" id="L109">            table.addCell(String.valueOf(item.priceNetto()));</span>
+<span class="nc" id="L110">            table.addCell(String.valueOf(item.tax()));</span>
+<span class="nc" id="L111">            table.addCell(String.valueOf(item.priceBrutto()));</span>
+<span class="nc" id="L112">            table.addCell(String.valueOf(item.totalValue()));</span>
+<span class="nc" id="L113">        });</span>
+
+<span class="nc" id="L115">        document.add(table);</span>
+<span class="nc" id="L116">    }</span>
+
+    private void addInvoiceSummary(Document document, TotalValues totalValues) {
+<span class="nc" id="L119">        Table summaryTable = new Table(2);</span>
+<span class="nc" id="L120">        summaryTable.setWidth(UnitValue.createPercentValue(40));</span>
+<span class="nc" id="L121">        summaryTable.setHorizontalAlignment(HorizontalAlignment.RIGHT);</span>
+
+<span class="nc" id="L123">        summaryTable.addCell(new Cell().add(new Paragraph(&quot;Wartość netto&quot;)).setBorder(Border.NO_BORDER));</span>
+<span class="nc" id="L124">        summaryTable.addCell(new Cell().add(new Paragraph(String.valueOf(totalValues.totalNetto()))).setBorder(Border.NO_BORDER));</span>
+
+<span class="nc" id="L126">        summaryTable.addCell(new Cell().add(new Paragraph(&quot;VAT&quot;)).setBorder(Border.NO_BORDER));</span>
+<span class="nc" id="L127">        summaryTable.addCell(new Cell().add(new Paragraph(String.valueOf(totalValues.totalVat()))).setBorder(Border.NO_BORDER));</span>
+
+<span class="nc" id="L129">        summaryTable.addCell(new Cell().add(new Paragraph(&quot;Wartość brutto&quot;)).setBorder(Border.NO_BORDER));</span>
+<span class="nc" id="L130">        summaryTable.addCell(new Cell().add(new Paragraph(String.valueOf(totalValues.totalBrutto()))).setBorder(Border.NO_BORDER));</span>
+
+<span class="nc" id="L132">        document.add(summaryTable);</span>
+<span class="nc" id="L133">    }</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

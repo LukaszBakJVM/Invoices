@@ -1,0 +1,73 @@
+Index: src/main/resources/application-dev.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>ceidgApi: https://dane.biznes.gov.pl\r\ntokenCeidg: tokenCeidg\r\nmfApi: https://wl-api.mf.gov.pl\r\ntokenUrl: localhost:8080\r\n\r\n\r\nspring:\r\n  datasource:\r\n    url: jdbc:postgresql://localhost:5432/invoices\r\n    username: postgres\r\n    password: pass\r\n  jpa:\r\n    hibernate:\r\n      ddl-auto: update\r\n    show-sql: true\r\n  mail:\r\n    host: smtp.gmail.com\r\n    port: 587\r\n    username: email\r\n    password: pass\r\n    properties:\r\n      mail:\r\n        smtp:\r\n          auth: true\r\n          starttls:\r\n            enable: true\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n
+===================================================================
+diff --git a/src/main/resources/application-dev.yml b/src/main/resources/application-dev.yml
+--- a/src/main/resources/application-dev.yml	
++++ b/src/main/resources/application-dev.yml	
+@@ -1,5 +1,5 @@
+ ceidgApi: https://dane.biznes.gov.pl
+-tokenCeidg: tokenCeidg
++tokenCeidg: eyJraWQiOiJjZWlkZyIsImFsZyI6IkhTNTEyIn0.eyJnaXZlbl9uYW1lIjoixYF1a2FzeiIsInBlc2VsIjoiODIwODExMTM1NTYiLCJpYXQiOjE3NTk3NTExMTAsImZhbWlseV9uYW1lIjoiQsSFayIsImNsaWVudF9pZCI6IlVTRVItODIwODExMTM1NTYtxYFVS0FTWi1CxIRLIn0.teaMuhdZ5NHozmkxp8gh7xWtHZVGr92STDIzB_3JVWSjUdgmqXq9nyON8R8Fv-V2duf4Jf_Vgty7wpAKu10NMw
+ mfApi: https://wl-api.mf.gov.pl
+ tokenUrl: localhost:8080
+ 
+@@ -8,7 +8,7 @@
+   datasource:
+     url: jdbc:postgresql://localhost:5432/invoices
+     username: postgres
+-    password: pass
++    password: demon
+   jpa:
+     hibernate:
+       ddl-auto: update
+@@ -16,8 +16,8 @@
+   mail:
+     host: smtp.gmail.com
+     port: 587
+-    username: email
+-    password: pass
++    username: fakturyapp11@gmail.com
++    password: mmcgreeloddihaqv
+     properties:
+       mail:
+         smtp:
+Index: src/main/resources/application-prod.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>ceidgApi: https://dane.biznes.gov.pl\r\ntokenCeidg: tokenCeidg\r\nmfApi: https://wl-api.mf.gov.pl\r\ntokenUrl: localhost:8080\r\n\r\n\r\nspring:\r\n  datasource:\r\n    url: jdbc:postgresql://url:5432/invoices\r\n    username: postgres\r\n    password: pass\r\n  jpa:\r\n    hibernate:\r\n      ddl-auto: update\r\n\r\n  mail:\r\n    host: smtp.gmail.com\r\n    port: 587\r\n    username: email\r\n    password: pass\r\n    properties:\r\n      mail:\r\n        smtp:\r\n          auth: true\r\n          starttls:\r\n            enable: true\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n
+===================================================================
+diff --git a/src/main/resources/application-prod.yml b/src/main/resources/application-prod.yml
+--- a/src/main/resources/application-prod.yml	
++++ b/src/main/resources/application-prod.yml	
+@@ -1,14 +1,14 @@
+ ceidgApi: https://dane.biznes.gov.pl
+-tokenCeidg: tokenCeidg
++tokenCeidg: eyJraWQiOiJjZWlkZyIsImFsZyI6IkhTNTEyIn0.eyJnaXZlbl9uYW1lIjoixYF1a2FzeiIsInBlc2VsIjoiODIwODExMTM1NTYiLCJpYXQiOjE3NTk3NTExMTAsImZhbWlseV9uYW1lIjoiQsSFayIsImNsaWVudF9pZCI6IlVTRVItODIwODExMTM1NTYtxYFVS0FTWi1CxIRLIn0.teaMuhdZ5NHozmkxp8gh7xWtHZVGr92STDIzB_3JVWSjUdgmqXq9nyON8R8Fv-V2duf4Jf_Vgty7wpAKu10NMw
+ mfApi: https://wl-api.mf.gov.pl
+-tokenUrl: localhost:8080
++tokenUrl: https://faktury.freeddns.org
+ 
+ 
+ spring:
+   datasource:
+-    url: jdbc:postgresql://url:5432/invoices
++    url: jdbc:postgresql://faktury.freeddns.org:5432/invoices
+     username: postgres
+-    password: pass
++    password: demon666
+   jpa:
+     hibernate:
+       ddl-auto: update
+@@ -16,8 +16,8 @@
+   mail:
+     host: smtp.gmail.com
+     port: 587
+-    username: email
+-    password: pass
++    username: fakturyapp11@gmail.com
++    password: mmcgreeloddihaqv
+     properties:
+       mail:
+         smtp:

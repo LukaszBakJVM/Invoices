@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BuyerServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">faktury</a> &gt; <a href="index.source.html" class="el_package">org.lukasz.faktury.buyer</a> &gt; <span class="el_source">BuyerServiceImpl.java</span></div><h1>BuyerServiceImpl.java</h1><pre class="source lang-java linenums">package org.lukasz.faktury.buyer;
+
+import org.lukasz.faktury.buyer.dto.BuyerDto;
+import org.lukasz.faktury.exceptions.BuyerNotFoundException;
+import org.lukasz.faktury.nipapi.ApiConnection;
+import org.lukasz.faktury.nipapi.ceidgapi.CeidgResult;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+public class BuyerServiceImpl implements BuyerService {
+    private final BuyerMapper buyerMapper;
+    private final BuyerRepo buyerRepo;
+    private final ApiConnection connection;
+
+<span class="fc" id="L18">    public BuyerServiceImpl(BuyerMapper buyerMapper, BuyerRepo buyerRepo, ApiConnection connection) {</span>
+<span class="fc" id="L19">        this.buyerMapper = buyerMapper;</span>
+<span class="fc" id="L20">        this.buyerRepo = buyerRepo;</span>
+<span class="fc" id="L21">        this.connection = connection;</span>
+<span class="fc" id="L22">    }</span>
+
+    @Override
+    @Transactional
+    public BuyerDto findByNipAndSave(String nip) {
+<span class="fc" id="L27">        List&lt;Buyer&gt; byNip = buyerRepo.findByNip(nip);</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if (!byNip.isEmpty()) {</span>
+<span class="fc" id="L29">            Buyer buyer = byNip.getLast();</span>
+<span class="fc" id="L30">            return buyerMapper.entityToDto(buyer);</span>
+        }
+<span class="fc" id="L32">        BuyerDto dataByNip = findDataByNip(nip);</span>
+
+<span class="fc" id="L34">        Buyer entity = buyerMapper.toEntity(dataByNip);</span>
+<span class="fc" id="L35">        Buyer save = buyerRepo.save(entity);</span>
+<span class="fc" id="L36">        return buyerMapper.entityToDto(save);</span>
+    }
+
+    @Override
+    public Buyer findBuyer(BuyerDto buyerDto) {
+<span class="fc" id="L41">        return buyerRepo.findByNipAndName(buyerDto.nip(), buyerDto.name()).orElseThrow();</span>
+
+    }
+
+    @Override
+    public void findByNipAndNameAndSave(BuyerDto buyerDto) {
+<span class="fc" id="L47">        buyerRepo.findByNipAndName(buyerDto.nip(), buyerDto.name()).ifPresentOrElse(buyer -&gt; {},</span>
+<span class="fc" id="L48">                () -&gt; buyerRepo.save(buyerMapper.toEntity(buyerDto)));</span>
+<span class="fc" id="L49">    }</span>
+
+    @Override
+    public BuyerDto findByNipAndName(String nip, String companyName) {
+<span class="pc" id="L53">        Buyer buyer = buyerRepo.findByNipAndName(nip, companyName).orElseThrow(() -&gt; new BuyerNotFoundException(&quot;Błąd Firmy , Zapisz ponownie firmę &quot;));</span>
+
+<span class="fc" id="L55">        return buyerMapper.entityToDto(buyer);</span>
+
+    }
+
+
+    private BuyerDto findDataByNip(String nip) {
+<span class="fc" id="L61">        CeidgResult ceidgResult = connection.result(nip).firma().stream().findFirst().orElseThrow();</span>
+<span class="fc" id="L62">        return new BuyerDto(ceidgResult.nazwa(), ceidgResult.wlasciciel().nip(), ceidgResult.wlasciciel().regon(), ceidgResult.adresDzialalnosci().miasto(), ceidgResult.adresDzialalnosci().kod(), ceidgResult.adresDzialalnosci().ulica(), ceidgResult.adresDzialalnosci().budynek());</span>
+    }
+
+
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

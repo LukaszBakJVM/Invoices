@@ -1,0 +1,5 @@
+org\lukasz\faktury\seller\SellerServiceTest.class
+org\lukasz\faktury\buyer\BuyerServiceIntegrationTest.class
+org\lukasz\faktury\buyer\BuyerServiceTest.class
+org\lukasz\faktury\user\UserServiceIntegrationTest.class
+org\lukasz\faktury\user\UserServiceTest.class

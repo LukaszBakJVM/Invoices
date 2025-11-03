@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ValidationImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">faktury</a> &gt; <a href="index.source.html" class="el_package">org.lukasz.faktury.utils.validation</a> &gt; <span class="el_source">ValidationImpl.java</span></div><h1>ValidationImpl.java</h1><pre class="source lang-java linenums">package org.lukasz.faktury.utils.validation;
+
+import jakarta.validation.ConstraintViolation;
+import org.lukasz.faktury.exceptions.CustomValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+@Component
+public class ValidationImpl implements Validation {
+    private final LocalValidatorFactoryBean validatorFactoryBean;
+<span class="fc" id="L15">    private final Logger logger = LoggerFactory.getLogger(ValidationImpl.class);</span>
+
+<span class="fc" id="L17">    public ValidationImpl(LocalValidatorFactoryBean validatorFactoryBean) {</span>
+<span class="fc" id="L18">        this.validatorFactoryBean = validatorFactoryBean;</span>
+<span class="fc" id="L19">    }</span>
+
+    @Override
+    public &lt;T&gt; void validation(T t) {
+<span class="fc" id="L23">        Set&lt;ConstraintViolation&lt;T&gt;&gt; violations = validatorFactoryBean.validate(t);</span>
+
+
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        if (!violations.isEmpty()) {</span>
+<span class="fc" id="L27">            String errorMessage = violations.stream().map(ConstraintViolation::getMessage).collect(Collectors.joining(&quot; , &quot;));</span>
+
+<span class="fc" id="L29">            logger.error(&quot;inside validation  errors: {}&quot;, errorMessage);</span>
+
+<span class="fc" id="L31">            throw new CustomValidationException(errorMessage);</span>
+        }
+<span class="fc" id="L33">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

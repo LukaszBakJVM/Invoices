@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ApiConnectionImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">faktury</a> &gt; <a href="index.source.html" class="el_package">org.lukasz.faktury.nipapi</a> &gt; <span class="el_source">ApiConnectionImpl.java</span></div><h1>ApiConnectionImpl.java</h1><pre class="source lang-java linenums">package org.lukasz.faktury.nipapi;
+
+import org.lukasz.faktury.exceptions.NipNotFoundException;
+import org.lukasz.faktury.nipapi.ceidgapi.*;
+import org.lukasz.faktury.nipapi.mf.Address;
+import org.lukasz.faktury.nipapi.mf.MfNipApiResponse;
+import org.lukasz.faktury.nipapi.mf.Subject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClient;
+
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.springframework.web.util.UriComponentsBuilder.fromUriString;
+
+@Component
+public class ApiConnectionImpl implements ApiConnection {
+    private final RestClient restClient;
+    @Value(&quot;${ceidgApi}&quot;)
+    private String ceidgUrl;
+    @Value(&quot;${mfApi}&quot;)
+    private String mfUrl;
+    @Value(&quot;${tokenCeidg}&quot;)
+    private String jwtToken;
+
+
+<span class="fc" id="L32">    public ApiConnectionImpl(RestClient restClient) {</span>
+<span class="fc" id="L33">        this.restClient = restClient;</span>
+<span class="fc" id="L34">    }</span>
+
+    @Override
+    public CeidgNipApiResponse result(String nip) {
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        if (nip.isEmpty()) {</span>
+<span class="fc" id="L39">            throw new NipNotFoundException(&quot;Uzupełnij nip nabywcy&quot;);</span>
+
+        }
+
+<span class="fc" id="L43">        ResponseEntity&lt;CeidgNipApiResponse&gt; ceidgNipApiResponse = restClient.get().uri(searchByNipCeidg(nip)).header(&quot;Authorization&quot;, &quot;Bearer &quot; + jwtToken).accept(MediaType.APPLICATION_JSON).retrieve().onStatus(HttpStatusCode::is4xxClientError, (request, response) -&gt; {</span>
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">            if (response.getStatusCode().value() == 400) {</span>
+<span class="fc" id="L45">                throw new NipNotFoundException(String.format(&quot;Niepoprawny identyfikator NIP [%s]&quot;, nip));</span>
+            }
+<span class="pc" id="L47">        }).toEntity(CeidgNipApiResponse.class);</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        if (ceidgNipApiResponse.getStatusCode().value() == 204) {</span>
+<span class="fc" id="L49">            return mfResult(nip);</span>
+
+        }
+
+<span class="fc" id="L53">        return checkAddress(ceidgNipApiResponse.getBody());</span>
+
+
+    }
+
+    private CeidgNipApiResponse checkAddress(CeidgNipApiResponse response) {
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        List&lt;CeidgResult&gt; updatedCompany = response.firma().stream().filter(f -&gt; !f.status().equals(&quot;WYKRESLONY&quot;)).map(firma -&gt; {</span>
+<span class="pc bpc" id="L60" title="1 of 4 branches missed.">            if (firma.adresDzialalnosci().miasto() == null &amp;&amp; firma.adresKorespondencyjny().miasto() != null) {</span>
+<span class="fc" id="L61">                CorrespondenceAddress ca = firma.adresKorespondencyjny();</span>
+<span class="fc" id="L62">                BusinessAddress businessAddress = new BusinessAddress(ca.ulica(), ca.budynek(), ca.kod(), ca.miasto());</span>
+<span class="fc" id="L63">                return new CeidgResult(firma.nazwa(), businessAddress, firma.wlasciciel(), firma.status(), firma.adresKorespondencyjny());</span>
+            } else {
+<span class="fc" id="L65">                return firma;</span>
+            }
+<span class="fc" id="L67">        }).toList();</span>
+
+<span class="fc" id="L69">        return new CeidgNipApiResponse(updatedCompany);</span>
+    }
+
+
+    private String searchByNipCeidg(final String nip) {
+<span class="fc" id="L74">        return fromUriString(ceidgUrl).path(&quot;/api/ceidg/v3/firma?nip={nip}&quot;).buildAndExpand(nip).toUriString();</span>
+
+    }
+
+
+    private CeidgNipApiResponse mfResult(String nip) {
+<span class="fc" id="L80">        Subject subject = restClient.get().uri(searchByNipMf(nip)).accept(MediaType.APPLICATION_JSON).retrieve().body(MfNipApiResponse.class).result().subject();</span>
+        Address address;
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">        if (subject.workingAddress() != null) {</span>
+<span class="fc" id="L83">            address = splitAddress(subject.workingAddress());</span>
+        } else {
+<span class="nc" id="L85">            address = splitAddress(subject.residenceAddress());</span>
+
+        }
+<span class="fc" id="L88">        CeidgResult ceidgResult = new CeidgResult(subject.name(), new BusinessAddress(address.street(), address.houseNumber(), address.zipcode(), address.city()), new Owner(subject.nip(), subject.regon()), &quot;mf&quot;, new CorrespondenceAddress(address.street(), address.houseNumber(), address.zipcode(), address.city()));</span>
+<span class="fc" id="L89">        return new CeidgNipApiResponse(List.of(ceidgResult));</span>
+    }
+
+    private String searchByNipMf(final String nip) {
+<span class="fc" id="L93">        LocalDate date = LocalDate.now();</span>
+<span class="fc" id="L94">        return fromUriString(mfUrl).path(&quot;/api/search/nip/{nip}?date={date}&quot;).buildAndExpand(nip, date).toUriString();</span>
+
+    }
+
+
+    private Address splitAddress(String workingAddress) {
+<span class="fc" id="L100">        List&lt;String&gt; data = Arrays.stream(workingAddress.split(&quot;[ ,]+&quot;)).toList();</span>
+
+<span class="fc" id="L102">        return new Address(data.get(2), data.get(3), data.get(0), data.get(1));</span>
+
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

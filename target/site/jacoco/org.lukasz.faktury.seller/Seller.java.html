@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Seller.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">faktury</a> &gt; <a href="index.source.html" class="el_package">org.lukasz.faktury.seller</a> &gt; <span class="el_source">Seller.java</span></div><h1>Seller.java</h1><pre class="source lang-java linenums">package org.lukasz.faktury.seller;
+
+import jakarta.persistence.*;
+import org.lukasz.faktury.invoices.Invoices;
+import org.lukasz.faktury.user.User;
+
+import java.util.List;
+
+@Entity
+public class Seller {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+    private String nip;
+    private String regon;
+    private String city;
+    private String zipCode;
+    private String street;
+    private String houseNumber;
+    private String accountNb;
+
+<span class="fc" id="L24">    public Seller() {</span>
+<span class="fc" id="L25">    }</span>
+
+    @OneToOne(mappedBy =&quot;seller&quot; )
+    private User user;
+
+    @OneToMany(mappedBy = &quot;seller&quot;)
+    private List&lt;Invoices&gt; invoices;
+
+    public Long getId() {
+<span class="nc" id="L34">        return id;</span>
+    }
+
+    public void setId(Long id) {
+<span class="fc" id="L38">        this.id = id;</span>
+<span class="fc" id="L39">    }</span>
+
+    public String getName() {
+<span class="nc" id="L42">        return name;</span>
+    }
+
+    public void setName(String name) {
+<span class="fc" id="L46">        this.name = name;</span>
+<span class="fc" id="L47">    }</span>
+
+    public String getNip() {
+<span class="fc" id="L50">        return nip;</span>
+    }
+
+    public void setNip(String nip) {
+<span class="fc" id="L54">        this.nip = nip;</span>
+<span class="fc" id="L55">    }</span>
+
+    public String getRegon() {
+<span class="nc" id="L58">        return regon;</span>
+    }
+
+    public void setRegon(String regon) {
+<span class="fc" id="L62">        this.regon = regon;</span>
+<span class="fc" id="L63">    }</span>
+
+    public String getCity() {
+<span class="nc" id="L66">        return city;</span>
+    }
+
+    public void setCity(String city) {
+<span class="fc" id="L70">        this.city = city;</span>
+<span class="fc" id="L71">    }</span>
+
+    public String getZipCode() {
+<span class="nc" id="L74">        return zipCode;</span>
+    }
+
+    public void setZipCode(String zipCode) {
+<span class="fc" id="L78">        this.zipCode = zipCode;</span>
+<span class="fc" id="L79">    }</span>
+
+    public String getStreet() {
+<span class="nc" id="L82">        return street;</span>
+    }
+
+    public void setStreet(String street) {
+<span class="fc" id="L86">        this.street = street;</span>
+<span class="fc" id="L87">    }</span>
+
+    public String getHouseNumber() {
+<span class="nc" id="L90">        return houseNumber;</span>
+    }
+
+    public void setHouseNumber(String houseNumber) {
+<span class="fc" id="L94">        this.houseNumber = houseNumber;</span>
+<span class="fc" id="L95">    }</span>
+
+
+    public User getRegistration() {
+<span class="nc" id="L99">        return user;</span>
+    }
+
+    public void setRegistration(User user) {
+<span class="nc" id="L103">        this.user = user;</span>
+<span class="nc" id="L104">    }</span>
+
+    public User getUser() {
+<span class="nc" id="L107">        return user;</span>
+    }
+
+    public void setUser(User user) {
+<span class="nc" id="L111">        this.user = user;</span>
+<span class="nc" id="L112">    }</span>
+
+    public List&lt;Invoices&gt; getInvoices() {
+<span class="nc" id="L115">        return invoices;</span>
+    }
+
+    public void setInvoices(List&lt;Invoices&gt; invoices) {
+<span class="nc" id="L119">        this.invoices = invoices;</span>
+<span class="nc" id="L120">    }</span>
+
+    public String getAccountNb() {
+<span class="nc" id="L123">        return accountNb;</span>
+    }
+
+    public void setAccountNb(String accountNb) {
+<span class="nc" id="L127">        this.accountNb = accountNb;</span>
+<span class="nc" id="L128">    }</span>
+
+    @Override
+    public String toString() {
+<span class="fc" id="L132">        return &quot;Seller{&quot; +</span>
+                &quot;id=&quot; + id +
+                &quot;, name='&quot; + name + '\'' +
+                &quot;, nip='&quot; + nip + '\'' +
+                &quot;, regon='&quot; + regon + '\'' +
+                &quot;, city='&quot; + city + '\'' +
+                &quot;, zipCode='&quot; + zipCode + '\'' +
+                &quot;, street='&quot; + street + '\'' +
+                &quot;, houseNumber='&quot; + houseNumber + '\'' +
+                &quot;, accountNb='&quot; + accountNb + '\'' +
+                &quot;, user=&quot; + user +
+                &quot;, invoices=&quot; + invoices +
+                '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,923 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="c577d4ab-9fd8-48bb-b4a3-2bde6c62f792" name="Changes" comment="front">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/lukasz/faktury/invoices/dto/PaymentsMethod.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/lukasz/faktury/items/dto/Tax.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/lukasz/faktury/items/dto/Units.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/lukasz/faktury/items/InvoiceItemsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/lukasz/faktury/items/InvoiceItemsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/lukasz/faktury/items/InvoiceItemsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/lukasz/faktury/items/InvoiceItemsServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application-dev.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-dev.yml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Enum" />
+        <option value="Dockerfile" />
+        <option value="Interface" />
+        <option value="Class" />
+        <option value="Record" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="test" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="frontend" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/pom.xml" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/org/lukasz/faktury/views/user/LoginView.java" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="31WJAKA6nFrnUjzJn4fPTxeXNTu" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;JUnit.ApiConnectionTest.whenNipIsEmpty_ThrowException.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ApiConnectionTest.whenNipIsEmpty_ThrowException1.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BuyerServiceIntegrationTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BuyerServiceIntegrationTest.shouldFindAndReturnBuyerFromCdeig_whenSearchByNip.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BuyerServiceIntegrationTest.shouldFindAndReturnBuyerFromDb_whenSearchByNip.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BuyerServiceTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BuyerServiceTest.shouldCreateBuyer_BeforeCreateInvoices.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BuyerServiceTest.shouldFetchAndSaveNewBuyer_WhenBuyerNotFoundByNip.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BuyerServiceTest.shouldFindBuyerDto_BeforeCreateInvoices.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BuyerServiceTest.shouldFindBuyer_BeforeCreateInvoices.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BuyerServiceTest.shouldReturnExistingBuyer_WhenBuyerExistsByNip.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FakturyApplicationTests.aaaa.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FakturyApplicationTests.contextLoads.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.FakturyApplicationTests.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FakturyApplicationTests.shouldRegisterUserAndSendActivationEmailWithValidToken.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SellerServiceTest.whenCreateNewSeller_AndSellerHaveAccount.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceIntegrationTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceTest.givenInvalidRequest_whenRegister_thenUserIsSavedAndTokenCreated.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceTest.givenValidRequest_whenRegister_thenUserIsSavedAndTokenCreated.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceTest.shouldFindCompany_WhenSearchByNip.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.UserServiceTest.shouldFindCompany_WhenSearchByNipMf.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceTest.shouldNotRegisterUserWhenNipIsIncorrectAndThrowException.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceTest.shouldNotRegisterUserWhenUserHaveAccountAndThrowException.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceTest.shouldNotRegisterUser_WhenCompanyIsRegistered_AndThrowException.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceTest.shouldNotRegisterUser_WhenNipIsIncorrect_AndThrowException.executor&quot;: &quot;Coverage&quot;,
+    &quot;JUnit.UserServiceTest.shouldNotRegisterUser_WhenNipIsRegistered_AndThrowException.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceTest.shouldNotRegisterUser_WhenUserHaveAccount_AndThrowException.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceTest.shouldRegisterUserAndSendActivationEmailWithValidToken.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceTest.shouldRegisterUser_AndSendActivationEmai_lWithValidToken.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceTest.shouldRegisterUser_AndSendActivationEmail_WithValidTokenCeidg.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceTest.shouldRegisterUser_AndSendActivationEmail_WithValidTokenMf.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceTest.shouldRegisterUser_AndSendActivationEmail_WithValidToken_WhenNipRegisteredAndCompanyNotRegistered.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceTest.shouldRegisterUser_AndSendActivationEmail_lWithValidToken_Mf.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceTestE2e.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceTestE2e.shouldThrowException_WhenNipIsEmpty.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceTestE2e.shouldThrowException_WhenNipIsFault.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceTestE2e.shouldThrowException_WhenNipIsFoulte.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.faktury [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.faktury [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.faktury [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.faktury [test].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.faktury [verify].executor&quot;: &quot;Run&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
+    &quot;Spring Boot.FakturyApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;21&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/projekty/faktury/fakturyFront/src/main/java/com/example/fakturyfront&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.maven.repository.indices&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
+    ]
+  }
+}</component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.example.fakturyfront.views.invoice.dto" />
+      <recent name="org.lukasz.faktury.nipapi.ceidgapi" />
+      <recent name="org.lukasz.faktury.apinip.apimf" />
+      <recent name="org.lukasz.faktury.gusapi" />
+      <recent name="org.lukasz.faktury.views.user" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\projekty\faktury\fakturyFront\src\main\java\com\example\fakturyfront" />
+      <recent name="E:\projekty\faktury\src\test\resources\mappings" />
+      <recent name="E:\projekty\faktury\src\main\resources\mappings" />
+      <recent name="E:\projekty\faktury\src\main\resources" />
+      <recent name="E:\projekty\faktury\src\main\resources\fonts" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\projekty\faktury\src\test\resources\__files" />
+      <recent name="E:\projekty\faktury\src\main\resources\static" />
+      <recent name="E:\projekty\faktury\src\test\resources" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="org.lukasz.faktury.user" />
+      <recent name="org.lukasz.faktury" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.lukasz.faktury.invoices.dto" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Spring Boot.FakturyApplication">
+    <configuration name="UserServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="faktury" />
+      <shortenClasspath name="ARGS_FILE" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.lukasz.faktury.user.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.lukasz.faktury.user" />
+      <option name="MAIN_CLASS_NAME" value="org.lukasz.faktury.user.UserServiceTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserServiceTest.shouldFindCompany_WhenSearchByNip" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="faktury" />
+      <shortenClasspath name="ARGS_FILE" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.lukasz.faktury.user.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.lukasz.faktury.user" />
+      <option name="MAIN_CLASS_NAME" value="org.lukasz.faktury.user.UserServiceTest" />
+      <option name="METHOD_NAME" value="shouldFindCompany_WhenSearchByNip" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserServiceTest.shouldFindCompany_WhenSearchByNipMf" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="faktury" />
+      <shortenClasspath name="ARGS_FILE" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.lukasz.faktury.user.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.lukasz.faktury.user" />
+      <option name="MAIN_CLASS_NAME" value="org.lukasz.faktury.user.UserServiceTest" />
+      <option name="METHOD_NAME" value="shouldFindCompany_WhenSearchByNipMf" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserServiceTest.shouldNotRegisterUser_WhenNipIsIncorrect_AndThrowException" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="faktury" />
+      <shortenClasspath name="ARGS_FILE" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.lukasz.faktury.user.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.lukasz.faktury.user" />
+      <option name="MAIN_CLASS_NAME" value="org.lukasz.faktury.user.UserServiceTest" />
+      <option name="METHOD_NAME" value="shouldNotRegisterUser_WhenNipIsIncorrect_AndThrowException" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserServiceTest.shouldRegisterUser_AndSendActivationEmail_WithValidTokenMf" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="faktury" />
+      <shortenClasspath name="ARGS_FILE" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.lukasz.faktury.user.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.lukasz.faktury.user" />
+      <option name="MAIN_CLASS_NAME" value="org.lukasz.faktury.user.UserServiceTest" />
+      <option name="METHOD_NAME" value="shouldRegisterUser_AndSendActivationEmail_WithValidTokenMf" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <shortenClasspath name="ARGS_FILE" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FakturyApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="ACTIVE_PROFILES" value="dev" />
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="faktury" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.lukasz.faktury.FakturyApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FakturyFrontApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="fakturyFront" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.fakturyfront.FakturyFrontApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="JUnit.UserServiceTest.shouldFindCompany_WhenSearchByNip" />
+      <item itemvalue="JUnit.UserServiceTest.shouldFindCompany_WhenSearchByNipMf" />
+      <item itemvalue="JUnit.UserServiceTest.shouldRegisterUser_AndSendActivationEmail_WithValidTokenMf" />
+      <item itemvalue="JUnit.UserServiceTest.shouldNotRegisterUser_WhenNipIsIncorrect_AndThrowException" />
+      <item itemvalue="JUnit.UserServiceTest" />
+      <item itemvalue="Spring Boot.FakturyFrontApplication" />
+      <item itemvalue="Spring Boot.FakturyApplication" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.UserServiceTest" />
+        <item itemvalue="JUnit.UserServiceTest.shouldNotRegisterUser_WhenNipIsIncorrect_AndThrowException" />
+        <item itemvalue="JUnit.UserServiceTest.shouldRegisterUser_AndSendActivationEmail_WithValidTokenMf" />
+        <item itemvalue="JUnit.UserServiceTest.shouldFindCompany_WhenSearchByNipMf" />
+        <item itemvalue="JUnit.UserServiceTest.shouldFindCompany_WhenSearchByNip" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.15989.150" />
+        <option value="bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-IU-241.15989.150" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c577d4ab-9fd8-48bb-b4a3-2bde6c62f792" name="Changes" comment="" />
+      <created>1755633750490</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1755633750490</updated>
+      <workItem from="1755633751488" duration="1321000" />
+      <workItem from="1757350373923" duration="38944000" />
+      <workItem from="1757766267035" duration="34000" />
+      <workItem from="1757770797593" duration="15949000" />
+      <workItem from="1757925843643" duration="23405000" />
+      <workItem from="1757950607837" duration="517000" />
+      <workItem from="1757951559040" duration="35980000" />
+      <workItem from="1758127123823" duration="4238000" />
+      <workItem from="1758908416445" duration="10745000" />
+      <workItem from="1758971427118" duration="393000" />
+      <workItem from="1758971847731" duration="158000" />
+      <workItem from="1758972661665" duration="776000" />
+      <workItem from="1758974675190" duration="179000" />
+      <workItem from="1758974879103" duration="130600000" />
+      <workItem from="1759769201506" duration="19566000" />
+      <workItem from="1759908248360" duration="23067000" />
+      <workItem from="1759938822524" duration="77961000" />
+      <workItem from="1760596878264" duration="2862000" />
+      <workItem from="1760599764210" duration="668000" />
+      <workItem from="1760600449694" duration="979000" />
+      <workItem from="1760601450525" duration="622000" />
+      <workItem from="1760602091868" duration="168000" />
+      <workItem from="1760602278923" duration="4807000" />
+      <workItem from="1760614344235" duration="304000" />
+      <workItem from="1760615087414" duration="3233000" />
+      <workItem from="1760618355274" duration="454000" />
+      <workItem from="1760618830380" duration="257000" />
+      <workItem from="1760619110701" duration="57000" />
+      <workItem from="1760619196963" duration="128000" />
+      <workItem from="1760619370405" duration="836000" />
+      <workItem from="1760622110925" duration="4968000" />
+      <workItem from="1760690752914" duration="38073000" />
+      <workItem from="1761038867268" duration="21996000" />
+      <workItem from="1761141171452" duration="48000" />
+      <workItem from="1761226110530" duration="77188000" />
+      <workItem from="1761832568783" duration="20000" />
+      <workItem from="1761843664514" duration="1718000" />
+    </task>
+    <task id="LOCAL-00059" summary="test  config">
+      <option name="closed" value="true" />
+      <created>1759914412049</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1759914412049</updated>
+    </task>
+    <task id="LOCAL-00060" summary="test  GreenMail">
+      <option name="closed" value="true" />
+      <created>1759916526358</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1759916526359</updated>
+    </task>
+    <task id="LOCAL-00061" summary="test  GreenMail">
+      <option name="closed" value="true" />
+      <created>1759924819063</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1759924819063</updated>
+    </task>
+    <task id="LOCAL-00062" summary="test  GreenMail">
+      <option name="closed" value="true" />
+      <created>1759927541423</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1759927541423</updated>
+    </task>
+    <task id="LOCAL-00063" summary="test  registration">
+      <option name="closed" value="true" />
+      <created>1760003276423</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1760003276424</updated>
+    </task>
+    <task id="LOCAL-00064" summary="test  registration and logger">
+      <option name="closed" value="true" />
+      <created>1760009008775</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1760009008775</updated>
+    </task>
+    <task id="LOCAL-00065" summary="test  registration and logger">
+      <option name="closed" value="true" />
+      <created>1760383236533</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1760383236533</updated>
+    </task>
+    <task id="LOCAL-00066" summary="Ceidg">
+      <option name="closed" value="true" />
+      <created>1760391611275</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1760391611275</updated>
+    </task>
+    <task id="LOCAL-00067" summary="api  ceidg and mf">
+      <option name="closed" value="true" />
+      <created>1760470903030</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1760470903030</updated>
+    </task>
+    <task id="LOCAL-00068" summary="api  ceidg and mf">
+      <option name="closed" value="true" />
+      <created>1760470933718</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1760470933718</updated>
+    </task>
+    <task id="LOCAL-00069" summary="api  ceidg and mf">
+      <option name="closed" value="true" />
+      <created>1760470950229</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1760470950229</updated>
+    </task>
+    <task id="LOCAL-00070" summary="api  ceidg and mf">
+      <option name="closed" value="true" />
+      <created>1760471402931</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1760471402931</updated>
+    </task>
+    <task id="LOCAL-00071" summary="api  ceidg and mf">
+      <option name="closed" value="true" />
+      <created>1760471497594</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1760471497594</updated>
+    </task>
+    <task id="LOCAL-00072" summary="api  ceidg and mf">
+      <option name="closed" value="true" />
+      <created>1760508982520</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1760508982520</updated>
+    </task>
+    <task id="LOCAL-00073" summary="api  ceidg and mf more than 1 company">
+      <option name="closed" value="true" />
+      <created>1760531194268</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1760531194268</updated>
+    </task>
+    <task id="LOCAL-00074" summary="api  ceidg and mf more than 1 company">
+      <option name="closed" value="true" />
+      <created>1760531254442</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1760531254442</updated>
+    </task>
+    <task id="LOCAL-00075" summary="login error handler">
+      <option name="closed" value="true" />
+      <created>1760553529890</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1760553529890</updated>
+    </task>
+    <task id="LOCAL-00076" summary="login error handler">
+      <option name="closed" value="true" />
+      <created>1760597249392</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1760597249392</updated>
+    </task>
+    <task id="LOCAL-00077" summary="login error handler">
+      <option name="closed" value="true" />
+      <created>1760599027865</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1760599027866</updated>
+    </task>
+    <task id="LOCAL-00078" summary="login error handler">
+      <option name="closed" value="true" />
+      <created>1760599123268</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1760599123268</updated>
+    </task>
+    <task id="LOCAL-00079" summary="login error handler">
+      <option name="closed" value="true" />
+      <created>1760599138636</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1760599138636</updated>
+    </task>
+    <task id="LOCAL-00080" summary="login error handler">
+      <option name="closed" value="true" />
+      <created>1760599163301</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1760599163301</updated>
+    </task>
+    <task id="LOCAL-00081" summary="login error handler">
+      <option name="closed" value="true" />
+      <created>1760600297532</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1760600297533</updated>
+    </task>
+    <task id="LOCAL-00082" summary="login error handler">
+      <option name="closed" value="true" />
+      <created>1760601079148</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1760601079149</updated>
+    </task>
+    <task id="LOCAL-00083" summary="login error handler">
+      <option name="closed" value="true" />
+      <created>1760603819740</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1760603819741</updated>
+    </task>
+    <task id="LOCAL-00084" summary="api ceidg from  api filter no  close company">
+      <option name="closed" value="true" />
+      <created>1760721454406</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1760721454406</updated>
+    </task>
+    <task id="LOCAL-00085" summary="api ceidg from  api filter no  close company">
+      <option name="closed" value="true" />
+      <created>1760723294643</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1760723294643</updated>
+    </task>
+    <task id="LOCAL-00086" summary="api ceidg from  api filter no  close company">
+      <option name="closed" value="true" />
+      <created>1760724789731</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1760724789731</updated>
+    </task>
+    <task id="LOCAL-00087" summary="@Test userService">
+      <option name="closed" value="true" />
+      <created>1760988826447</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1760988826447</updated>
+    </task>
+    <task id="LOCAL-00088" summary="@Test userService">
+      <option name="closed" value="true" />
+      <created>1760988851605</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1760988851606</updated>
+    </task>
+    <task id="LOCAL-00089" summary="@Test userService">
+      <option name="closed" value="true" />
+      <created>1760989419299</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1760989419299</updated>
+    </task>
+    <task id="LOCAL-00090" summary="@Test userService">
+      <option name="closed" value="true" />
+      <created>1760989664141</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1760989664141</updated>
+    </task>
+    <task id="LOCAL-00091" summary="@Test userService">
+      <option name="closed" value="true" />
+      <created>1760990010243</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1760990010243</updated>
+    </task>
+    <task id="LOCAL-00092" summary="@Test userService">
+      <option name="closed" value="true" />
+      <created>1761060533922</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1761060533922</updated>
+    </task>
+    <task id="LOCAL-00093" summary="@Test userService">
+      <option name="closed" value="true" />
+      <created>1761073863090</created>
+      <option name="number" value="00093" />
+      <option name="presentableId" value="LOCAL-00093" />
+      <option name="project" value="LOCAL" />
+      <updated>1761073863090</updated>
+    </task>
+    <task id="LOCAL-00094" summary="refactor">
+      <option name="closed" value="true" />
+      <created>1761075206117</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1761075206117</updated>
+    </task>
+    <task id="LOCAL-00095" summary="refactor">
+      <option name="closed" value="true" />
+      <created>1761075564553</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1761075564553</updated>
+    </task>
+    <task id="LOCAL-00096" summary="registration">
+      <option name="closed" value="true" />
+      <created>1761118779305</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1761118779305</updated>
+    </task>
+    <task id="LOCAL-00097" summary="registration">
+      <option name="closed" value="true" />
+      <created>1761121597635</created>
+      <option name="number" value="00097" />
+      <option name="presentableId" value="LOCAL-00097" />
+      <option name="project" value="LOCAL" />
+      <updated>1761121597635</updated>
+    </task>
+    <task id="LOCAL-00098" summary="registration">
+      <option name="closed" value="true" />
+      <created>1761122577406</created>
+      <option name="number" value="00098" />
+      <option name="presentableId" value="LOCAL-00098" />
+      <option name="project" value="LOCAL" />
+      <updated>1761122577406</updated>
+    </task>
+    <task id="LOCAL-00099" summary="teste2e">
+      <option name="closed" value="true" />
+      <created>1761301893731</created>
+      <option name="number" value="00099" />
+      <option name="presentableId" value="LOCAL-00099" />
+      <option name="project" value="LOCAL" />
+      <updated>1761301893732</updated>
+    </task>
+    <task id="LOCAL-00100" summary="teste2e">
+      <option name="closed" value="true" />
+      <created>1761309175174</created>
+      <option name="number" value="00100" />
+      <option name="presentableId" value="LOCAL-00100" />
+      <option name="project" value="LOCAL" />
+      <updated>1761309175175</updated>
+    </task>
+    <task id="LOCAL-00101" summary="buyer test">
+      <option name="closed" value="true" />
+      <created>1761337449368</created>
+      <option name="number" value="00101" />
+      <option name="presentableId" value="LOCAL-00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1761337449368</updated>
+    </task>
+    <task id="LOCAL-00102" summary="BuyerServiceIntegration">
+      <option name="closed" value="true" />
+      <created>1761393402178</created>
+      <option name="number" value="00102" />
+      <option name="presentableId" value="LOCAL-00102" />
+      <option name="project" value="LOCAL" />
+      <updated>1761393402179</updated>
+    </task>
+    <task id="LOCAL-00103" summary="Rest Controller">
+      <option name="closed" value="true" />
+      <created>1761483220706</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1761483220706</updated>
+    </task>
+    <task id="LOCAL-00104" summary="Rest Controller">
+      <option name="closed" value="true" />
+      <created>1761511318524</created>
+      <option name="number" value="00104" />
+      <option name="presentableId" value="LOCAL-00104" />
+      <option name="project" value="LOCAL" />
+      <updated>1761511318524</updated>
+    </task>
+    <task id="LOCAL-00105" summary="Rest Controller">
+      <option name="closed" value="true" />
+      <created>1761511336343</created>
+      <option name="number" value="00105" />
+      <option name="presentableId" value="LOCAL-00105" />
+      <option name="project" value="LOCAL" />
+      <updated>1761511336343</updated>
+    </task>
+    <task id="LOCAL-00106" summary="Rest Controller">
+      <option name="closed" value="true" />
+      <created>1761583794701</created>
+      <option name="number" value="00106" />
+      <option name="presentableId" value="LOCAL-00106" />
+      <option name="project" value="LOCAL" />
+      <updated>1761583794701</updated>
+    </task>
+    <task id="LOCAL-00107" summary="front">
+      <option name="closed" value="true" />
+      <created>1761660640294</created>
+      <option name="number" value="00107" />
+      <option name="presentableId" value="LOCAL-00107" />
+      <option name="project" value="LOCAL" />
+      <updated>1761660640294</updated>
+    </task>
+    <option name="localTasksCounter" value="108" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="master" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="origin/master" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="origin/develop" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="date Of Payment" />
+    <MESSAGE value="save Invoices" />
+    <MESSAGE value="save invoices  add buyer" />
+    <MESSAGE value="save invoices" />
+    <MESSAGE value="account nb" />
+    <MESSAGE value="save items" />
+    <MESSAGE value="create Pdf" />
+    <MESSAGE value="vaadin prod" />
+    <MESSAGE value="test  config" />
+    <MESSAGE value="test  GreenMail" />
+    <MESSAGE value="test  registration" />
+    <MESSAGE value="test  registration and logger" />
+    <MESSAGE value="Ceidg" />
+    <MESSAGE value="api  ceidg and mf" />
+    <MESSAGE value="api  ceidg and mf more than 1 company" />
+    <MESSAGE value="login error handler" />
+    <MESSAGE value="api ceidg from  api filter no  close company" />
+    <MESSAGE value="@Test userService" />
+    <MESSAGE value="refactor" />
+    <MESSAGE value="registration" />
+    <MESSAGE value="teste2e" />
+    <MESSAGE value="buyer test" />
+    <MESSAGE value="BuyerServiceIntegration" />
+    <MESSAGE value="Rest Controller" />
+    <MESSAGE value="front" />
+    <option name="LAST_COMMIT_MESSAGE" value="front" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/lukasz/faktury/user/UserServiceImpl.java</url>
+          <line>79</line>
+          <option name="timeStamp" value="21" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/lukasz/faktury/user/UserServiceImpl.java</url>
+          <line>80</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/lukasz/faktury/user/UserServiceImpl.java</url>
+          <line>81</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/lukasz/faktury/user/UserServiceImpl.java</url>
+          <line>91</line>
+          <option name="timeStamp" value="29" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/lukasz/faktury/nipapi/ApiConnectionImpl.java</url>
+          <line>42</line>
+          <option name="timeStamp" value="96" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/lukasz/faktury/nipapi/ApiConnectionImpl.java</url>
+          <line>44</line>
+          <option name="timeStamp" value="97" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/lukasz/faktury/nipapi/ApiConnectionImpl.java</url>
+          <line>46</line>
+          <option name="timeStamp" value="98" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/lukasz/faktury/nipapi/ApiConnectionImpl.java</url>
+          <line>48</line>
+          <option name="timeStamp" value="99" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/lukasz/faktury/nipapi/ApiConnectionImpl.java</url>
+          <line>79</line>
+          <option name="timeStamp" value="100" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/lukasz/faktury/nipapi/ApiConnectionImpl.java</url>
+          <line>80</line>
+          <option name="timeStamp" value="101" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/lukasz/faktury/nipapi/ApiConnectionImpl.java</url>
+          <line>81</line>
+          <option name="timeStamp" value="102" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/lukasz/faktury/nipapi/ApiConnectionImpl.java</url>
+          <line>82</line>
+          <option name="timeStamp" value="103" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/lukasz/faktury/nipapi/ApiConnectionImpl.java</url>
+          <line>84</line>
+          <option name="timeStamp" value="104" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/lukasz/faktury/nipapi/ApiConnectionImpl.java</url>
+          <line>87</line>
+          <option name="timeStamp" value="105" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/lukasz/faktury/nipapi/ApiConnectionImpl.java</url>
+          <line>89</line>
+          <option name="timeStamp" value="106" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/faktury$UserServiceTest_shouldNotRegisterUser_WhenNipIsIncorrect_AndThrowException.ic" NAME="UserServiceTest.shouldNotRegisterUser_WhenNipIsIncorrect_AndThrowException Coverage Results" MODIFIED="1761120786395" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>org.lukasz.faktury.user.*</FILTER>
+    </SUITE>
+  </component>
+</project>

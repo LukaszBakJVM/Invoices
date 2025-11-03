@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InvoiceItemsMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">faktury</a> &gt; <a href="index.source.html" class="el_package">org.lukasz.faktury.items</a> &gt; <span class="el_source">InvoiceItemsMapper.java</span></div><h1>InvoiceItemsMapper.java</h1><pre class="source lang-java linenums">package org.lukasz.faktury.items;
+
+import org.lukasz.faktury.invoices.Invoices;
+import org.lukasz.faktury.items.dto.InvoiceItemsDto;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+@Component
+<span class="fc" id="L10">public class InvoiceItemsMapper {</span>
+
+    List&lt;InvoiceItems&gt;saveItems(List&lt;InvoiceItemsDto&gt;dtos,Invoices invoices){
+<span class="nc" id="L13">        return dtos.stream().map(dto-&gt;dtoToEntity(dto,invoices)).toList();</span>
+    }
+
+  private   InvoiceItems dtoToEntity(InvoiceItemsDto dto, Invoices invoices) {
+<span class="nc" id="L17">        InvoiceItems entity = new InvoiceItems();</span>
+<span class="nc" id="L18">        entity.setDescription(dto.description());</span>
+<span class="nc" id="L19">        entity.setQuantity(dto.quantity());</span>
+<span class="nc" id="L20">        entity.setUnit(dto.unit());</span>
+<span class="nc" id="L21">        entity.setPriceNetto(dto.priceNetto());</span>
+<span class="nc" id="L22">        entity.setTax(dto.tax());</span>
+<span class="nc" id="L23">        entity.setPriceBrutto(dto.priceBrutto());</span>
+<span class="nc" id="L24">        entity.setTotalValue(dto.totalValue());</span>
+<span class="nc" id="L25">        entity.setInvoices(invoices);</span>
+
+<span class="nc" id="L27">        return entity;</span>
+
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

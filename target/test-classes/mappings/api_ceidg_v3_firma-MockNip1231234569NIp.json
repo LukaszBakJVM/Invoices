@@ -1,0 +1,19 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/api/ceidg/v3/firma",
+    "queryParameters": {
+      "nip": {
+        "equalTo": "1231234569"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "api_ceidg_v3_firma-responseMockNip1231234569.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
+

@@ -1,0 +1,142 @@
+Index: src/main/java/org/lukasz/faktury/items/dto/Units.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/org/lukasz/faktury/items/dto/Units.java b/src/main/java/org/lukasz/faktury/items/dto/Units.java
+new file mode 100644
+--- /dev/null	(date 1762188985428)
++++ b/src/main/java/org/lukasz/faktury/items/dto/Units.java	(date 1762188985428)
+@@ -0,0 +1,7 @@
++package org.lukasz.faktury.items.dto;
++
++import java.util.List;
++
++
++public record Units(List<String> units) {
++}
+Index: src/main/java/org/lukasz/faktury/items/dto/Tax.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/org/lukasz/faktury/items/dto/Tax.java b/src/main/java/org/lukasz/faktury/items/dto/Tax.java
+new file mode 100644
+--- /dev/null	(date 1762188985449)
++++ b/src/main/java/org/lukasz/faktury/items/dto/Tax.java	(date 1762188985449)
+@@ -0,0 +1,6 @@
++package org.lukasz.faktury.items.dto;
++
++import java.util.List;
++
++public record Tax(List<String> tax) {
++}
+Index: src/main/java/org/lukasz/faktury/invoices/dto/PaymentsMethod.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/org/lukasz/faktury/invoices/dto/PaymentsMethod.java b/src/main/java/org/lukasz/faktury/invoices/dto/PaymentsMethod.java
+new file mode 100644
+--- /dev/null	(date 1762188985435)
++++ b/src/main/java/org/lukasz/faktury/invoices/dto/PaymentsMethod.java	(date 1762188985435)
+@@ -0,0 +1,6 @@
++package org.lukasz.faktury.invoices.dto;
++
++import java.util.List;
++
++public record PaymentsMethod(List<String>paymentsMethod) {
++}
+Index: src/main/resources/application-dev.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>ceidgApi: https://dane.biznes.gov.pl\r\ntokenCeidg: tokenCeidg\r\nmfApi: https://wl-api.mf.gov.pl\r\ntokenUrl: localhost:8080\r\n\r\n\r\nspring:\r\n  datasource:\r\n    url: jdbc:postgresql://localhost:5432/invoices\r\n    username: postgres\r\n    password: pass\r\n  jpa:\r\n    hibernate:\r\n      ddl-auto: update\r\n    show-sql: true\r\n  mail:\r\n    host: smtp.gmail.com\r\n    port: 587\r\n    username: email\r\n    password: pass\r\n    properties:\r\n      mail:\r\n        smtp:\r\n          auth: true\r\n          starttls:\r\n            enable: true\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/resources/application-dev.yml b/src/main/resources/application-dev.yml
+--- a/src/main/resources/application-dev.yml	(revision 5918114bc1a01fe01a2a0970102233bc050c7462)
++++ b/src/main/resources/application-dev.yml	(date 1762188985441)
+@@ -1,14 +1,18 @@
++
++
+ ceidgApi: https://dane.biznes.gov.pl
+-tokenCeidg: tokenCeidg
++tokenCeidg: eyJraWQiOiJjZWlkZyIsImFsZyI6IkhTNTEyIn0.eyJnaXZlbl9uYW1lIjoixYF1a2FzeiIsInBlc2VsIjoiODIwODExMTM1NTYiLCJpYXQiOjE3NTk3NTExMTAsImZhbWlseV9uYW1lIjoiQsSFayIsImNsaWVudF9pZCI6IlVTRVItODIwODExMTM1NTYtxYFVS0FTWi1CxIRLIn0.teaMuhdZ5NHozmkxp8gh7xWtHZVGr92STDIzB_3JVWSjUdgmqXq9nyON8R8Fv-V2duf4Jf_Vgty7wpAKu10NMw
+ mfApi: https://wl-api.mf.gov.pl
+ tokenUrl: localhost:8080
+ 
++apiinvoice: localhost:8080
++
+ 
+ spring:
+   datasource:
+     url: jdbc:postgresql://localhost:5432/invoices
+     username: postgres
+-    password: pass
++    password: demon
+   jpa:
+     hibernate:
+       ddl-auto: update
+@@ -24,7 +28,8 @@
+           auth: true
+           starttls:
+             enable: true
+-
++server:
++  port: 8081
+ 
+ 
+ 
+Index: src/main/java/org/lukasz/faktury/items/InvoiceItemsServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.lukasz.faktury.items;\r\n\r\nimport jakarta.transaction.Transactional;\r\nimport org.lukasz.faktury.enums.Tax;\r\nimport org.lukasz.faktury.enums.Unit;\r\nimport org.lukasz.faktury.invoices.Invoices;\r\nimport org.lukasz.faktury.items.dto.*;\r\nimport org.lukasz.faktury.utils.validation.Validation;\r\nimport org.springframework.stereotype.Service;\r\n\r\nimport java.math.BigDecimal;\r\nimport java.math.RoundingMode;\r\nimport java.util.Arrays;\r\nimport java.util.List;\r\n\r\n@Service\r\npublic class InvoiceItemsServiceImpl implements InvoiceItemsService {\r\n    private final InvoiceItemsRepo invoiceItemsRepo;\r\n    private final InvoiceItemsMapper invoiceItemsMapper;\r\n    private final Validation validation;\r\n\r\n\r\n    public InvoiceItemsServiceImpl(InvoiceItemsRepo invoiceItemsRepo, InvoiceItemsMapper invoiceItemsMapper, Validation validation) {\r\n        this.invoiceItemsRepo = invoiceItemsRepo;\r\n        this.invoiceItemsMapper = invoiceItemsMapper;\r\n        this.validation = validation;\r\n    }\r\n\r\n    @Override\r\n    public List<String> tax() {\r\n        return Arrays.stream(Tax.values()).map(Tax::name).toList();\r\n    }\r\n\r\n\r\n    @Override\r\n    public List<String> unit() {\r\n        return Arrays.stream(Unit.values()).map(Unit::getValue).toList();\r\n    }\r\n\r\n\r\n\r\n    @Override\r\n    public NettoToBrutto nettoToBrutto(BigDecimal priceNetto, String tax) {\r\n\r\n\r\n        if (getTax(tax) == 0) {\r\n            return new NettoToBrutto(priceNetto);\r\n            }\r\n\r\n\r\n        BigDecimal calculateTax = BigDecimal.valueOf(getTax(tax)).divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);\r\n\r\n            BigDecimal vat = priceNetto.multiply(calculateTax);\r\n            BigDecimal brutto = priceNetto.add(vat);\r\n\r\n        return new NettoToBrutto(brutto.setScale(2, RoundingMode.HALF_UP));\r\n\r\n\r\n    }\r\n\r\n\r\n    @Override\r\n    public BruttoToNetto bruttoToNetto(BigDecimal priceBrutto, String tax) {\r\n\r\n\r\n        if (getTax(tax) == 0) {\r\n            return new BruttoToNetto(priceBrutto);\r\n            }\r\n\r\n\r\n        BigDecimal calculateTax = BigDecimal.ONE.add(BigDecimal.valueOf(getTax(tax)).divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP));\r\n        return new BruttoToNetto(priceBrutto.divide(calculateTax, 2, RoundingMode.HALF_UP));\r\n\r\n\r\n\r\n    }\r\n\r\n    @Override\r\n    public CalculateTotalValue calculateTotalValue(BigDecimal priceBrutto, int quantity) {\r\n        return new CalculateTotalValue( priceBrutto.multiply(BigDecimal.valueOf(quantity)));\r\n    }\r\n\r\n    @Override\r\n    public ReduceTotalValues reduceTotalValues(BigDecimal price, int quantity) {\r\n        return new ReduceTotalValues( price.multiply(BigDecimal.valueOf(quantity)));\r\n\r\n    }\r\n\r\n    @Override\r\n    @Transactional\r\n    public void saveItems(List<InvoiceItemsDto> dtos, Invoices invoices) {\r\n        List<InvoiceItems> invoiceItems = invoiceItemsMapper.saveItems(dtos,invoices);\r\n\r\n        invoiceItemsRepo.saveAll(invoiceItems);\r\n\r\n\r\n    }\r\n\r\n\r\n    private int getTax(String tax) {\r\n        return Tax.valueOf(tax).getVat();\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/org/lukasz/faktury/items/InvoiceItemsServiceImpl.java b/src/main/java/org/lukasz/faktury/items/InvoiceItemsServiceImpl.java
+--- a/src/main/java/org/lukasz/faktury/items/InvoiceItemsServiceImpl.java	(revision 5918114bc1a01fe01a2a0970102233bc050c7462)
++++ b/src/main/java/org/lukasz/faktury/items/InvoiceItemsServiceImpl.java	(date 1762188985456)
+@@ -27,14 +27,16 @@
+     }
+ 
+     @Override
+-    public List<String> tax() {
+-        return Arrays.stream(Tax.values()).map(Tax::name).toList();
++    public org.lukasz.faktury.items.dto.Tax tax() {
++        List<String> list = Arrays.stream(Tax.values()).map(Tax::name).toList();
++        return new org.lukasz.faktury.items.dto.Tax(list);
+     }
+ 
+ 
+     @Override
+-    public List<String> unit() {
+-        return Arrays.stream(Unit.values()).map(Unit::getValue).toList();
++    public Units unit() {
++        List<String> units = Arrays.stream(Unit.values()).map(Unit::getValue).toList();
++        return new Units(units);
+     }
+ 
+ 
+Index: src/main/java/org/lukasz/faktury/items/InvoiceItemsService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.lukasz.faktury.items;\r\n\r\nimport org.lukasz.faktury.invoices.Invoices;\r\nimport org.lukasz.faktury.items.dto.*;\r\n\r\nimport java.math.BigDecimal;\r\nimport java.util.List;\r\n\r\npublic interface InvoiceItemsService {\r\n    List<String> tax();\r\n    List<String>unit();\r\n\r\n    NettoToBrutto nettoToBrutto (BigDecimal priceNetto , String tax);\r\n    BruttoToNetto bruttoToNetto(BigDecimal priceBrutto , String tax);\r\n    CalculateTotalValue calculateTotalValue(BigDecimal priceBrutto, int quantity);\r\n\r\n    ReduceTotalValues reduceTotalValues(BigDecimal price, int quantity);\r\n    void saveItems(List<InvoiceItemsDto>dtos, Invoices invoices);\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/org/lukasz/faktury/items/InvoiceItemsService.java b/src/main/java/org/lukasz/faktury/items/InvoiceItemsService.java
+--- a/src/main/java/org/lukasz/faktury/items/InvoiceItemsService.java	(revision 5918114bc1a01fe01a2a0970102233bc050c7462)
++++ b/src/main/java/org/lukasz/faktury/items/InvoiceItemsService.java	(date 1762188985464)
+@@ -7,8 +7,8 @@
+ import java.util.List;
+ 
+ public interface InvoiceItemsService {
+-    List<String> tax();
+-    List<String>unit();
++    Tax tax();
++    Units unit();
+ 
+     NettoToBrutto nettoToBrutto (BigDecimal priceNetto , String tax);
+     BruttoToNetto bruttoToNetto(BigDecimal priceBrutto , String tax);

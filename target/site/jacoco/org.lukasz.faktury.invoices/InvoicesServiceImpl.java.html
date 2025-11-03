@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InvoicesServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">faktury</a> &gt; <a href="index.source.html" class="el_package">org.lukasz.faktury.invoices</a> &gt; <span class="el_source">InvoicesServiceImpl.java</span></div><h1>InvoicesServiceImpl.java</h1><pre class="source lang-java linenums">package org.lukasz.faktury.invoices;
+
+import jakarta.transaction.Transactional;
+import org.lukasz.faktury.buyer.BuyerService;
+import org.lukasz.faktury.buyer.dto.BuyerDto;
+import org.lukasz.faktury.enums.Payment;
+import org.lukasz.faktury.exceptions.AccountNumberException;
+import org.lukasz.faktury.exceptions.NipConflictException;
+import org.lukasz.faktury.invoices.dto.InvoicesDto;
+import org.lukasz.faktury.items.InvoiceItemsService;
+import org.lukasz.faktury.items.dto.InvoiceItemsDto;
+import org.lukasz.faktury.seller.Seller;
+import org.lukasz.faktury.seller.SellerService;
+import org.lukasz.faktury.utils.validation.Validation;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class InvoicesServiceImpl implements InvoicesService{
+    private final InvoicesRepo repo;
+    private final InvoicesMapper mapper;
+    private final BuyerService buyerService;
+    private final SellerService sellerService;
+    private final InvoiceItemsService invoiceItemsService;
+
+    private final Validation validation;
+    private final StringBuilder str;
+<span class="fc" id="L36">    private final LocalDate today = LocalDate.now();</span>
+
+<span class="fc" id="L38">    LocalDate start = today.withDayOfMonth(1);</span>
+<span class="fc" id="L39">    LocalDate end = today.withDayOfMonth(today.lengthOfMonth());</span>
+
+
+<span class="fc" id="L42">    public InvoicesServiceImpl(InvoicesRepo repo, InvoicesMapper mapper, Validation validation, StringBuilder str, SellerService sellerService, BuyerService buyerService, InvoiceItemsService invoiceItemsService) {</span>
+<span class="fc" id="L43">        this.repo = repo;</span>
+<span class="fc" id="L44">        this.mapper = mapper;</span>
+<span class="fc" id="L45">        this.validation = validation;</span>
+<span class="fc" id="L46">        this.str = str;</span>
+
+<span class="fc" id="L48">        this.buyerService = buyerService;</span>
+<span class="fc" id="L49">        this.sellerService = sellerService;</span>
+<span class="fc" id="L50">        this.invoiceItemsService = invoiceItemsService;</span>
+<span class="fc" id="L51">    }</span>
+
+    @Override
+    @Transactional
+    public void createInvoices(InvoicesDto request, BuyerDto buyerDto, List&lt;InvoiceItemsDto&gt; invoiceItemsDtos) {
+<span class="nc" id="L56">        LocalDateTime now = LocalDateTime.now();</span>
+<span class="nc" id="L57">        Seller seller = sellerService.findByEmail();</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">        if (seller.getNip().equals(buyerDto.nip())) {</span>
+<span class="nc" id="L59">            throw new NipConflictException(&quot;Podano ten sam NIP dla sprzedawcy i nabywcy&quot;);</span>
+        }
+
+
+<span class="nc" id="L63">        validation.validation(request);</span>
+
+<span class="nc" id="L65">        Invoices invoices = mapper.ToEntity(request, now);</span>
+
+<span class="nc bnc" id="L67" title="All 4 branches missed.">        if (seller.getAccountNb() == null &amp;&amp; !request.typOfPayment().equals(&quot;Gotówka&quot;)) {</span>
+<span class="nc" id="L68">            throw new AccountNumberException(&quot;Uzupełnij nr konta&quot;);</span>
+        }
+
+
+<span class="nc" id="L72">        invoices.setBuyer(buyerService.findBuyer(buyerDto));</span>
+<span class="nc" id="L73">        invoices.setSeller(seller);</span>
+
+
+<span class="nc" id="L76">        Invoices save = repo.save(invoices);</span>
+
+<span class="nc" id="L78">        invoiceItemsService.saveItems(invoiceItemsDtos, save);</span>
+
+
+<span class="nc" id="L81">    }</span>
+
+    @Override
+    public List&lt;String&gt; paymentsMethod() {
+<span class="nc" id="L85">        return Arrays.stream(Payment.values()).map(Payment::getPAYMENT_TYPE).toList();</span>
+    }
+    @Override
+   public String invoicesNumber(){
+
+
+<span class="nc" id="L91">        String email = SecurityContextHolder.getContext().getAuthentication().getName();</span>
+<span class="nc" id="L92">        List&lt;Invoices&gt; listNumberList = repo.findAllBySeller_User_EmailAndGeneratedDateOfIssueBetween(email, start.atStartOfDay(), end.atTime(LocalTime.MAX));</span>
+
+
+
+<span class="nc" id="L96">        return calculateNumberOfInvoices(listNumberList);</span>
+
+    }
+
+    @Override
+    public LocalDate calculatePaymentDate(LocalDate dateOfIssue, int postponement) {
+<span class="nc" id="L102">        return dateOfIssue.plusDays(postponement);</span>
+    }
+
+
+    private String calculateNumberOfInvoices(List&lt;Invoices&gt; invoicesNb) {
+<span class="nc" id="L107">        str.setLength(0);</span>
+<span class="nc" id="L108">        String date = today.toString();</span>
+
+
+<span class="nc" id="L111">        List&lt;String&gt; list = Arrays.stream(date.split(&quot;-&quot;)).toList();</span>
+
+<span class="nc" id="L113">        String initNumber = &quot;FV/&quot;;</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">        if (invoicesNb.isEmpty()) {</span>
+<span class="nc" id="L115">            return str.append(initNumber).append(&quot;1&quot;).append(&quot;/&quot;).append(list.get(1)).append(&quot;/&quot;).append(list.get(0)).toString();</span>
+        }
+
+<span class="nc" id="L118">        Optional&lt;Invoices&gt; first = invoicesNb.stream().sorted(Comparator.comparing(Invoices::getGeneratedDateOfIssue).reversed()).findFirst();</span>
+<span class="nc" id="L119">        Invoices invoices = first.get();</span>
+
+<span class="nc" id="L121">        List&lt;String&gt; incrementNumber = Arrays.stream(invoices.getNumber().split(&quot;/&quot;)).toList();</span>
+<span class="nc" id="L122">        String actualNb = incrementNumber.get(1);</span>
+<span class="nc" id="L123">        int increment = increment(actualNb);</span>
+
+<span class="nc" id="L125">        return str.append(initNumber).append(increment).append(&quot;/&quot;).append(list.get(1)).append(&quot;/&quot;).append(list.get(0)).toString();</span>
+    }
+
+    private int increment(String number) {
+<span class="nc" id="L129">        int nb = Integer.parseInt(number);</span>
+<span class="nc" id="L130">        nb++;</span>
+<span class="nc" id="L131">        return nb;</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

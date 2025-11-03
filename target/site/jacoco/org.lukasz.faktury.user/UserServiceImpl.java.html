@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">faktury</a> &gt; <a href="index.source.html" class="el_package">org.lukasz.faktury.user</a> &gt; <span class="el_source">UserServiceImpl.java</span></div><h1>UserServiceImpl.java</h1><pre class="source lang-java linenums">package org.lukasz.faktury.user;
+
+import org.lukasz.faktury.exceptions.UserException;
+import org.lukasz.faktury.nipapi.ApiConnection;
+import org.lukasz.faktury.seller.Seller;
+import org.lukasz.faktury.seller.SellerDto;
+import org.lukasz.faktury.seller.SellerService;
+import org.lukasz.faktury.user.dto.Login;
+import org.lukasz.faktury.user.dto.UserRequest;
+import org.lukasz.faktury.user.dto.UserResponse;
+import org.lukasz.faktury.utils.confirmationtoken.activationtoken.ActivationTokenService;
+import org.lukasz.faktury.utils.validation.Validation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.security.auth.login.LoginException;
+import java.util.List;
+
+@Service
+public class UserServiceImpl implements UserService {
+    private final UserRepository repository;
+    private final UserMapper mapper;
+    private final Validation validation;
+    private final ApiConnection connection;
+    private final SellerService sellerService;
+    private final ActivationTokenService activationTokenService;
+<span class="fc" id="L29">    private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);</span>
+
+
+<span class="fc" id="L32">    public UserServiceImpl(UserRepository repository, UserMapper mapper, Validation validation, ApiConnection connection, SellerService sellerService, ActivationTokenService activationTokenService) {</span>
+<span class="fc" id="L33">        this.repository = repository;</span>
+<span class="fc" id="L34">        this.mapper = mapper;</span>
+<span class="fc" id="L35">        this.validation = validation;</span>
+<span class="fc" id="L36">        this.connection = connection;</span>
+<span class="fc" id="L37">        this.sellerService = sellerService;</span>
+<span class="fc" id="L38">        this.activationTokenService = activationTokenService;</span>
+<span class="fc" id="L39">    }</span>
+
+    @Override
+    @Transactional
+    public UserResponse register(UserRequest request, SellerDto sellerDto) {
+<span class="fc" id="L44">        logger.info(&quot;Inside registration&quot;);</span>
+<span class="fc" id="L45">        validation.validation(request);</span>
+<span class="fc" id="L46">        findUserByEmail(request.email());</span>
+
+<span class="fc" id="L48">        Seller seller = sellerService.save(sellerDto);</span>
+<span class="fc" id="L49">        logger.info(&quot;Inside registration  seller -&gt; {} &quot;, seller);</span>
+
+
+<span class="fc" id="L52">        User entity = mapper.toEntity(request);</span>
+
+
+
+<span class="fc" id="L56">        entity.setActive(false);</span>
+<span class="fc" id="L57">        entity.setNip(request.nip());</span>
+<span class="fc" id="L58">        entity.setSeller(seller);</span>
+<span class="fc" id="L59">        User save = repository.save(entity);</span>
+<span class="fc" id="L60">        logger.info(&quot;Inside registration  user -&gt; {} &quot;, entity);</span>
+<span class="fc" id="L61">        activationTokenService.createToken(save);</span>
+
+<span class="fc" id="L63">        return mapper.toResponse(save);</span>
+    }
+
+    @Override
+    public Login login(String email) {
+<span class="nc" id="L68">        User login = repository.findByEmail(email).orElseThrow(() -&gt; new UserException(&quot;Niepoprawny email&quot;));</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        if (!login.isActive()) {</span>
+<span class="nc" id="L70">            throw new UserException(&quot;Aktywuj konto&quot;);</span>
+        }
+<span class="nc" id="L72">        return new Login(login.getEmail(), login.getPassword());</span>
+
+
+    }
+
+    private void findUserByEmail(String email) {
+<span class="fc" id="L78">        repository.findByEmail(email).ifPresent(present -&gt; {</span>
+            try {
+<span class="fc" id="L80">                throw new LoginException(&quot;Użytkownik już posiada konto&quot;);</span>
+<span class="fc" id="L81">            } catch (LoginException e) {</span>
+<span class="fc" id="L82">                throw new UserException(e.getMessage());</span>
+            }
+        });
+
+
+
+<span class="fc" id="L88">    }</span>
+
+    @Override
+    public List&lt;SellerDto&gt; findDataByNip(String nip) {
+<span class="fc" id="L92">        return connection.result(nip).firma().stream().map(r -&gt; new SellerDto(r.nazwa(), r.wlasciciel().nip(), r.wlasciciel().regon(), r.adresDzialalnosci().miasto(), r.adresDzialalnosci().kod(), r.adresDzialalnosci().ulica(), r.adresDzialalnosci().budynek())).toList();</span>
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

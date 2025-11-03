@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ActivationTokenServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">faktury</a> &gt; <a href="index.source.html" class="el_package">org.lukasz.faktury.utils.confirmationtoken.activationtoken</a> &gt; <span class="el_source">ActivationTokenServiceImpl.java</span></div><h1>ActivationTokenServiceImpl.java</h1><pre class="source lang-java linenums">package org.lukasz.faktury.utils.confirmationtoken.activationtoken;
+
+import jakarta.transaction.Transactional;
+import org.lukasz.faktury.exceptions.TokenException;
+import org.lukasz.faktury.user.User;
+import org.lukasz.faktury.user.UserRepository;
+import org.lukasz.faktury.utils.confirmationtoken.EmailSenderService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Service
+
+public class ActivationTokenServiceImpl implements ActivationTokenService {
+    private final ActivationTokenRepo tokenRepository;
+    private final EmailSenderService emailSenderService;
+    private final UserRepository userRepository;
+<span class="fc" id="L24">    private final Logger logger = LoggerFactory.getLogger(ActivationTokenServiceImpl.class);</span>
+    @Value(&quot;${tokenUrl}&quot;)
+    private String tokenUrl;
+
+<span class="fc" id="L28">    public ActivationTokenServiceImpl(ActivationTokenRepo repo, @Qualifier(&quot;accountActivation&quot;) EmailSenderService emailSenderService, UserRepository userRepository) {</span>
+<span class="fc" id="L29">        this.tokenRepository = repo;</span>
+
+<span class="fc" id="L31">        this.emailSenderService = emailSenderService;</span>
+<span class="fc" id="L32">        this.userRepository = userRepository;</span>
+<span class="fc" id="L33">    }</span>
+
+    @Override
+    @Transactional
+    public void createToken(User user) {
+<span class="fc" id="L38">        logger.info(&quot;Inside createToken &quot;);</span>
+<span class="fc" id="L39">        ActivationToken token = new ActivationToken();</span>
+<span class="fc" id="L40">        token.setToken(UUID.randomUUID().toString());</span>
+<span class="fc" id="L41">        token.setExpiresAt(LocalDateTime.now().plusHours(24));</span>
+<span class="fc" id="L42">        token.setUser(user);</span>
+<span class="fc" id="L43">        ActivationToken generatedToken = tokenRepository.save(token);</span>
+
+<span class="fc" id="L45">        String link = link(generatedToken.getToken());</span>
+<span class="fc" id="L46">        logger.info(&quot;Inside createToken  generated link  -&gt; {} &quot;, link);</span>
+<span class="fc" id="L47">        emailSenderService.sendEmail(user.getEmail(),link);</span>
+
+
+<span class="fc" id="L50">    }</span>
+
+    @Override
+    public void findToken(String token) {
+
+<span class="nc" id="L55">        logger.info(&quot;Inside findToken  token  -&gt; {} &quot;,token);</span>
+<span class="nc" id="L56">        ActivationToken activationToken = tokenRepository.findByToken(token).orElseThrow(() -&gt; new TokenException(&quot;Token nie istnieje&quot;));</span>
+<span class="nc" id="L57">        LocalDateTime expiresAt = activationToken.getExpiresAt();</span>
+<span class="nc" id="L58">        boolean used = activationToken.isUsed();</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        if (expiresAt.isBefore(LocalDateTime.now())) {</span>
+<span class="nc" id="L60">            logger.info(&quot;Inside findToken  -&gt; Token wygasł&quot; );</span>
+<span class="nc" id="L61">            throw new TokenException(&quot;Token wygasł&quot;);</span>
+
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        } else if (used) {</span>
+<span class="nc" id="L64">            logger.info(&quot;Inside findToken  -&gt; Token już wykorzystany&quot; );</span>
+<span class="nc" id="L65">            throw new TokenException(&quot;Token już wykorzystany&quot;);</span>
+
+        }
+<span class="nc" id="L68">        activationToken.setUsed(true);</span>
+<span class="nc" id="L69">        User user = activationToken.getUser();</span>
+<span class="nc" id="L70">        user.setActive(true);</span>
+<span class="nc" id="L71">        userRepository.save(user);</span>
+
+<span class="nc" id="L73">        tokenRepository.save(activationToken);</span>
+<span class="nc" id="L74">        logger.info(&quot;Inside findToken  -&gt; end&quot; );</span>
+
+
+<span class="nc" id="L77">    }</span>
+
+    private String link(final String token) {
+<span class="fc" id="L80">        return UriComponentsBuilder.fromUriString(tokenUrl + &quot;/confirm?token={token}&quot;).buildAndExpand(token).toUriString();</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
