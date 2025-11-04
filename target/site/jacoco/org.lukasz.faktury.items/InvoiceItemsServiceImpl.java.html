@@ -4,7 +4,7 @@ import jakarta.transaction.Transactional;
 import org.lukasz.faktury.enums.Tax;
 import org.lukasz.faktury.enums.Unit;
 import org.lukasz.faktury.invoices.Invoices;
-import org.lukasz.faktury.items.dto.InvoiceItemsDto;
+import org.lukasz.faktury.items.dto.*;
 import org.lukasz.faktury.utils.validation.Validation;
 import org.springframework.stereotype.Service;
 
@@ -23,83 +23,82 @@ public class InvoiceItemsServiceImpl implements InvoiceItemsService {
 <span class="fc" id="L23">    public InvoiceItemsServiceImpl(InvoiceItemsRepo invoiceItemsRepo, InvoiceItemsMapper invoiceItemsMapper, Validation validation) {</span>
 <span class="fc" id="L24">        this.invoiceItemsRepo = invoiceItemsRepo;</span>
 <span class="fc" id="L25">        this.invoiceItemsMapper = invoiceItemsMapper;</span>
-
-<span class="fc" id="L27">        this.validation = validation;</span>
-<span class="fc" id="L28">    }</span>
+<span class="fc" id="L26">        this.validation = validation;</span>
+<span class="fc" id="L27">    }</span>
 
     @Override
     public List&lt;String&gt; tax() {
-<span class="nc" id="L32">        return Arrays.stream(Tax.values()).map(Tax::name).toList();</span>
+<span class="nc" id="L31">        return Arrays.stream(Tax.values()).map(Tax::name).toList();</span>
     }
 
 
     @Override
     public List&lt;String&gt; unit() {
-<span class="nc" id="L38">        return Arrays.stream(Unit.values()).map(Unit::getValue).toList();</span>
+<span class="nc" id="L37">        return Arrays.stream(Unit.values()).map(Unit::getValue).toList();</span>
     }
 
 
 
     @Override
-    public BigDecimal nettoToBrutto(BigDecimal priceNetto, String tax) {
+    public NettoToBrutto nettoToBrutto(BigDecimal priceNetto, String tax) {
 
 
-<span class="nc bnc" id="L47" title="All 2 branches missed.">        if (getTax(tax) == 0) {</span>
-<span class="nc" id="L48">                return priceNetto;</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        if (getTax(tax) == 0) {</span>
+<span class="nc" id="L47">            return new NettoToBrutto(priceNetto);</span>
             }
 
 
-<span class="nc" id="L52">        BigDecimal calculateTax = BigDecimal.valueOf(getTax(tax)).divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);</span>
+<span class="nc" id="L51">        BigDecimal calculateTax = BigDecimal.valueOf(getTax(tax)).divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);</span>
 
-<span class="nc" id="L54">            BigDecimal vat = priceNetto.multiply(calculateTax);</span>
-<span class="nc" id="L55">            BigDecimal brutto = priceNetto.add(vat);</span>
+<span class="nc" id="L53">            BigDecimal vat = priceNetto.multiply(calculateTax);</span>
+<span class="nc" id="L54">            BigDecimal brutto = priceNetto.add(vat);</span>
 
-<span class="nc" id="L57">        return brutto.setScale(2, RoundingMode.HALF_UP);</span>
+<span class="nc" id="L56">        return new NettoToBrutto(brutto.setScale(2, RoundingMode.HALF_UP));</span>
 
 
     }
 
 
     @Override
-    public BigDecimal bruttoToNetto(BigDecimal priceBrutto, String tax) {
+    public BruttoToNetto bruttoToNetto(BigDecimal priceBrutto, String tax) {
 
 
-<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (getTax(tax) == 0) {</span>
-<span class="nc" id="L68">                return priceBrutto;</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (getTax(tax) == 0) {</span>
+<span class="nc" id="L67">            return new BruttoToNetto(priceBrutto);</span>
             }
 
 
-<span class="nc" id="L72">        BigDecimal calculateTax = BigDecimal.ONE.add(BigDecimal.valueOf(getTax(tax)).divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP));</span>
-<span class="nc" id="L73">        return priceBrutto.divide(calculateTax, 2, RoundingMode.HALF_UP);</span>
+<span class="nc" id="L71">        BigDecimal calculateTax = BigDecimal.ONE.add(BigDecimal.valueOf(getTax(tax)).divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP));</span>
+<span class="nc" id="L72">        return new BruttoToNetto(priceBrutto.divide(calculateTax, 2, RoundingMode.HALF_UP));</span>
 
 
 
     }
 
     @Override
-    public BigDecimal calculateTotalValue(BigDecimal priceBrutto, int quantity) {
-<span class="nc" id="L81">        return priceBrutto.multiply(BigDecimal.valueOf(quantity));</span>
+    public CalculateTotalValue calculateTotalValue(BigDecimal priceBrutto, int quantity) {
+<span class="nc" id="L80">        return new CalculateTotalValue( priceBrutto.multiply(BigDecimal.valueOf(quantity)));</span>
     }
 
     @Override
-    public BigDecimal reduceTotalValues(BigDecimal price, int quantity) {
-<span class="nc" id="L86">        return price.multiply(BigDecimal.valueOf(quantity));</span>
+    public ReduceTotalValues reduceTotalValues(BigDecimal price, int quantity) {
+<span class="nc" id="L85">        return new ReduceTotalValues( price.multiply(BigDecimal.valueOf(quantity)));</span>
 
     }
 
     @Override
     @Transactional
     public void saveItems(List&lt;InvoiceItemsDto&gt; dtos, Invoices invoices) {
-<span class="nc" id="L93">        List&lt;InvoiceItems&gt; invoiceItems = invoiceItemsMapper.saveItems(dtos,invoices);</span>
+<span class="nc" id="L92">        List&lt;InvoiceItems&gt; invoiceItems = invoiceItemsMapper.saveItems(dtos,invoices);</span>
 
-<span class="nc" id="L95">        invoiceItemsRepo.saveAll(invoiceItems);</span>
+<span class="nc" id="L94">        invoiceItemsRepo.saveAll(invoiceItems);</span>
 
 
-<span class="nc" id="L98">    }</span>
+<span class="nc" id="L97">    }</span>
 
 
     private int getTax(String tax) {
-<span class="nc" id="L102">        return Tax.valueOf(tax).getVat();</span>
+<span class="nc" id="L101">        return Tax.valueOf(tax).getVat();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

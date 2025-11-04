@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: org.lukasz.faktury.buyer.BuyerServiceTest
 -------------------------------------------------------------------------------
-Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.301 s -- in org.lukasz.faktury.buyer.BuyerServiceTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.211 s -- in org.lukasz.faktury.buyer.BuyerServiceTest

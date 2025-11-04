@@ -1,4 +1,30 @@
 -------------------------------------------------------------------------------
 Test set: org.lukasz.faktury.user.UserServiceTest
 -------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.895 s -- in org.lukasz.faktury.user.UserServiceTest
+Tests run: 2, Failures: 1, Errors: 1, Skipped: 0, Time elapsed: 0.685 s <<< FAILURE! -- in org.lukasz.faktury.user.UserServiceTest
+org.lukasz.faktury.user.UserServiceTest.givenInvalidRequest_whenRegister_thenUserIsSavedAndTokenCreated -- Time elapsed: 0.666 s <<< ERROR!
+org.mockito.exceptions.misusing.UnnecessaryStubbingException: 
+
+Unnecessary stubbings detected.
+Clean & maintainable test code requires zero unnecessary code.
+Following stubbings are unnecessary (click to navigate to relevant line of code):
+  1. -> at org.lukasz.faktury.user.UserServiceTest.givenInvalidRequest_whenRegister_thenUserIsSavedAndTokenCreated(UserServiceTest.java:87)
+  2. -> at org.lukasz.faktury.user.UserServiceTest.givenInvalidRequest_whenRegister_thenUserIsSavedAndTokenCreated(UserServiceTest.java:88)
+Please remove unnecessary stubbings or use 'lenient' strictness. More info: javadoc for UnnecessaryStubbingException class.
+	at org.mockito.junit.jupiter.MockitoExtension.afterEach(MockitoExtension.java:197)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+org.lukasz.faktury.user.UserServiceTest.givenValidRequest_whenRegister_thenUserIsSavedAndTokenCreated -- Time elapsed: 0.015 s <<< FAILURE!
+Wanted but not invoked:
+validation.validation(
+    UserRequest[email=7151536825@test.pl, password=pass, nip=7151536825]
+);
+-> at org.lukasz.faktury.user.UserServiceTest.givenValidRequest_whenRegister_thenUserIsSavedAndTokenCreated(UserServiceTest.java:73)
+Actually, there were zero interactions with this mock.
+
+	at org.lukasz.faktury.user.UserServiceTest.givenValidRequest_whenRegister_thenUserIsSavedAndTokenCreated(UserServiceTest.java:73)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+

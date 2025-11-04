@@ -15,18 +15,18 @@ public class UserMapper {
 
 
     User toEntity(UserRequest request) {
-<span class="fc" id="L18">        User user = new User();</span>
-<span class="fc" id="L19">        user.setEmail(request.email());</span>
-<span class="fc" id="L20">        String password = passwordEncoder.encode(request.password());</span>
+<span class="nc" id="L18">        User user = new User();</span>
+<span class="nc" id="L19">        user.setEmail(request.email());</span>
+<span class="nc" id="L20">        String password = passwordEncoder.encode(request.password());</span>
 
 
-<span class="fc" id="L23">        user.setPassword(password);</span>
+<span class="nc" id="L23">        user.setPassword(password);</span>
 
-<span class="fc" id="L25">        return user;</span>
+<span class="nc" id="L25">        return user;</span>
     }
 
     UserResponse toResponse(User response) {
-<span class="fc" id="L29">        return new UserResponse(response.getEmail());</span>
+<span class="nc" id="L29">        return new UserResponse(response.getEmail());</span>
     }
 }
 

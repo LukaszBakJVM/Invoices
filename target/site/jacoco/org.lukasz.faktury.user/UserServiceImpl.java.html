@@ -3,10 +3,10 @@
 import org.lukasz.faktury.exceptions.UserException;
 import org.lukasz.faktury.nipapi.ApiConnection;
 import org.lukasz.faktury.seller.Seller;
-import org.lukasz.faktury.seller.SellerDto;
 import org.lukasz.faktury.seller.SellerService;
+import org.lukasz.faktury.seller.dto.SellerDto;
 import org.lukasz.faktury.user.dto.Login;
-import org.lukasz.faktury.user.dto.UserRequest;
+import org.lukasz.faktury.user.dto.RegisterDto;
 import org.lukasz.faktury.user.dto.UserResponse;
 import org.lukasz.faktury.utils.confirmationtoken.activationtoken.ActivationTokenService;
 import org.lukasz.faktury.utils.validation.Validation;
@@ -40,27 +40,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponse register(UserRequest request, SellerDto sellerDto) {
-<span class="fc" id="L44">        logger.info(&quot;Inside registration&quot;);</span>
-<span class="fc" id="L45">        validation.validation(request);</span>
-<span class="fc" id="L46">        findUserByEmail(request.email());</span>
+    public UserResponse register(RegisterDto register) {
+<span class="nc" id="L44">        logger.info(&quot;Inside registration&quot;);</span>
+<span class="nc" id="L45">        validation.validation(register.request());</span>
+<span class="nc" id="L46">        findUserByEmail(register.request().email());</span>
 
-<span class="fc" id="L48">        Seller seller = sellerService.save(sellerDto);</span>
-<span class="fc" id="L49">        logger.info(&quot;Inside registration  seller -&gt; {} &quot;, seller);</span>
-
-
-<span class="fc" id="L52">        User entity = mapper.toEntity(request);</span>
+<span class="nc" id="L48">        Seller seller = sellerService.save(register.sellerDto());</span>
+<span class="nc" id="L49">        logger.info(&quot;Inside registration  seller -&gt; {} &quot;, seller);</span>
 
 
+<span class="nc" id="L52">        User entity = mapper.toEntity(register.request());</span>
 
-<span class="fc" id="L56">        entity.setActive(false);</span>
-<span class="fc" id="L57">        entity.setNip(request.nip());</span>
-<span class="fc" id="L58">        entity.setSeller(seller);</span>
-<span class="fc" id="L59">        User save = repository.save(entity);</span>
-<span class="fc" id="L60">        logger.info(&quot;Inside registration  user -&gt; {} &quot;, entity);</span>
-<span class="fc" id="L61">        activationTokenService.createToken(save);</span>
 
-<span class="fc" id="L63">        return mapper.toResponse(save);</span>
+
+<span class="nc" id="L56">        entity.setActive(false);</span>
+<span class="nc" id="L57">        entity.setNip(register.request().nip());</span>
+<span class="nc" id="L58">        entity.setSeller(seller);</span>
+<span class="nc" id="L59">        User save = repository.save(entity);</span>
+<span class="nc" id="L60">        logger.info(&quot;Inside registration  user -&gt; {} &quot;, entity);</span>
+<span class="nc" id="L61">        activationTokenService.createToken(save);</span>
+
+<span class="nc" id="L63">        return mapper.toResponse(save);</span>
     }
 
     @Override
@@ -75,17 +75,17 @@ public class UserServiceImpl implements UserService {
     }
 
     private void findUserByEmail(String email) {
-<span class="fc" id="L78">        repository.findByEmail(email).ifPresent(present -&gt; {</span>
+<span class="nc" id="L78">        repository.findByEmail(email).ifPresent(present -&gt; {</span>
             try {
-<span class="fc" id="L80">                throw new LoginException(&quot;Użytkownik już posiada konto&quot;);</span>
-<span class="fc" id="L81">            } catch (LoginException e) {</span>
-<span class="fc" id="L82">                throw new UserException(e.getMessage());</span>
+<span class="nc" id="L80">                throw new LoginException(&quot;Użytkownik już posiada konto&quot;);</span>
+<span class="nc" id="L81">            } catch (LoginException e) {</span>
+<span class="nc" id="L82">                throw new UserException(e.getMessage());</span>
             }
         });
 
 
 
-<span class="fc" id="L88">    }</span>
+<span class="nc" id="L88">    }</span>
 
     @Override
     public List&lt;SellerDto&gt; findDataByNip(String nip) {

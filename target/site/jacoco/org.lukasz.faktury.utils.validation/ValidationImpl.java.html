@@ -20,16 +20,16 @@ public class ValidationImpl implements Validation {
 
     @Override
     public &lt;T&gt; void validation(T t) {
-<span class="fc" id="L23">        Set&lt;ConstraintViolation&lt;T&gt;&gt; violations = validatorFactoryBean.validate(t);</span>
+<span class="nc" id="L23">        Set&lt;ConstraintViolation&lt;T&gt;&gt; violations = validatorFactoryBean.validate(t);</span>
 
 
-<span class="fc bfc" id="L26" title="All 2 branches covered.">        if (!violations.isEmpty()) {</span>
-<span class="fc" id="L27">            String errorMessage = violations.stream().map(ConstraintViolation::getMessage).collect(Collectors.joining(&quot; , &quot;));</span>
+<span class="nc bnc" id="L26" title="All 2 branches missed.">        if (!violations.isEmpty()) {</span>
+<span class="nc" id="L27">            String errorMessage = violations.stream().map(ConstraintViolation::getMessage).collect(Collectors.joining(&quot; , &quot;));</span>
 
-<span class="fc" id="L29">            logger.error(&quot;inside validation  errors: {}&quot;, errorMessage);</span>
+<span class="nc" id="L29">            logger.error(&quot;inside validation  errors: {}&quot;, errorMessage);</span>
 
-<span class="fc" id="L31">            throw new CustomValidationException(errorMessage);</span>
+<span class="nc" id="L31">            throw new CustomValidationException(errorMessage);</span>
         }
-<span class="fc" id="L33">    }</span>
+<span class="nc" id="L33">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

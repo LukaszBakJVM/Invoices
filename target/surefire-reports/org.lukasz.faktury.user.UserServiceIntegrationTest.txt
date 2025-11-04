@@ -1,4 +1,28 @@
 -------------------------------------------------------------------------------
 Test set: org.lukasz.faktury.user.UserServiceIntegrationTest
 -------------------------------------------------------------------------------
-Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.399 s -- in org.lukasz.faktury.user.UserServiceIntegrationTest
+Tests run: 10, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 5.863 s <<< FAILURE! -- in org.lukasz.faktury.user.UserServiceIntegrationTest
+org.lukasz.faktury.user.UserServiceIntegrationTest.shouldRegisterUser_AndSendActivationEmail_WithValidTokenCeidg -- Time elapsed: 0.070 s <<< ERROR!
+java.util.NoSuchElementException: No value present
+	at java.base/java.util.Optional.orElseThrow(Optional.java:377)
+	at org.lukasz.faktury.user.UserServiceIntegrationTest.shouldRegisterUser_AndSendActivationEmail_WithValidTokenCeidg(UserServiceIntegrationTest.java:95)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+org.lukasz.faktury.user.UserServiceIntegrationTest.shouldRegisterUser_AndSendActivationEmail_WithValidToken_WhenNipRegisteredAndCompanyNotRegistered -- Time elapsed: 0.048 s <<< ERROR!
+java.util.NoSuchElementException: No value present
+	at java.base/java.util.Optional.orElseThrow(Optional.java:377)
+	at org.lukasz.faktury.user.UserServiceIntegrationTest.shouldRegisterUser_AndSendActivationEmail_WithValidToken_WhenNipRegisteredAndCompanyNotRegistered(UserServiceIntegrationTest.java:156)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+org.lukasz.faktury.user.UserServiceIntegrationTest.shouldRegisterUser_AndSendActivationEmail_WithValidTokenMf -- Time elapsed: 0.021 s <<< ERROR!
+java.util.NoSuchElementException: No value present
+	at java.base/java.util.Optional.orElseThrow(Optional.java:377)
+	at org.lukasz.faktury.user.UserServiceIntegrationTest.shouldRegisterUser_AndSendActivationEmail_WithValidTokenMf(UserServiceIntegrationTest.java:126)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+

@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@RequestMapping("invoiceItems")
+@RequestMapping("/invoiceItems")       // /invoiceItems/reduceTotalValues
 public class InvoiceItemsController {
     private final InvoiceItemsService service;
 
@@ -34,14 +34,14 @@ public class InvoiceItemsController {
         return ResponseEntity.ok(service.nettoToBrutto(priceNetto,tax));
     }
     @GetMapping("/bruttoToNetto")
-    ResponseEntity<BruttoToNetto>bruttoToNetto(@RequestParam BigDecimal priceNetto , @RequestParam String tax){
-        return ResponseEntity.ok(service.bruttoToNetto(priceNetto,tax));
+    ResponseEntity<BruttoToNetto>bruttoToNetto(@RequestParam BigDecimal priceBrutto , @RequestParam String tax){
+        return ResponseEntity.ok(service.bruttoToNetto(priceBrutto,tax));
     }
-    @GetMapping("calculateTotalValue")
+    @GetMapping("/calculateTotalValue")
     ResponseEntity<CalculateTotalValue>calculateTotalValue(@RequestParam BigDecimal priceBrutto, @RequestParam int quantity){
         return ResponseEntity.ok(service.calculateTotalValue(priceBrutto, quantity));
     }
-    @GetMapping("reduceTotalValues")
+    @GetMapping("/reduceTotalValues")
     ResponseEntity<ReduceTotalValues>reduceTotalValues(@RequestParam BigDecimal price,@RequestParam int quantity){
         return ResponseEntity.ok(service.reduceTotalValues(price, quantity));
     }
