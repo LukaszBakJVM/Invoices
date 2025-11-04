@@ -21,8 +21,8 @@ public class UserController {
     ResponseEntity<UserResponse> registration(@RequestBody RegisterDto register) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.register(register));
     }
-    @GetMapping("/findByNip")
-    ResponseEntity<List<SellerDto>> findByNip(@RequestParam String nip){
+    @GetMapping("/{nip}")
+    ResponseEntity<List<SellerDto>> findByNip(@PathVariable String nip){
         return ResponseEntity.ok(service.findDataByNip(nip));
     }
 }

@@ -1,0 +1,5 @@
+vaadin.launch-browser: true
+server:
+  port: 8081
+apiinvoice: localhost:8080
+
