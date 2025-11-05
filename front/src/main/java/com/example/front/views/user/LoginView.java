@@ -1,6 +1,7 @@
 package com.example.front.views.user;
 
-import com.example.fakturyfront.views.index.IndexView;
+
+import com.example.front.views.index.IndexView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;

@@ -1,5 +1,7 @@
 package com.example.front.views.user;
 
+import com.example.front.exceptions.UserException;
+import com.example.front.views.user.dto.EmailRequest;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.notification.Notification;
@@ -7,17 +9,18 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-import org.lukasz.faktury.exceptions.UserException;
-import org.lukasz.faktury.utils.confirmationtoken.resetpasswordtoken.ResetPasswordService;
+
+import org.springframework.web.client.RestClient;
 
 @Route("reset-password")
 @AnonymousAllowed
 
 public class ResetPasswordView extends VerticalLayout {
-    private final ResetPasswordService resetPasswordService;
+    private final RestClient restClient;
 
-    public ResetPasswordView(ResetPasswordService resetPasswordService) {
-        this.resetPasswordService = resetPasswordService;
+    public ResetPasswordView(RestClient restClient) {
+        this.restClient = restClient;
+
 
 
         TextField email = new TextField("Podaj swój email");
@@ -31,12 +34,18 @@ public class ResetPasswordView extends VerticalLayout {
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
         setSizeFull();
-    }
+
+
+}
 
 
     private void resetPassword(String email) {
         try {
-            resetPasswordService.createToken(email);
+            EmailRequest request = new EmailRequest(email);
+            restClient.post().uri("/token/resetPassword").body(request).retrieve().body(Void.class);
+          //  resetPasswordService.createToken(email);
+
+
             Notification.show("Link do resetowania hasła został wysłany na Twój email",1000, Notification.Position.MIDDLE);
 
         } catch (UserException ex) {

@@ -76,14 +76,14 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     }
 
     @Override
-    public void findToken(String token,String email) {
-        changePasswordRepo.findByTokenAndUserEmail(token,email).orElseThrow(() -> new TokenException("Token nie istnieje"));
+    public void findToken(String token) {
+        changePasswordRepo.findByToken(token).orElseThrow(() -> new TokenException("Token nie istnieje"));
 
     }
 
     @Override
-    public void newPassword(ConfirmPassword confirmPassword,String email) {
-        ChangePassword findToken = changePasswordRepo.findByTokenAndUserEmail(confirmPassword.token(),email).orElseThrow(() -> new TokenException("Token nie istnieje"));
+    public void newPassword(ConfirmPassword confirmPassword) {
+        ChangePassword findToken = changePasswordRepo.findByTokenAndUserEmail(confirmPassword.token(), confirmPassword.email()).orElseThrow(() -> new TokenException("Token nie istnieje"));
         LocalDateTime expiresAt = findToken.getDuration();
         if (expiresAt.isBefore(LocalDateTime.now())) {
             throw new TokenException("Token wygasł");

@@ -1,7 +1,7 @@
 package com.example.front.views.user;
 
-import com.example.fakturyfront.config.RestClientFactory;
-import com.example.fakturyfront.exceptions.TokenException;
+
+import com.example.front.exceptions.TokenException;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -9,6 +9,7 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import org.springframework.web.client.RestClient;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,9 +18,9 @@ import java.util.Optional;
 @AnonymousAllowed
 public class ConfirmView extends VerticalLayout implements BeforeEnterObserver {
 
-    private final RestClientFactory restClient;
+    private final RestClient restClient;
 
-    public ConfirmView(RestClientFactory restClient) {
+    public ConfirmView(RestClient restClient) {
         this.restClient = restClient;
 
 
@@ -40,7 +41,10 @@ public class ConfirmView extends VerticalLayout implements BeforeEnterObserver {
             if (token.isEmpty()) {
                 throw new TokenException("Token nie istnieje");
             }
-            activationTokenService.findToken(token.get());
+
+            restClient.get().uri(uriBuilder -> uriBuilder.path("registration/{token}").build(token.get())).retrieve().body(Void.class);
+
+            // activationTokenService.findToken(token.get());
             add(new H3("✅ Potwierdzono poprawnie!"));
 
 

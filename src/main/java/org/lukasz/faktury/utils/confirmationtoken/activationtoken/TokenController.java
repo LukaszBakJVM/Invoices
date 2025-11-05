@@ -1,11 +1,10 @@
 package org.lukasz.faktury.utils.confirmationtoken.activationtoken;
 
+import org.lukasz.faktury.utils.confirmationtoken.activationtoken.dto.EmailRequest;
 import org.lukasz.faktury.utils.confirmationtoken.resetpasswordtoken.ResetPasswordService;
 import org.lukasz.faktury.utils.confirmationtoken.resetpasswordtoken.dto.ConfirmPassword;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,16 +23,22 @@ public class TokenController {
         return ResponseEntity.ok().build();
 
     }
+
     @PostMapping("/resetPassword")
-    ResponseEntity<Void>createToken(@AuthenticationPrincipal UserDetails user){
-       resetPasswordService.createToken(user.getUsername());
+    ResponseEntity<Void> createToken(@RequestBody EmailRequest request) {
+        resetPasswordService.createToken(request.email());
         return ResponseEntity.status(HttpStatus.CREATED).build();
 
     }
     @PostMapping("/newPassword")
-    ResponseEntity<Void>newPassword(@RequestBody ConfirmPassword confirmPassword,@AuthenticationPrincipal UserDetails userDetails){
-        resetPasswordService.newPassword(confirmPassword, userDetails.getUsername());
+    ResponseEntity<Void> newPassword(@RequestBody ConfirmPassword confirmPassword) {
+        resetPasswordService.newPassword(confirmPassword);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+    @GetMapping("/{token}")
+    ResponseEntity<Void>findResetToken(@PathVariable String token){
+        resetPasswordService.findToken(token);
+        return ResponseEntity.ok().build();
     }
 
 

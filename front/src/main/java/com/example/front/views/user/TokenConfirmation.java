@@ -1,5 +1,6 @@
 package com.example.front.views.user;
 
+import com.example.front.exceptions.TokenException;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -7,8 +8,7 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-import org.lukasz.faktury.exceptions.TokenException;
-import org.lukasz.faktury.utils.confirmationtoken.resetpasswordtoken.ResetPasswordService;
+import org.springframework.web.client.RestClient;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,11 +16,12 @@ import java.util.Optional;
 @Route("resetToken")
 @AnonymousAllowed
 public class TokenConfirmation extends VerticalLayout implements BeforeEnterObserver {
-    private final ResetPasswordService resetPasswordService;
+    private final RestClient restClient;
 
-    public TokenConfirmation(ResetPasswordService resetPasswordService) {
-        this.resetPasswordService = resetPasswordService;
+    public TokenConfirmation(RestClient restClient) {
+        this.restClient = restClient;
     }
+
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
@@ -29,8 +30,10 @@ public class TokenConfirmation extends VerticalLayout implements BeforeEnterObse
 
         try {
 
+            restClient.get().uri(uriBuilder -> uriBuilder.path("/token/{token}").build(token.get())).retrieve().body(Void.class);
 
-            resetPasswordService.findToken(token.get());
+
+            // resetPasswordService.findToken(token.get());
             add(new H3("✅ Potwierdzono poprawnie!"));
             event.forwardTo(ChangePasswordView.class);
 
