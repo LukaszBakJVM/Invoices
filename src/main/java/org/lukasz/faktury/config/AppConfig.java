@@ -45,10 +45,7 @@ public class AppConfig extends VaadinWebSecurity {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-    @Bean
-    StringBuilder stringBuilder() {
-        return new StringBuilder();
-    }
+
     @Bean
     public AtomicBoolean processFlag() {
         return new AtomicBoolean(false);

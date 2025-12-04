@@ -32,18 +32,18 @@ public class InvoicesServiceImpl implements InvoicesService{
     private final InvoiceItemsService invoiceItemsService;
 
     private final Validation validation;
-    private final StringBuilder str;
+
     private final LocalDate today = LocalDate.now();
 
     LocalDate start = today.withDayOfMonth(1);
     LocalDate end = today.withDayOfMonth(today.lengthOfMonth());
 
 
-    public InvoicesServiceImpl(InvoicesRepo repo, InvoicesMapper mapper, Validation validation, StringBuilder str, SellerService sellerService, BuyerService buyerService, InvoiceItemsService invoiceItemsService) {
+    public InvoicesServiceImpl(InvoicesRepo repo, InvoicesMapper mapper, Validation validation, SellerService sellerService, BuyerService buyerService, InvoiceItemsService invoiceItemsService) {
         this.repo = repo;
         this.mapper = mapper;
         this.validation = validation;
-        this.str = str;
+
 
         this.buyerService = buyerService;
         this.sellerService = sellerService;
@@ -104,6 +104,7 @@ public class InvoicesServiceImpl implements InvoicesService{
 
 
     private String calculateNumberOfInvoices(List<Invoices> invoicesNb) {
+        StringBuilder str = new StringBuilder();
         str.setLength(0);
         String date = today.toString();
 
