@@ -45,6 +45,7 @@ public class InvoicesServiceImplTest {
 
     @Test
     void shouldCreateNewInvoices() {
+        //given
 
         Seller seller = new Seller();
         seller.setNip("1234567");
@@ -60,16 +61,17 @@ public class InvoicesServiceImplTest {
 
         List<InvoiceItemsDto> itemsDtos = List.of(dto, dto1);
 
-        //when
+
 
         when(sellerService.findByEmail()).thenReturn(seller);
         doNothing().when(validation).validation(invoicesDto);
         when(mapper.ToEntity(eq(invoicesDto), any(LocalDateTime.class))).thenReturn(mock(Invoices.class));
         when(buyerService.findBuyer(any(BuyerDto.class))).thenReturn(mock(Buyer.class));
 
-
+        //when
         invoicesService.createInvoices(invoicesDto, buyerDto, itemsDtos);
 
+        //then
         verify(sellerService, times(1)).findByEmail();
         verify(validation, times(1)).validation(invoicesDto);
 
@@ -78,7 +80,7 @@ public class InvoicesServiceImplTest {
 
     @Test
     void shouldThrowException_whenNipSellerAndBuyerIsSame() {
-
+        //given
         Seller seller = new Seller();
         seller.setNip("6351234577");
 
@@ -88,8 +90,23 @@ public class InvoicesServiceImplTest {
         InvoicesDto invoicesDto = mock(InvoicesDto.class);
 
         when(sellerService.findByEmail()).thenReturn(seller);
-
+        // //when then
         NipConflictException nipConflictException = assertThrows(NipConflictException.class, () -> invoicesService.createInvoices(invoicesDto, buyerDto, items));
         assertEquals("Podano ten sam NIP dla sprzedawcy i nabywcy", nipConflictException.getMessage());
+    }
+
+    @Test
+    void calculatePaymentDate() {
+        //given
+        LocalDate dateOfIssue = LocalDate.of(2026, 2, 11);
+        int postponement = 7;
+
+        //when
+        LocalDate result = invoicesService.calculatePaymentDate(dateOfIssue, postponement);
+
+        LocalDate expected = LocalDate.of(2026, 2, 18);
+        // then
+        assertEquals(expected, result);
+
     }
 }
