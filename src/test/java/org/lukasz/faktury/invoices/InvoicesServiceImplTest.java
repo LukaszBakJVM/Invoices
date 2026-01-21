@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.lukasz.faktury.buyer.Buyer;
 import org.lukasz.faktury.buyer.BuyerService;
 import org.lukasz.faktury.buyer.dto.BuyerDto;
+import org.lukasz.faktury.exceptions.NipConflictException;
 import org.lukasz.faktury.invoices.dto.InvoicesDto;
 import org.lukasz.faktury.items.InvoiceItemsService;
 import org.lukasz.faktury.items.dto.InvoiceItemsDto;
@@ -20,6 +21,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -71,5 +74,22 @@ public class InvoicesServiceImplTest {
         verify(validation, times(1)).validation(invoicesDto);
 
 
+    }
+
+    @Test
+    void shouldThrowException_whenNipSellerAndBuyerIsSame() {
+
+        Seller seller = new Seller();
+        seller.setNip("6351234577");
+
+        BuyerDto buyerDto = new BuyerDto("name", "6351234577", "787273", "city", "00-000", "street", "8");
+
+        List<InvoiceItemsDto> items = List.of(mock(InvoiceItemsDto.class));
+        InvoicesDto invoicesDto = mock(InvoicesDto.class);
+
+        when(sellerService.findByEmail()).thenReturn(seller);
+
+        NipConflictException nipConflictException = assertThrows(NipConflictException.class, () -> invoicesService.createInvoices(invoicesDto, buyerDto, items));
+        assertEquals("Podano ten sam NIP dla sprzedawcy i nabywcy", nipConflictException.getMessage());
     }
 }
