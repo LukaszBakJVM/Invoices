@@ -1,5 +1,6 @@
 package org.lukasz.faktury.invoices;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.lukasz.faktury.buyer.Buyer;
@@ -15,6 +16,9 @@ import org.lukasz.faktury.utils.validation.Validation;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -96,7 +100,7 @@ public class InvoicesServiceImplTest {
     }
 
     @Test
-    void calculatePaymentDate() {
+    void shouldCalculatePaymentDate() {
         //given
         LocalDate dateOfIssue = LocalDate.of(2026, 2, 11);
         int postponement = 7;
@@ -109,4 +113,57 @@ public class InvoicesServiceImplTest {
         assertEquals(expected, result);
 
     }
+
+
+    @Test
+    void shouldCalculateInvoicesNumberForLoggedUser() {
+        Authentication auth = mock(Authentication.class);
+        SecurityContext context = mock(SecurityContext.class);
+
+        when(auth.getName()).thenReturn("test@email.com");
+        when(context.getAuthentication()).thenReturn(auth);
+
+        SecurityContextHolder.setContext(context);
+
+
+        // given
+        Invoices invoices = new Invoices();
+        invoices.setGeneratedDateOfIssue(LocalDateTime.of(2025, 11, 18, 18, 25, 56));
+        invoices.setNumber("FV/1/11/2025");
+        Invoices invoices1 = new Invoices();
+        invoices1.setGeneratedDateOfIssue(LocalDateTime.of(2026, 1, 3, 12, 25, 56));
+        invoices1.setNumber("FV/1/1/2026");
+
+        List<Invoices> invoicesList = List.of(invoices1, invoices);
+
+        when(repo.findAllBySeller_User_EmailAndGeneratedDateOfIssueBetween(eq("test@email.com"), any(), any())).thenReturn(invoicesList);
+
+        // when
+        String result = invoicesService.invoicesNumber();
+
+
+        // then
+        Assertions.assertNotNull(result);
+        verify(repo).findAllBySeller_User_EmailAndGeneratedDateOfIssueBetween(eq("test@email.com"), any(), any());
+
+
+        SecurityContextHolder.clearContext();
+
+    }
+
+    @Test
+    void shouldShowPaymentsMethods() {
+        //when
+        List<String> result = invoicesService.paymentsMethod();
+
+
+        List<String> methods = List.of("Przelew", "Gotówka");
+
+        //then
+
+        assertEquals(methods, result);
+    }
+
+
 }
+
