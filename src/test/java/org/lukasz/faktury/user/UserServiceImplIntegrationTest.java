@@ -39,7 +39,7 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest()
 @ActiveProfiles("test")
-public class UserServiceIntegrationTest {
+public class UserServiceImplIntegrationTest {
     @Autowired
     private UserServiceImpl userService;
     @Autowired
