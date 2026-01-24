@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.lukasz.faktury.buyer.Buyer;
 import org.lukasz.faktury.buyer.BuyerService;
 import org.lukasz.faktury.buyer.dto.BuyerDto;
+import org.lukasz.faktury.exceptions.AccountNumberException;
 import org.lukasz.faktury.exceptions.NipConflictException;
 import org.lukasz.faktury.invoices.dto.InvoicesDto;
 import org.lukasz.faktury.items.InvoiceItemsService;
@@ -71,6 +72,7 @@ public class InvoicesServiceImplTest {
         doNothing().when(validation).validation(invoicesDto);
         when(mapper.ToEntity(eq(invoicesDto), any(LocalDateTime.class))).thenReturn(mock(Invoices.class));
         when(buyerService.findBuyer(any(BuyerDto.class))).thenReturn(mock(Buyer.class));
+        doNothing().when(invoiceItemsService).saveItems(any(), any());
 
         //when
         invoicesService.createInvoices(invoicesDto, buyerDto, itemsDtos);
@@ -94,11 +96,40 @@ public class InvoicesServiceImplTest {
         InvoicesDto invoicesDto = mock(InvoicesDto.class);
 
         when(sellerService.findByEmail()).thenReturn(seller);
-        // //when then
+        // then
         NipConflictException nipConflictException = assertThrows(NipConflictException.class, () -> invoicesService.createInvoices(invoicesDto, buyerDto, items));
         assertEquals("Podano ten sam NIP dla sprzedawcy i nabywcy", nipConflictException.getMessage());
     }
 
+    @Test
+    void shouldThrowExceptionWhenPaymentTypIsBankTransferAndAccountNumberIsEmpty() {
+        //given
+        Seller seller = new Seller();
+        seller.setNip("1234567");
+
+        LocalDate dateOfIssue = LocalDate.of(2026, 2, 11);
+
+        InvoicesDto invoicesDto = new InvoicesDto("FV/01/2025", dateOfIssue, "Lublin", dateOfIssue, 0, dateOfIssue, "Przelew");
+        BuyerDto buyerDto = new BuyerDto("name", "6351234577", "787273", "city", "00-000", "street", "8");
+
+        InvoiceItemsDto dto = new InvoiceItemsDto("item1", 1, "szt", BigDecimal.valueOf(100.00), BigDecimal.valueOf(23), BigDecimal.valueOf(123), BigDecimal.valueOf(123));
+
+        InvoiceItemsDto dto1 = new InvoiceItemsDto("item2", 2, "szt", BigDecimal.valueOf(10.00), BigDecimal.valueOf(23), BigDecimal.valueOf(12, 3), BigDecimal.valueOf(24.60));
+
+        List<InvoiceItemsDto> itemsDtos = List.of(dto, dto1);
+
+
+        when(sellerService.findByEmail()).thenReturn(seller);
+        doNothing().when(validation).validation(invoicesDto);
+        when(mapper.ToEntity(eq(invoicesDto), any(LocalDateTime.class))).thenReturn(mock(Invoices.class));
+
+
+        // then
+        AccountNumberException response = assertThrows(AccountNumberException.class, () -> invoicesService.createInvoices(invoicesDto, buyerDto, itemsDtos));
+        assertEquals("Uzupełnij nr konta", response.getMessage());
+
+
+    }
     @Test
     void shouldCalculatePaymentDate() {
         //given
