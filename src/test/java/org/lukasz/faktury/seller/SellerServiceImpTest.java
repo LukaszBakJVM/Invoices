@@ -7,6 +7,9 @@ import org.lukasz.faktury.exceptions.NipAlreadyRegisteredException;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 
@@ -63,6 +66,35 @@ public class SellerServiceImpTest {
 
         //then
         assertThrows(NipAlreadyRegisteredException.class, () -> sellerServiceImp.save(sellerDto));
+    }
+
+    @Test
+    void shouldAddAccountToExistingUser() {
+
+        Authentication auth = mock(Authentication.class);
+        SecurityContext context = mock(SecurityContext.class);
+
+        when(auth.getName()).thenReturn("test@email.com");
+        when(context.getAuthentication()).thenReturn(auth);
+
+        SecurityContextHolder.setContext(context);
+
+
+        //given
+        String accountNumber = "PL1234567890";
+        Seller seller = new Seller();
+        seller.setName("123344");
+
+        when(repository.findByUserEmail(anyString())).thenReturn(Optional.of(seller));
+
+        //when
+        sellerServiceImp.addAccountNb(accountNumber);
+
+        //then
+
+        verify(repository).save(any());
+        Assertions.assertEquals(accountNumber, seller.getAccountNb());
+
     }
 
 
