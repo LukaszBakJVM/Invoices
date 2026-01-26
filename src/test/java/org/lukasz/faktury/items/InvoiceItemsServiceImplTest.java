@@ -66,6 +66,21 @@ public class InvoiceItemsServiceImplTest {
     }
 
     @Test
+    void shouldReturnNettoPrice_whenTax_is0() {
+        //given
+        BigDecimal netto = BigDecimal.valueOf(111.34);
+        String tax = "VAT0";
+
+
+        //when
+        BigDecimal result = invoiceItemsService.nettoToBrutto(netto, tax);
+
+        //then
+        Assertions.assertEquals(BigDecimal.valueOf(111.34), result);
+
+    }
+
+    @Test
     void shouldCalculateNettoPrice_fromNBrutto() {
         //given
         BigDecimal brutto = BigDecimal.valueOf(136.95);
@@ -77,6 +92,20 @@ public class InvoiceItemsServiceImplTest {
 
         //then
         Assertions.assertEquals(BigDecimal.valueOf(111.34), result);
+
+    }
+    @Test
+    void shouldReturnBruttoPrice_whenTax_Is0() {
+        //given
+        BigDecimal brutto = BigDecimal.valueOf(136.95);
+        String tax = "VAT0";
+
+
+        //when
+        BigDecimal result = invoiceItemsService.bruttoToNetto(brutto, tax);
+
+        //then
+        Assertions.assertEquals(BigDecimal.valueOf(136.95), result);
 
     }
 
