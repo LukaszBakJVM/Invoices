@@ -60,7 +60,7 @@ public class ActivationTokenServiceImplTest {
     }
 
     @Test
-    void shouldActivateUserAndMarkTokenAsUsed_() {
+    void shouldActivateUserAndMarkTokenAsUsed() {
         // given
         String tokenValue = "valid-token";
 
@@ -74,6 +74,7 @@ public class ActivationTokenServiceImplTest {
         token.setUser(user);
 
         when(tokenRepository.findByToken(tokenValue)).thenReturn(Optional.of(token));
+        when(userRepository.save(any())).thenReturn(user);
 
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         ArgumentCaptor<ActivationToken> tokenCaptor = ArgumentCaptor.forClass(ActivationToken.class);
