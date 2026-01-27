@@ -3,12 +3,16 @@ package org.lukasz.faktury.items;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.lukasz.faktury.invoices.Invoices;
+import org.lukasz.faktury.items.dto.InvoiceItemsDto;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.List;
+
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class InvoiceItemsServiceImplTest {
@@ -18,6 +22,32 @@ public class InvoiceItemsServiceImplTest {
     InvoiceItemsMapper invoiceItemsMapper;
     @InjectMocks
     InvoiceItemsServiceImpl invoiceItemsService;
+
+
+    @Test
+    void shouldSaveItemOnInvoices() {
+
+        //given
+        Invoices invoices = new Invoices();
+        invoices.setNumber("FV/01/01/2025");
+        InvoiceItemsDto dto1 = mock(InvoiceItemsDto.class);
+        InvoiceItemsDto dto2 = mock(InvoiceItemsDto.class);
+        List<InvoiceItemsDto> itemsDto = List.of(dto1, dto2);
+        List<InvoiceItems> items = List.of(new InvoiceItems());
+
+        when(invoiceItemsMapper.saveItems(itemsDto, invoices)).thenReturn(items);
+        when(invoiceItemsRepo.saveAll(items)).thenReturn(items);
+
+        //when
+        invoiceItemsService.saveItems(itemsDto, invoices);
+
+        //then
+
+        verify(invoiceItemsMapper).saveItems(any(), any());
+        verify(invoiceItemsRepo).saveAll(any());
+
+
+    }
 
 
     @Test
