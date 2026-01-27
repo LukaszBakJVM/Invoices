@@ -3,6 +3,7 @@ package org.lukasz.faktury.utils.confirmationtoken.activationtoken;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.lukasz.faktury.exceptions.TokenException;
 import org.lukasz.faktury.user.User;
 import org.lukasz.faktury.user.UserRepository;
 import org.lukasz.faktury.utils.confirmationtoken.EmailSenderService;
@@ -12,7 +13,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -54,6 +57,43 @@ public class ActivationTokenServiceImplTest {
         Assertions.assertNotNull(token.getExpiresAt());
         Assertions.assertEquals(user, token.getUser());
         Assertions.assertTrue(token.getExpiresAt().isAfter(LocalDateTime.now()));
+    }
+
+    @Test
+    void shouldThrowException_WhenTokenExpired() {
+
+        //given
+        ActivationToken activationToken = new ActivationToken();
+        activationToken.setToken("generated-token");
+        activationToken.setExpiresAt(LocalDateTime.now().minusHours(25));
+
+
+        when(tokenRepository.findByToken(anyString())).thenReturn(Optional.of(activationToken));
+
+        //when
+
+        TokenException response = assertThrows(TokenException.class, () -> activationTokenService.findToken(anyString()));
+        Assertions.assertEquals("Token wygasł", response.getMessage());
+
+    }
+
+    @Test
+    void shouldThrowException_WhenTokenUsed() {
+
+        //given
+        ActivationToken activationToken = new ActivationToken();
+        activationToken.setToken("generated-token");
+        activationToken.setExpiresAt(LocalDateTime.now().plusHours(1));
+        activationToken.setUsed(true);
+
+
+        when(tokenRepository.findByToken(anyString())).thenReturn(Optional.of(activationToken));
+
+        //then
+
+        TokenException response = assertThrows(TokenException.class, () -> activationTokenService.findToken(anyString()));
+        Assertions.assertEquals("Token już wykorzystany", response.getMessage());
+
     }
 }
 
