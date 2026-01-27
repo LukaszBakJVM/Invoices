@@ -60,6 +60,43 @@ public class ActivationTokenServiceImplTest {
     }
 
     @Test
+    void shouldActivateUserAndMarkTokenAsUsed_() {
+        // given
+        String tokenValue = "valid-token";
+
+        User user = new User();
+        user.setActive(false);
+
+        ActivationToken token = new ActivationToken();
+        token.setToken(tokenValue);
+        token.setExpiresAt(LocalDateTime.now().plusHours(1));
+        token.setUsed(false);
+        token.setUser(user);
+
+        when(tokenRepository.findByToken(tokenValue)).thenReturn(Optional.of(token));
+
+        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+        ArgumentCaptor<ActivationToken> tokenCaptor = ArgumentCaptor.forClass(ActivationToken.class);
+
+        // when
+        activationTokenService.findToken(tokenValue);
+
+        // then
+        verify(userRepository).save(userCaptor.capture());
+        verify(tokenRepository).save(tokenCaptor.capture());
+
+        User savedUser = userCaptor.getValue();
+        ActivationToken savedToken = tokenCaptor.getValue();
+
+        Assertions.assertTrue(savedUser.isActive());
+        Assertions.assertTrue(savedToken.isUsed());
+        Assertions.assertEquals(tokenValue, savedToken.getToken());
+        Assertions.assertEquals(savedUser, savedToken.getUser());
+    }
+
+
+
+    @Test
     void shouldThrowException_WhenTokenExpired() {
 
         //given
