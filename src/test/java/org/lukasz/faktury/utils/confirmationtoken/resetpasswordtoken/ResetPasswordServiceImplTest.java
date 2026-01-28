@@ -3,6 +3,7 @@ package org.lukasz.faktury.utils.confirmationtoken.resetpasswordtoken;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.lukasz.faktury.exceptions.UserException;
 import org.lukasz.faktury.user.User;
 import org.lukasz.faktury.user.UserRepository;
 import org.lukasz.faktury.utils.confirmationtoken.EmailSenderService;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -101,5 +103,18 @@ public class ResetPasswordServiceImplTest {
 
 
     }
+
+    @Test
+    void shouldThrowExceptionWhenEmailForResetPasswordNotExist() {
+
+        //given
+        String email = "test@test.com";
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        //when then
+        UserException response = assertThrows(UserException.class, () -> resetPasswordService.createToken(email));
+        Assertions.assertEquals("Nie znaleziono uzytkownika test@test.com", response.getMessage());
+    }
+
 
 }
