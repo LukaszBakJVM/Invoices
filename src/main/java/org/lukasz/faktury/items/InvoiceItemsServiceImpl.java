@@ -5,7 +5,6 @@ import org.lukasz.faktury.enums.Tax;
 import org.lukasz.faktury.enums.Unit;
 import org.lukasz.faktury.invoices.Invoices;
 import org.lukasz.faktury.items.dto.InvoiceItemsDto;
-import org.lukasz.faktury.utils.validation.Validation;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -17,14 +16,13 @@ import java.util.List;
 public class InvoiceItemsServiceImpl implements InvoiceItemsService {
     private final InvoiceItemsRepo invoiceItemsRepo;
     private final InvoiceItemsMapper invoiceItemsMapper;
-    private final Validation validation;
 
 
-    public InvoiceItemsServiceImpl(InvoiceItemsRepo invoiceItemsRepo, InvoiceItemsMapper invoiceItemsMapper, Validation validation) {
+    public InvoiceItemsServiceImpl(InvoiceItemsRepo invoiceItemsRepo, InvoiceItemsMapper invoiceItemsMapper) {
         this.invoiceItemsRepo = invoiceItemsRepo;
         this.invoiceItemsMapper = invoiceItemsMapper;
 
-        this.validation = validation;
+
     }
 
     @Override
