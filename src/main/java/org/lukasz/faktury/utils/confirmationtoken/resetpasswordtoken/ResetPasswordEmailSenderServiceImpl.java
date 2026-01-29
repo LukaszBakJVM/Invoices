@@ -26,9 +26,9 @@ public class ResetPasswordEmailSenderServiceImpl implements EmailSenderService {
     public void sendEmail(String email, String link) {
         logger.info("Sending email to {} ", email);
         SimpleMailMessage send = new SimpleMailMessage();
-        String message = String.format("Link aktywacyjny: %s", link);
+        String message = String.format("Link resetujacy hasło: %s", link);
 
-        String subject = "Token aktywacyjny";
+        String subject = "Token resetuajcy hasło";
         send.setTo(email);
         send.setSubject(subject);
         send.setText(message);
