@@ -186,7 +186,7 @@ public class ResetPasswordServiceImplTest {
 
         User userValue = userArgumentCaptor.getValue();
         ChangePassword changePasswordValue = changePasswordArgumentCaptor.getValue();
-        Assertions.assertEquals(userValue.getPassword(), newPassword);
+        Assertions.assertEquals(newPassword,userValue.getPassword());
         Assertions.assertTrue(changePasswordValue.isUsed());
 
 
