@@ -7,6 +7,7 @@ import org.lukasz.faktury.exceptions.UserException;
 import org.lukasz.faktury.seller.Seller;
 import org.lukasz.faktury.seller.SellerDto;
 import org.lukasz.faktury.seller.SellerService;
+import org.lukasz.faktury.user.dto.Login;
 import org.lukasz.faktury.user.dto.UserRequest;
 import org.lukasz.faktury.user.dto.UserResponse;
 import org.lukasz.faktury.utils.confirmationtoken.activationtoken.ActivationTokenService;
@@ -17,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -101,6 +102,55 @@ public class UserServiceImplTest {
         verify(activationTokenService, never()).createToken(any());
         verify(mapper, never()).toResponse(any());
 
+
+    }
+
+    @Test
+    void shouldThrowExceptionWhenAccountIsNotActive() {
+        //given
+
+        User user = new User();
+        user.setActive(false);
+        when(repository.findByEmail(anyString())).thenReturn(Optional.of(user));
+
+        //then
+        UserException response = assertThrows(UserException.class, () -> userService.login("test@email.com"));
+        Assertions.assertEquals("Aktywuj konto", response.getMessage());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenAccountIsNotExist() {
+        //given
+
+
+        when(repository.findByEmail(anyString())).thenReturn(Optional.empty());
+
+        //then
+        UserException response = assertThrows(UserException.class, () -> userService.login("test@email.com"));
+        Assertions.assertEquals("Niepoprawny email", response.getMessage());
+    }
+
+    @Test
+    void shouldReturnLoginWhenUserIsActive() {
+        String email = "test@email.com";
+        String password = "pass";
+
+        //given
+        User user = new User();
+        user.setActive(true);
+        user.setEmail(email);
+        user.setPassword(password);
+
+        when(repository.findByEmail(anyString())).thenReturn(Optional.of(user));
+
+        //when
+        Login result = userService.login(email);
+
+
+        //then
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals("test@email.com", result.username());
+        Assertions.assertEquals("pass", result.password());
 
     }
 
