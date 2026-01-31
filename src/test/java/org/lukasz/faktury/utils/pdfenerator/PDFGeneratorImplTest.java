@@ -36,6 +36,7 @@ public class PDFGeneratorImplTest {
         // given
         Seller seller = new Seller();
         seller.setName("Test Seller");
+        seller.setAccountNb("Pl1234567");
 
 
         when(sellerService.findByEmail()).thenReturn(seller);
@@ -45,6 +46,7 @@ public class PDFGeneratorImplTest {
 
         // when
         byte[] result = pdfGenerator.generatePDF(invoice);
+
 
         // then
         Assertions.assertNotNull(result);
@@ -71,7 +73,7 @@ public class PDFGeneratorImplTest {
 
 
     private InvoicesPdf createTestInvoice() {
-        InvoicesDto invoicesDto = new InvoicesDto("FV/1/2025", LocalDate.now(), "place", LocalDate.now(), 0, LocalDate.now(), "Gotówka");
+        InvoicesDto invoicesDto = new InvoicesDto("FV/1/2025", LocalDate.now(), "place", LocalDate.now(), 0, LocalDate.now(), "Przelew");
 
 
         BuyerDto buyerDto = new BuyerDto("Test Buyer", "123445", "678", "city", "zipcode", "street,", "houseNumber");
