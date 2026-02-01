@@ -2,6 +2,7 @@ ceidgApi: https://dane.biznes.gov.pl
 tokenCeidg: tokenCeidg
 mfApi: https://wl-api.mf.gov.pl
 tokenUrl: localhost:8080
+apiKsef: https://api-test.ksef.mf.gov.pl/v2
 
 
 spring:
